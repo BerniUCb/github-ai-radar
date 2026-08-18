@@ -65,6 +65,7 @@ automáticamente.
 ```
 
 ## Salida de ejemplo
+![Output del scraper detectando repos de IA emergentes](output.png)
 
 | full_name | stars | stars_gained | stars_per_hour | emerging |
 |-----------|------:|-------------:|---------------:|:--------:|
