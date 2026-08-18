@@ -1,0 +1,19 @@
+﻿# Entorno virtual
+venv/
+.venv/
+
+# Base de datos de snapshots (se genera al correr)
+radar.db
+
+# Reportes generados
+ai_radar_report.csv
+
+# Python
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
+
+# Secretos
+.env
