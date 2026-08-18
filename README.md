@@ -1,28 +1,32 @@
 # 🛰️ GitHub AI Radar
 
-Detecta repositorios de **IA emergentes** en GitHub y mide su *momentum*
-(estrellas ganadas por hora entre corridas) para cazarlos **antes** de que
-exploten en popularidad.
+Detects **emerging AI repositories** on GitHub and measures their *momentum*
+(stars gained per hour between runs) to catch them **before** they blow up in
+popularity.
 
-En un ecosistema donde salen cientos de herramientas de IA por semana, saber
-cuáles están creciendo rápido — no cuáles ya son famosas — es información que
-vale. Este proyecto convierte esa señal en un CSV limpio y accionable.
+In an ecosystem where hundreds of AI tools ship every week, knowing which ones
+are growing fast — not which are already famous — is information that has value.
+This project turns that signal into a clean, actionable CSV.
 
-## ¿Qué hace?
+## Example output
 
-1. **Extract** — consulta el Search API de GitHub filtrando por *topics* de IA
-   (`llm`, `rag`, `ai-agents`, `mcp`, etc.) y repos creados recientemente.
-2. **Load** — guarda un snapshot de las estrellas de cada repo con timestamp
-   en SQLite, construyendo un historial en el tiempo.
-3. **Transform** — con **Polars**, compara la corrida actual contra el snapshot
-   anterior y calcula estrellas ganadas y estrellas/hora (momentum).
-4. **Report** — marca los repos que rompen umbrales de crecimiento como
-   `EMERGING` y exporta un ranking a `ai_radar_report.csv`.
+![The scraper detecting emerging AI repositories in real time](output.png)
 
-## Arquitectura
+## What it does
+
+1. **Extract** — queries the GitHub Search API filtering by AI *topics*
+   (`llm`, `rag`, `ai-agents`, `mcp`, etc.) and recently created repos.
+2. **Load** — saves a snapshot of each repo's stars with a timestamp in SQLite,
+   building a history over time.
+3. **Transform** — with **Polars**, compares the current run against the previous
+   snapshot and computes stars gained and stars per hour (momentum).
+4. **Report** — flags repos that break growth thresholds as `EMERGING` and
+   exports a ranking to `ai_radar_report.csv`.
+
+## Architecture
 
 ```
-GitHub Search API  ──►  Extract  ──►  SQLite (snapshots históricos)
+GitHub Search API  ──►  Extract  ──►  SQLite (historical snapshots)
                                           │
                                           ▼
                                   Transform (Polars)
@@ -34,64 +38,57 @@ GitHub Search API  ──►  Extract  ──►  SQLite (snapshots históricos)
                                   ai_radar_report.csv
 ```
 
-Es un mini pipeline **ETL** clásico: el valor no está en el scrape puntual,
-sino en que corre en schedule y **acumula historial** — así el momentum se
-vuelve más preciso con cada corrida.
+It's a classic mini **ETL** pipeline: the value isn't in a one-off scrape, but in
+running on a schedule and **accumulating history** — so momentum becomes more
+accurate with every run.
 
-## Uso
+## Usage
 
 ```bash
 pip install -r requirements.txt
 
-python ai_radar.py                 # repos de los últimos 30 días
-python ai_radar.py --days 14       # ventana más corta = más "fresco"
-python ai_radar.py --token <PAT>   # token opcional: 5000 req/h vs 60
+python ai_radar.py                 # repos from the last 30 days
+python ai_radar.py --days 14       # shorter window = "fresher"
+python ai_radar.py --token <PAT>   # optional token: 5000 req/h vs 60
 ```
 
-> La **primera** corrida solo guarda el snapshot base (aún no hay con qué
-> comparar). A partir de la **segunda**, ya calcula momentum y detecta
-> emergentes. Corre en un cron cada pocas horas para mejores resultados.
+> The **first** run only stores the baseline snapshot (nothing to compare against
+> yet). From the **second** run onward, it computes momentum and detects emerging
+> repos. Run it on a cron every few hours for better results.
 
-### Token de GitHub (opcional pero recomendado)
+### GitHub token (optional but recommended)
 
-Sin token: 60 peticiones/hora. Con un [Personal Access Token](https://github.com/settings/tokens)
-gratis (sin permisos especiales): 5000/hora. El script respeta el rate limit
-automáticamente.
+Without a token: 60 requests/hour. With a free
+[Personal Access Token](https://github.com/settings/tokens) (no special scopes),
+you get 5000/hour. The script respects the rate limit automatically.
 
-## Automatizar (cron cada 4 horas)
+## Automate (cron every 4 hours)
 
 ```cron
-0 */4 * * * cd /ruta/github-ai-radar && python ai_radar.py --token <PAT>
+0 */4 * * * cd /path/github-ai-radar && python ai_radar.py --token <PAT>
 ```
 
-## Salida de ejemplo
-![Output del scraper detectando repos de IA emergentes](output.png)
+## How it can be monetized
 
-| full_name | stars | stars_gained | stars_per_hour | emerging |
-|-----------|------:|-------------:|---------------:|:--------:|
-| org/rocket-agent | 200 | 80 | 8.0 | ✅ |
-| org/steady-lib | 500 | 5 | 0.5 | |
-
-## Cómo se monetiza
-
-- **Exports semanales** de repos emergentes de IA vendidos en Gumroad /
-  Lemon Squeezy a inversores, devs y newsletters de tech.
-- **API/dashboard** de tendencias de IA como micro-SaaS.
-- **Servicio a medida** de detección de tendencias para fondos o VCs.
+- **Weekly exports** of emerging AI repos sold on Gumroad / Lemon Squeezy to
+  investors, developers, and tech newsletters.
+- **API/dashboard** of AI trends as a micro-SaaS.
+- **Custom trend-detection service** for funds or VCs.
 
 ## Stack
 
 Python · Polars · SQLite · GitHub REST API
 
-## Ideas para v2
+## Ideas for v2
 
-- Enriquecer con datos de commits/contribuidores (velocidad de desarrollo).
-- Detección de anomalías para filtrar star-farming (crecimiento artificial).
-- Alertas por email/Telegram cuando un repo cruza el umbral.
-- Dashboard con Streamlit o Next.js.
+- Enrich with commit/contributor data (development velocity).
+- Anomaly detection to filter out star-farming (artificial growth).
+- Email/Telegram alerts when a repo crosses the threshold.
+- Dashboard with Streamlit or Next.js.
+- Filter for "hidden gems": repos under X stars but accelerating fast.
 
 ---
 
-*Proyecto de portafolio — pipeline de recolección y análisis de datos.
-Respeta los [Términos de Servicio de GitHub](https://docs.github.com/site-policy)
-y los límites de la API.*
+*Portfolio project — data collection and analysis pipeline.
+Respects the [GitHub Terms of Service](https://docs.github.com/site-policy)
+and API limits.*
