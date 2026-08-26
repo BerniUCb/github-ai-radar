@@ -11,6 +11,7 @@ ai_radar_report.csv
 # Python
 __pycache__/
 *.pyc
+.pytest_cache/
 
 # VS Code
 .vscode/
