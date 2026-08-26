@@ -12,9 +12,8 @@ export default function TopNav({ lastUpdated, csvHref }) {
           <input
             type="text"
             placeholder="Search repositories, topics…"
-            className="w-full bg-background-dark border border-border-dark text-on-surface rounded-lg py-2 pl-10 pr-12 text-sm focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors placeholder-text-muted-dark"
+            className="w-full bg-background-dark border border-border-dark text-on-surface rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors placeholder-text-muted-dark"
           />
-          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 bg-surface-variant px-1.5 py-0.5 rounded text-[10px] font-label-caps text-text-muted-dark border border-border-dark">⌘K</kbd>
         </div>
       </div>
 
