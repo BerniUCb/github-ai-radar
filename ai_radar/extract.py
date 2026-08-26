@@ -51,7 +51,14 @@ def collect(days: int, token: str | None) -> pl.DataFrame:
 
     for topic in AI_TOPICS:
         print(f"  scraping topic: {topic}")
-        for repo in fetch_topic(topic, since, headers):
+        try:
+            repos = fetch_topic(topic, since, headers)
+        except requests.RequestException as exc:
+            # One failing topic must not sink the whole run: log and move on.
+            print(f"  [warn] topic '{topic}' failed, skipping: {exc}")
+            continue
+
+        for repo in repos:
             rid = repo["id"]
             if rid not in seen:  # dedup: a repo can appear under several topics
                 seen[rid] = {

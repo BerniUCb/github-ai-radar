@@ -23,6 +23,11 @@ def init_db(db_path: Path = DB_PATH) -> sqlite3.Connection:
             captured  TEXT
         )
     """)
+    # Speeds up the "latest snapshot per repo" lookup as history grows.
+    con.execute(
+        "CREATE INDEX IF NOT EXISTS idx_snapshots_id_captured "
+        "ON snapshots (id, captured)"
+    )
     con.commit()
     return con
 

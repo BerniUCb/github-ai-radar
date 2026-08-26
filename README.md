@@ -85,10 +85,18 @@ Without a token: 60 requests/hour. With a free
 [Personal Access Token](https://github.com/settings/tokens) (no special scopes),
 you get 5000/hour. The script respects the rate limit automatically.
 
+Pass it with `--token`, or — recommended — export it so it stays out of your
+shell history and works in CI:
+
+```bash
+export GITHUB_TOKEN=<PAT>
+python -m ai_radar            # picks up $GITHUB_TOKEN automatically
+```
+
 ## Automate (cron every 4 hours)
 
 ```cron
-0 */4 * * * cd /path/github-ai-radar && python -m ai_radar --token <PAT>
+0 */4 * * * cd /path/github-ai-radar && GITHUB_TOKEN=<PAT> python -m ai_radar
 ```
 
 ## How it can be monetized

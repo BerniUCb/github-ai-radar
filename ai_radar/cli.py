@@ -5,6 +5,7 @@ Entry point: `python -m ai_radar`
 """
 
 import argparse
+import os
 
 import polars as pl
 
@@ -12,6 +13,15 @@ from .config import OUTPUT_CSV
 from .extract import collect
 from .storage import init_db, previous_snapshot, save_snapshot
 from .transform import compute_momentum
+
+
+def resolve_token(cli_token: str | None) -> str | None:
+    """Resolve the GitHub token: the --token flag wins over $GITHUB_TOKEN.
+
+    Reading from the environment keeps the token out of shell history and lets
+    CI (e.g. GitHub Actions) inject it as a secret.
+    """
+    return cli_token or os.environ.get("GITHUB_TOKEN")
 
 
 def run(days: int, token: str | None) -> None:
@@ -55,10 +65,14 @@ def run(days: int, token: str | None) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser(description="GitHub AI Radar")
     ap.add_argument("--days", type=int, default=30, help="max age of the repos (days)")
-    ap.add_argument("--token", default=None, help="GitHub Personal Access Token (optional)")
+    ap.add_argument(
+        "--token",
+        default=None,
+        help="GitHub Personal Access Token (optional; falls back to $GITHUB_TOKEN)",
+    )
     args = ap.parse_args()
 
-    run(args.days, args.token)
+    run(args.days, resolve_token(args.token))
 
 
 if __name__ == "__main__":
