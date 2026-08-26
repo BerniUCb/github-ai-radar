@@ -12,12 +12,14 @@ from pathlib import Path
 import polars as pl
 
 from .config import OUTPUT_CSV
+from .export import export_data
 from .extract import collect
-from .render import render_dashboard
 from .storage import init_db, previous_snapshot, save_snapshot
 from .transform import compute_momentum
 
-DOCS_CSV = Path("docs/ai_radar_report.csv")
+# The React app (in web/) reads these from its public/ folder; the Vite build
+# copies them into docs/ for GitHub Pages.
+WEB_CSV = Path("web/public/ai_radar_report.csv")
 
 
 def resolve_token(cli_token: str | None) -> str | None:
@@ -44,22 +46,21 @@ def run(days: int, token: str | None) -> None:
     print("[3/4] Computing momentum...")
     report = compute_momentum(current, previous)
 
-    print("[4/4] Saving snapshot, exporting and rendering dashboard...")
+    print("[4/4] Saving snapshot, exporting CSV and data.json...")
     save_snapshot(con, current)
 
     out = report.select([
-        "full_name", "stars", "stars_gained", "stars_per_hour",
-        "emerging", "language", "topic_hit", "description", "url",
+        "full_name", "stars", "stars_gained", "stars_per_hour", "emerging",
+        "language", "forks", "license", "topic_hit", "description", "url",
     ])
     out.write_csv(OUTPUT_CSV)
 
-    # Static dashboard for GitHub Pages (index.html + a copy of the CSV so the
-    # in-page download link resolves next to it).
-    html_path = render_dashboard(report, con)
-    DOCS_CSV.parent.mkdir(parents=True, exist_ok=True)
-    out.write_csv(DOCS_CSV)
+    # Data feed for the React dashboard (+ a CSV copy next to it for download).
+    json_path = export_data(report, con)
+    WEB_CSV.parent.mkdir(parents=True, exist_ok=True)
+    out.write_csv(WEB_CSV)
     con.close()
-    print(f"  dashboard -> {html_path}")
+    print(f"  data -> {json_path}")
 
     # Console summary
     emerging = out.filter(pl.col("emerging"))

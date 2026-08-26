@@ -61,11 +61,14 @@ def collect(days: int, token: str | None) -> pl.DataFrame:
         for repo in repos:
             rid = repo["id"]
             if rid not in seen:  # dedup: a repo can appear under several topics
+                license_info = repo.get("license") or {}
                 seen[rid] = {
                     "id": rid,
                     "full_name": repo["full_name"],
                     "url": repo["html_url"],
                     "stars": repo["stargazers_count"],
+                    "forks": repo.get("forks_count", 0),
+                    "license": (license_info.get("spdx_id") or "") if license_info.get("spdx_id") not in (None, "NOASSERTION") else "",
                     "language": repo.get("language") or "",
                     "description": (repo.get("description") or "")[:140],
                     "created_at": repo["created_at"],
