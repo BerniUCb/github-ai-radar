@@ -25,7 +25,10 @@ This project turns that signal into a clean, actionable CSV **and a live dashboa
 3. **Transform** — with **Polars**, compares the current run against the previous
    snapshot and computes stars gained and stars per hour (momentum).
 4. **Report** — flags repos that break growth thresholds as `EMERGING`, exports a
-   ranking to `ai_radar_report.csv`, and renders a static HTML dashboard.
+   ranking to `ai_radar_report.csv` and a `data.json` feed for the dashboard.
+
+The **Python engine** owns all data and logic; a **React dashboard** (Vite +
+Tailwind) is a thin presentation layer that fetches `data.json` at runtime.
 
 ## Architecture
 
@@ -34,13 +37,14 @@ GitHub Search API  ──►  Extract  ──►  SQLite (historical snapshots)
                                           │
                                           ▼
                                   Transform (Polars)
-                                  · stars_gained
-                                  · stars_per_hour  (momentum)
-                                  · emerging flag
+                                  · stars_gained · stars_per_hour · emerging
                                           │
                           ┌───────────────┴───────────────┐
                           ▼                               ▼
-                  ai_radar_report.csv          docs/index.html (Jinja2)
+                  ai_radar_report.csv              data.json (Export)
+                                                        │
+                                                        ▼
+                                        React dashboard (Vite build) ──► docs/
                                                         │
                                                         ▼
                                                  GitHub Pages
@@ -56,21 +60,22 @@ Each ETL stage lives in its own module — `transform` is pure (no I/O), which
 makes the momentum logic trivial to unit-test.
 
 ```
-ai_radar/
-  config.py      # topics, thresholds, paths
-  extract.py     # GitHub Search API scraping
-  storage.py     # SQLite snapshots (history)
-  transform.py   # momentum calculation (pure, Polars)
-  render.py      # fills the HTML template from the report
-  cli.py         # pipeline orchestration + argparse
-templates/
-  dashboard.html.j2   # Jinja2 dashboard template
-docs/            # generated site served by GitHub Pages (index.html + CSV)
-tests/
-  test_transform.py
-  test_cli.py
-.github/workflows/
-  radar.yml      # scheduled run + git-scraping + deploy
+ai_radar/                 # Python data engine
+  config.py               # topics, thresholds, paths
+  extract.py              # GitHub Search API scraping
+  storage.py              # SQLite snapshots (history)
+  transform.py            # momentum calculation (pure, Polars)
+  export.py               # builds data.json from the report + history
+  cli.py                  # pipeline orchestration + argparse
+web/                      # React dashboard (Vite + Tailwind)
+  src/
+    Dashboard.jsx         # layout shell (sidebar + top nav + router outlet)
+    pages/                # Overview · RealTimeMomentum · StarGrowth · Repositories
+    components/dashboard/ # StatCard, MomentumBars, TopicDonut, ScatterPlot, …
+    lib/                  # data fetch + chart helpers
+docs/                     # Vite build output, served by GitHub Pages
+tests/                    # pytest (transform + cli)
+.github/workflows/radar.yml   # scheduled scrape + build + git-scraping deploy
 ```
 
 Run the tests:
@@ -94,6 +99,17 @@ python -m ai_radar --token <PAT>   # optional token: 5000 req/h vs 60
 > yet). From the **second** run onward, it computes momentum and detects emerging
 > repos. Run it on a cron every few hours for better results.
 
+### Dashboard (React)
+
+The Python run writes `web/public/data.json`; the React app reads it.
+
+```bash
+python -m ai_radar          # 1. generate data.json (run at least twice)
+cd web && npm install
+npm run dev                 # 2. dev server with hot reload
+npm run build               # or: production build into ../docs
+```
+
 ### GitHub token (optional but recommended)
 
 Without a token: 60 requests/hour. With a free
@@ -111,9 +127,10 @@ python -m ai_radar            # picks up $GITHUB_TOKEN automatically
 ## Deploy (GitHub Actions + Pages)
 
 The dashboard updates itself. [`.github/workflows/radar.yml`](.github/workflows/radar.yml)
-runs the radar every 6 hours and uses **git-scraping**: it commits the updated
-`radar.db` and `docs/` back to the repo. Persisting the snapshot DB between runs
-is what lets momentum accumulate over time; GitHub Pages then serves `docs/`.
+runs the radar every 6 hours, **rebuilds the React app**, and uses
+**git-scraping**: it commits the updated `radar.db` and built `docs/` back to the
+repo. Persisting the snapshot DB between runs is what lets momentum accumulate
+over time; GitHub Pages then serves `docs/`.
 
 The workflow authenticates with the built-in `GITHUB_TOKEN` (5000 req/h) — no
 secret to configure. One-time setup after the first push:
@@ -137,7 +154,9 @@ To run it locally on a schedule instead:
 
 ## Stack
 
-Python · Polars · SQLite · Jinja2 · GitHub REST API · GitHub Actions · GitHub Pages
+**Engine:** Python · Polars · SQLite · GitHub REST API
+**Dashboard:** React · Vite · Tailwind CSS · lucide-react
+**Ops:** GitHub Actions · GitHub Pages (git-scraping)
 
 ## Ideas for v2
 
