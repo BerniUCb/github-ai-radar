@@ -1,0 +1,31 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background-dark text-on-surface font-body-md antialiased;
+  }
+}
+
+/* Custom scrollbar (matches the Stitch dark theme) */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #262B38; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #33343c; }
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(66, 225, 179, 0.7); opacity: 1; }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(66, 225, 179, 0); opacity: 0.4; }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(66, 225, 179, 0); opacity: 1; }
+}
+.live-dot { animation: pulse-dot 2s infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot { animation: none; }
+}

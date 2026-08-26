@@ -13,6 +13,16 @@ __pycache__/
 *.pyc
 .pytest_cache/
 
+# Node / Vite (React app in web/)
+web/node_modules/
+web/dist/
+npm-debug.log*
+
+# Generated data feeds (produced by `python -m ai_radar`; the committed copies
+# live in docs/ after the Vite build).
+web/public/data.json
+web/public/ai_radar_report.csv
+
 # VS Code
 .vscode/
 
