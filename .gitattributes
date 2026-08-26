@@ -7,3 +7,8 @@
 # Binary assets: never touch line endings.
 *.png binary
 *.db binary
+
+# Language stats (GitHub Linguist): exclude generated/build output so the
+# language bar reflects the real source (Python + JSX), not the minified bundle.
+docs/** linguist-generated=true
+web/package-lock.json linguist-generated=true
