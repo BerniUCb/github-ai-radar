@@ -18,8 +18,8 @@ export default function StarGrowth() {
         <p className="font-body-md text-body-md text-text-muted-dark mt-1">Trajectories of the fastest-moving repos over the tracked window.</p>
       </div>
 
-      <SectionCard title="Stars accumulated over time" className="bg-surface-container-lowest">
-        <MultiLineChart series={growth.series} />
+      <SectionCard title="Growth since start of window" subtitle="Each repo indexed to its own starting stars — hover for detail" className="bg-surface-container-lowest">
+        <MultiLineChart series={growth.series} labels={growth.labels} />
       </SectionCard>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">

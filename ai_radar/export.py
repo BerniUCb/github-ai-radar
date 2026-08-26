@@ -45,20 +45,34 @@ def _int(v) -> int:
 def _load_history(con: sqlite3.Connection):
     """Read every snapshot once and build the per-repo and per-time series."""
     rows = con.execute("SELECT id, stars, captured FROM snapshots ORDER BY captured").fetchall()
-    per_id: dict[int, list[int]] = defaultdict(list)
+    per_id_at: dict[int, dict[str, int]] = defaultdict(dict)
     totals: dict[str, int] = defaultdict(int)
     counts: dict[str, int] = defaultdict(int)
     for rid, stars, captured in rows:
-        per_id[rid].append(stars)
+        per_id_at[rid][captured] = stars
         totals[captured] += stars
         counts[captured] += 1
     times = sorted(totals)
     return {
-        "per_id": per_id,
+        "per_id_at": per_id_at,
         "times": times,
         "totals": [totals[t] for t in times],
         "counts": [counts[t] for t in times],
     }
+
+
+def _aligned_series(per_id_at: dict, rid: int, times: list[str]) -> list[int]:
+    """A repo's stars aligned to the global timeline (forward- then back-filled),
+    so every series shares the same x-axis and can be hovered by index."""
+    at = per_id_at.get(rid, {})
+    out, last = [], None
+    for t in times:
+        if t in at:
+            last = at[t]
+        out.append(last)
+    # Back-fill any leading gap with the first known value (flat before it existed).
+    first_known = next((v for v in out if v is not None), 0)
+    return [v if v is not None else first_known for v in out]
 
 
 def _trend_span(times: list[str]) -> str:
@@ -127,17 +141,18 @@ def build_payload(report: pl.DataFrame, con: sqlite3.Connection, repo_slug: str)
     repos = [_repo_dict(r, i) for i, r in enumerate(ordered[:TABLE_ROWS], start=1)]
     # Attach a per-repo spark to the top few (for the Momentum podium).
     for rep, src in zip(repos[:3], ordered[:3]):
-        series = hist["per_id"].get(src["id"], [])
+        series = _aligned_series(hist["per_id_at"], src["id"], hist["times"])
         rep["spark"] = series[-10:] if len(series) >= 2 else []
     all_repos = [_repo_dict(r, i) for i, r in enumerate(ordered, start=1)]
 
     # Trend (total stars over time)
     trend = [{"t": t, "total": v} for t, v in zip(hist["times"], hist["totals"])]
 
-    # Star-growth series (per-repo history for the top movers)
+    # Star-growth series (per-repo history for the top movers), aligned to the
+    # shared timeline so the frontend can normalise and hover them together.
     growth_series = []
     for r in ordered[:GROWTH_SERIES]:
-        values = hist["per_id"].get(r["id"], [])
+        values = _aligned_series(hist["per_id_at"], r["id"], hist["times"])
         if len(values) < 2:
             continue
         first, last = values[0], values[-1]
@@ -178,7 +193,7 @@ def build_payload(report: pl.DataFrame, con: sqlite3.Connection, repo_slug: str)
         "trend_span": _trend_span(hist["times"]),
         "repos": repos,
         "all_repos": all_repos,
-        "growth": {"series": growth_series},
+        "growth": {"series": growth_series, "labels": hist["times"]},
         "movers": movers,
     }
 
