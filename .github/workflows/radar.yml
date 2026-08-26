@@ -1,0 +1,58 @@
+name: AI Radar
+
+# Git-scraping: the workflow runs the radar on a schedule, then commits the
+# updated snapshot DB and rendered dashboard back to the repo. The committed
+# radar.db is what lets momentum accumulate across runs, and docs/ is served
+# by GitHub Pages.
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"   # every 6 hours (UTC)
+  workflow_dispatch:         # allow manual runs from the Actions tab
+  push:
+    branches: [main]
+    paths:
+      - "ai_radar/**"
+      - "templates/**"
+      - ".github/workflows/radar.yml"
+
+# Avoid overlapping runs racing on the same commit.
+concurrency:
+  group: ai-radar
+  cancel-in-progress: false
+
+permissions:
+  contents: write            # needed to commit the updated data back
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (with history so we can push)
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run radar and render dashboard
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # 5000 req/h for the API
+        run: python -m ai_radar --days 45
+
+      - name: Commit updated data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add radar.db docs/
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore(data): refresh radar snapshot and dashboard [skip ci]"
+            git push
+          fi

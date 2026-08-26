@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GitHub AI Radar — Analytics Dashboard</title>
+<meta name="description" content="Emerging AI repositories on GitHub, ranked by momentum (stars gained per hour)."/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Sora:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: { extend: {
+      colors: {
+        "surface-dark": "#171A23", "surface-dim": "#12131a",
+        "surface-container-high": "#282a31", "surface-container": "#1e1f26",
+        "surface-container-low": "#1a1b22", "surface-container-lowest": "#0d0e15",
+        "surface-container-highest": "#33343c", "surface-variant": "#33343c",
+        "on-surface": "#e2e1eb", "on-surface-variant": "#c4c5d6",
+        "background-dark": "#0F1117", "border-dark": "#262B38",
+        "outline": "#8e909f", "outline-variant": "#444653",
+        "primary": "#b7c4ff", "primary-container": "#6e8bff",
+        "on-primary-container": "#002179",
+        "secondary-container": "#00c599", "on-secondary-container": "#004b39",
+        "tertiary-container": "#cd8200",
+        "text-primary-dark": "#E6E9F0", "text-muted-dark": "#8A92A6",
+        "error-coral": "#FF6B7D"
+      },
+      borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+      spacing: { xs: "4px", sm: "12px", base: "8px", md: "16px", lg: "24px", gutter: "24px", xl: "32px", margin: "32px" },
+      fontFamily: {
+        "display-lg": ["Sora", "sans-serif"], "headline-lg": ["Sora", "sans-serif"], "headline-md": ["Sora", "sans-serif"],
+        "body-lg": ["IBM Plex Sans", "sans-serif"], "body-md": ["IBM Plex Sans", "sans-serif"], "body-sm": ["IBM Plex Sans", "sans-serif"],
+        "mono-metrics": ["IBM Plex Mono", "monospace"], "label-caps": ["IBM Plex Mono", "monospace"]
+      },
+      fontSize: {
+        "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+        "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "600" }],
+        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+        "body-lg": ["18px", { lineHeight: "28px" }], "body-md": ["16px", { lineHeight: "24px" }], "body-sm": ["14px", { lineHeight: "20px" }],
+        "mono-metrics": ["16px", { lineHeight: "24px", letterSpacing: "-0.01em", fontWeight: "500" }],
+        "label-caps": ["12px", { lineHeight: "16px", fontWeight: "600" }]
+      }
+    } }
+  }
+</script>
+<style>
+  .glow-emerging { box-shadow: 0 0 16px rgba(110, 139, 255, 0.4); }
+  .pulse-dot { animation: pulse-op 2s infinite; }
+  @keyframes pulse-op { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .bar-gradient { background: linear-gradient(90deg, #6e8bff, #00c599); }
+  @media (prefers-reduced-motion: reduce) { .pulse-dot { animation: none; } .radar-sweep { animation: none !important; } }
+  .radar-sweep { transform-origin: center; animation: spin 4s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body class="bg-background-dark text-on-surface min-h-screen font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+
+<!-- Top nav -->
+<header class="bg-surface-container-high border-b border-border-dark flex justify-between items-center w-full px-lg h-16 sticky top-0 z-50">
+  <div class="flex items-center gap-md">
+    <svg viewBox="0 0 40 40" class="w-9 h-9" aria-hidden="true">
+      <rect width="40" height="40" rx="9" fill="#171A23" stroke="#262B38"/>
+      <g class="radar-sweep"><path d="M20 20 L20 5 A15 15 0 0 1 33 13 Z" fill="#6e8bff" opacity="0.35"/></g>
+      <circle cx="20" cy="20" r="13" fill="none" stroke="#262B38" stroke-width="1"/>
+      <circle cx="20" cy="20" r="7" fill="none" stroke="#262B38" stroke-width="1"/>
+      <circle cx="20" cy="20" r="2.4" fill="#6e8bff"/>
+    </svg>
+    <h1 class="text-headline-md font-headline-md font-bold text-primary">GitHub AI Radar</h1>
+  </div>
+  <div class="flex items-center gap-lg">
+    <div class="hidden md:flex items-center gap-xs font-label-caps text-label-caps text-text-muted-dark">
+      <span class="w-2 h-2 rounded-full bg-secondary-container pulse-dot"></span>
+      Last updated 2026-08-26 02:59 UTC
+    </div>
+    <div class="flex items-center gap-md">
+      <button id="themeBtn" aria-label="Toggle theme" class="text-on-surface-variant hover:text-primary transition-colors duration-200 p-2">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 0;">light_mode</span>
+      </button>
+      <a href="ai_radar_report.csv" download class="flex items-center gap-xs bg-primary-container hover:bg-primary text-on-primary-container font-label-caps text-label-caps px-md py-sm rounded transition-colors duration-200">
+        <span class="material-symbols-outlined text-[16px]">download</span>
+        Download CSV
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="flex min-h-[calc(100vh-64px)]">
+  <!-- Sidebar -->
+  <nav class="bg-surface-dim w-64 border-r border-border-dark hidden lg:flex flex-col py-md flex-shrink-0">
+    <div class="px-md mb-xl">
+      <div class="flex items-center gap-sm">
+        <div class="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center border border-border-dark">
+          <span class="material-symbols-outlined text-text-muted-dark">radar</span>
+        </div>
+        <div>
+          <div class="font-headline-md text-headline-md text-primary">AI Radar</div>
+          <div class="font-body-sm text-body-sm text-text-muted-dark">3 topics tracked</div>
+        </div>
+      </div>
+    </div>
+    <div class="flex-1 flex flex-col gap-xs px-sm">
+      <a class="flex items-center gap-md px-md py-sm rounded-md text-primary font-bold bg-surface-container font-label-caps text-label-caps" href="#">
+        <span class="material-symbols-outlined">dashboard</span> Overview</a>
+      <a class="flex items-center gap-md px-md py-sm rounded-md text-on-surface-variant hover:bg-surface-variant transition-all font-label-caps text-label-caps" href="#momentum">
+        <span class="material-symbols-outlined">trending_up</span> Momentum</a>
+      <a class="flex items-center gap-md px-md py-sm rounded-md text-on-surface-variant hover:bg-surface-variant transition-all font-label-caps text-label-caps" href="#repos">
+        <span class="material-symbols-outlined">list_alt</span> Repositories</a>
+      <a class="flex items-center gap-md px-md py-sm rounded-md text-on-surface-variant hover:bg-surface-variant transition-all font-label-caps text-label-caps" href="https://github.com/BerniUCb/github-ai-radar" target="_blank" rel="noopener">
+        <span class="material-symbols-outlined">code</span> Source</a>
+    </div>
+    <div class="px-md mt-auto pt-md font-body-sm text-body-sm text-text-muted-dark border-t border-border-dark">
+      Built with Python · Polars · SQLite
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="flex-1 overflow-x-hidden p-gutter relative">
+    <div class="absolute inset-0 pointer-events-none opacity-20" style="background: radial-gradient(circle at top right, #6e8bff, transparent 40%);"></div>
+    <div class="max-w-7xl mx-auto space-y-gutter relative z-10">
+
+      <!-- KPIs -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+        <div class="bg-surface-dark border border-border-dark rounded-xl p-lg relative overflow-hidden hover:border-outline-variant transition-colors">
+          <div class="font-label-caps text-label-caps text-text-muted-dark uppercase tracking-wider mb-sm">Repos tracked</div>
+          <div class="font-mono-metrics text-headline-lg text-text-primary-dark">80</div>
+          <div class="font-body-sm text-body-sm text-text-muted-dark mt-xs">across 3 AI topics</div>
+        </div>
+        <div class="bg-surface-dark border border-border-dark rounded-xl p-lg relative overflow-hidden hover:border-outline-variant transition-colors">
+          <div class="flex justify-between items-start mb-sm">
+            <div class="font-label-caps text-label-caps text-text-muted-dark uppercase tracking-wider">Emerging now</div>
+          </div>
+          <div class="font-mono-metrics text-headline-lg text-primary-container">9</div>
+          <div class="font-body-sm text-body-sm text-text-muted-dark mt-xs">breaking growth thresholds</div>
+        </div>
+        <div class="bg-surface-dark border border-border-dark rounded-xl p-lg relative overflow-hidden hover:border-outline-variant transition-colors">
+          <div class="font-label-caps text-label-caps text-text-muted-dark uppercase tracking-wider mb-sm">Top momentum ★/h</div>
+          <div class="font-mono-metrics text-headline-lg text-text-primary-dark">210</div>
+          <div class="font-body-sm text-body-sm text-text-muted-dark mt-xs truncate">deepseek-ai/deepseek-harness</div>
+        </div>
+        <div class="bg-surface-dark border border-border-dark rounded-xl p-lg relative overflow-hidden hover:border-outline-variant transition-colors">
+          <div class="font-label-caps text-label-caps text-text-muted-dark uppercase tracking-wider mb-sm">Stars gained (run)</div>
+          <div class="font-mono-metrics text-headline-lg text-text-primary-dark">42</div>
+          <div class="font-body-sm text-body-sm text-text-muted-dark mt-xs">since previous snapshot</div>
+        </div>
+      </div>
+
+      <!-- Charts row -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter" id="momentum">
+        <!-- Top momentum bars -->
+        <div class="lg:col-span-8 bg-surface-dark border border-border-dark rounded-xl p-lg flex flex-col">
+          <div class="flex justify-between items-center mb-lg">
+            <h2 class="font-headline-md text-headline-md text-text-primary-dark">Top momentum</h2>
+            <div class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-sm py-xs rounded">★ per hour</div>
+          </div>
+          <div class="flex-1 flex flex-col justify-between gap-md">
+            
+            <div class="flex items-center gap-md">
+              <div class="w-28 font-mono-metrics text-body-sm text-text-primary-dark truncate" title="deepseek-ai/deepseek-harness">deepseek-harness</div>
+              <div class="flex-1 bg-surface-container h-2 rounded-full overflow-hidden">
+                <div class="h-full bar-gradient" style="width: 100%"></div>
+              </div>
+              <div class="w-14 text-right font-mono-metrics text-body-sm text-text-muted-dark">210</div>
+            </div>
+            
+            <div class="flex items-center gap-md">
+              <div class="w-28 font-mono-metrics text-body-sm text-text-primary-dark truncate" title="img2threejs/img2threejs">img2threejs</div>
+              <div class="flex-1 bg-surface-container h-2 rounded-full overflow-hidden">
+                <div class="h-full bar-gradient" style="width: 14%"></div>
+              </div>
+              <div class="w-14 text-right font-mono-metrics text-body-sm text-text-muted-dark">29</div>
+            </div>
+            
+            <div class="flex items-center gap-md">
+              <div class="w-28 font-mono-metrics text-body-sm text-text-primary-dark truncate" title="CopilotKit/OpenBot">OpenBot</div>
+              <div class="flex-1 bg-surface-container h-2 rounded-full overflow-hidden">
+                <div class="h-full bar-gradient" style="width: 10%"></div>
+              </div>
+              <div class="w-14 text-right font-mono-metrics text-body-sm text-text-muted-dark">22</div>
+            </div>
+            
+            <div class="flex items-center gap-md">
+              <div class="w-28 font-mono-metrics text-body-sm text-text-primary-dark truncate" title="wang2122/sprix-sage-router">sprix-sage-router</div>
+              <div class="flex-1 bg-surface-container h-2 rounded-full overflow-hidden">
+                <div class="h-full bar-gradient" style="width: 6%"></div>
+              </div>
+              <div class="w-14 text-right font-mono-metrics text-body-sm text-text-muted-dark">7</div>
+            </div>
+            
+            <div class="flex items-center gap-md">
+              <div class="w-28 font-mono-metrics text-body-sm text-text-primary-dark truncate" title="duty1g/x64dbg-mcp-server">x64dbg-mcp-server</div>
+              <div class="flex-1 bg-surface-container h-2 rounded-full overflow-hidden">
+                <div class="h-full bar-gradient" style="width: 6%"></div>
+              </div>
+              <div class="w-14 text-right font-mono-metrics text-body-sm text-text-muted-dark">7</div>
+            </div>
+            
+            <div class="flex items-center gap-md">
+              <div class="w-28 font-mono-metrics text-body-sm text-text-primary-dark truncate" title="elie222/rakazo">rakazo</div>
+              <div class="flex-1 bg-surface-container h-2 rounded-full overflow-hidden">
+                <div class="h-full bar-gradient" style="width: 6%"></div>
+              </div>
+              <div class="w-14 text-right font-mono-metrics text-body-sm text-text-muted-dark">7</div>
+            </div>
+            
+          </div>
+        </div>
+        <!-- Donut -->
+        <div class="lg:col-span-4 bg-surface-dark border border-border-dark rounded-xl p-lg flex flex-col">
+          <h2 class="font-headline-md text-headline-md text-text-primary-dark mb-lg">Repos by topic</h2>
+          <div class="flex items-center justify-center gap-md flex-1">
+            <div class="relative w-40 h-40 flex-shrink-0">
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#1e1f26" stroke-width="14"/>
+                
+                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#6e8bff" stroke-width="14"
+                        stroke-dasharray="94.25 157.08" stroke-dashoffset="-0.0"/>
+                
+                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#00c599" stroke-width="14"
+                        stroke-dasharray="94.25 157.08" stroke-dashoffset="-94.25"/>
+                
+                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#cd8200" stroke-width="14"
+                        stroke-dasharray="62.83 188.5" stroke-dashoffset="-188.5"/>
+                
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="font-mono-metrics text-headline-md text-text-primary-dark">80</span>
+                <span class="font-label-caps text-label-caps text-text-muted-dark">repos</span>
+              </div>
+            </div>
+          </div>
+          <div class="w-full flex flex-wrap gap-x-md gap-y-xs justify-center font-label-caps text-label-caps text-text-muted-dark mt-md">
+            
+            <span class="flex items-center gap-xs"><span class="w-2 h-2 rounded-full" style="background:#6e8bff"></span>rag <span class="text-text-primary-dark">30</span></span>
+            
+            <span class="flex items-center gap-xs"><span class="w-2 h-2 rounded-full" style="background:#00c599"></span>llm <span class="text-text-primary-dark">30</span></span>
+            
+            <span class="flex items-center gap-xs"><span class="w-2 h-2 rounded-full" style="background:#cd8200"></span>ai-agents <span class="text-text-primary-dark">20</span></span>
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- Area chart -->
+      <div class="bg-surface-dark border border-border-dark rounded-xl p-lg overflow-hidden relative">
+        <h2 class="font-headline-md text-headline-md text-text-primary-dark mb-lg relative z-10">Total stars tracked over time
+          <span class="font-body-sm text-body-sm text-text-muted-dark font-normal ml-sm">8-day trend</span></h2>
+        <div class="h-48 w-full relative z-10">
+          <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1000 200">
+            <defs><linearGradient id="areaGrad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#6e8bff" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#0F1117" stop-opacity="0"/>
+            </linearGradient></defs>
+            <line x1="0" y1="40" x2="1000" y2="40" stroke="#262B38" stroke-width="1"/><line x1="0" y1="93" x2="1000" y2="93" stroke="#262B38" stroke-width="1"/><line x1="0" y1="146" x2="1000" y2="146" stroke="#262B38" stroke-width="1"/>
+            <path d="M0.0 180.0 L250.0 176.7 L500.0 166.4 L750.0 12.0 L1000.0 51.2 L1000 200 L0 200 Z" fill="url(#areaGrad)"/>
+            <path d="M0.0 180.0 L250.0 176.7 L500.0 166.4 L750.0 12.0 L1000.0 51.2" fill="none" stroke="#6e8bff" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="bg-surface-dark border border-border-dark rounded-xl overflow-hidden flex flex-col" id="repos">
+        <div class="p-lg border-b border-border-dark flex flex-col md:flex-row justify-between items-start md:items-center gap-md">
+          <h2 class="font-headline-md text-headline-md text-text-primary-dark">Emerging repositories</h2>
+          <div class="flex flex-wrap items-center gap-md w-full md:w-auto">
+            <div class="relative flex-1 md:w-64">
+              <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-text-muted-dark text-[18px]">search</span>
+              <input id="search" class="w-full bg-surface-container border border-border-dark rounded-md pl-xl pr-md py-sm font-body-sm text-text-primary-dark focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none placeholder-text-muted-dark" placeholder="Search repos..." type="text"/>
+            </div>
+            <div class="flex flex-wrap gap-sm" id="chips">
+              <span class="chip font-label-caps text-label-caps text-text-primary-dark bg-primary-container/20 border border-primary-container/40 px-sm py-xs rounded-full cursor-pointer transition-colors" data-topic="all">all</span>
+              
+              <span class="chip font-label-caps text-label-caps text-text-muted-dark bg-surface-container border border-border-dark px-sm py-xs rounded-full cursor-pointer hover:bg-surface-variant transition-colors" data-topic="ai-agents">ai-agents</span>
+              
+              <span class="chip font-label-caps text-label-caps text-text-muted-dark bg-surface-container border border-border-dark px-sm py-xs rounded-full cursor-pointer hover:bg-surface-variant transition-colors" data-topic="llm">llm</span>
+              
+              <span class="chip font-label-caps text-label-caps text-text-muted-dark bg-surface-container border border-border-dark px-sm py-xs rounded-full cursor-pointer hover:bg-surface-variant transition-colors" data-topic="rag">rag</span>
+              
+            </div>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse min-w-[820px]">
+            <thead class="bg-surface-container-low font-label-caps text-label-caps text-text-muted-dark uppercase tracking-wider">
+              <tr>
+                <th class="px-md py-sm font-medium border-b border-border-dark w-16 text-center">Rank</th>
+                <th class="px-md py-sm font-medium border-b border-border-dark">Repository</th>
+                <th class="px-md py-sm font-medium border-b border-border-dark w-32">Topic</th>
+                <th class="px-md py-sm font-medium border-b border-border-dark text-right w-24">Stars</th>
+                <th class="px-md py-sm font-medium border-b border-border-dark text-right w-24">Gained</th>
+                <th class="px-md py-sm font-medium border-b border-border-dark w-48">Momentum</th>
+                <th class="px-md py-sm font-medium border-b border-border-dark text-center w-28">Status</th>
+              </tr>
+            </thead>
+            <tbody class="font-body-sm text-text-primary-dark divide-y divide-border-dark" id="tbody">
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="deepseek-ai/deepseek-harness deepseek harness: everything is a plugin.">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">01</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/deepseek-ai/deepseek-harness" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">deepseek-ai/deepseek-harness</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3178c6"></span> TypeScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">195.6k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+29</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 100%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">210/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-block px-sm py-xs bg-primary-container text-on-primary-container font-label-caps text-label-caps rounded-full glow-emerging">Emerging</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="img2threejs/img2threejs rebuild the object in a reference image as a code-only, procedural, quality-gated, animation-ready three.js model. token-efficient image-to-">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">02</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/img2threejs/img2threejs" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">img2threejs/img2threejs</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3572A5"></span> Python
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">13.8k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+4</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 14%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">29/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-block px-sm py-xs bg-primary-container text-on-primary-container font-label-caps text-label-caps rounded-full glow-emerging">Emerging</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="copilotkit/openbot open-source ai coworkers that each get a computer of their own: a browser, files and tools, with every action decided before it happens and ">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">03</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/CopilotKit/OpenBot" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">CopilotKit/OpenBot</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3178c6"></span> TypeScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">2.9k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+3</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 10%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">22/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-block px-sm py-xs bg-primary-container text-on-primary-container font-label-caps text-label-caps rounded-full glow-emerging">Emerging</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="wang2122/sprix-sage-router sprix ai at 屿智同行 — state-aware self/collaborate/handoff routing for a2a agent networks.">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">04</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/wang2122/sprix-sage-router" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">wang2122/sprix-sage-router</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3572A5"></span> Python
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">2.1k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+1</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">7/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-block px-sm py-xs bg-primary-container text-on-primary-container font-label-caps text-label-caps rounded-full glow-emerging">Emerging</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="duty1g/x64dbg-mcp-server x64dbg-mcp server is a native mcp (model context protocol) plugin for x64dbg that exposes the debugger's full functionality over http. conne">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">05</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/duty1g/x64dbg-mcp-server" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">duty1g/x64dbg-mcp-server</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#8A92A6"></span> Zig
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">1.4k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+1</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">7/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-block px-sm py-xs bg-primary-container text-on-primary-container font-label-caps text-label-caps rounded-full glow-emerging">Emerging</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="elie222/rakazo open-source grok bot alternative. choose your own model and sandbox.">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">06</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/elie222/rakazo" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">elie222/rakazo</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3178c6"></span> TypeScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">1.3k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+1</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">7/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-block px-sm py-xs bg-primary-container text-on-primary-container font-label-caps text-label-caps rounded-full glow-emerging">Emerging</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="pinvou/pinvou-agent open-source desktop ai agent for tools, files, knowledge, workflows, and real deliverables.">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">07</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/Pinvou/pinvou-agent" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">Pinvou/pinvou-agent</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#dea584"></span> Rust
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">1.3k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+1</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">7/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-block px-sm py-xs bg-primary-container text-on-primary-container font-label-caps text-label-caps rounded-full glow-emerging">Emerging</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="harnessrouter/harnessrouter harnessrouter community edition: the self-hosted, apache-2.0 edition of the unified interface for agent harnesses. run codex, claude code, h">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">08</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/HarnessRouter/harnessrouter" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">HarnessRouter/harnessrouter</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3572A5"></span> Python
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">596</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+1</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">7/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-block px-sm py-xs bg-primary-container text-on-primary-container font-label-caps text-label-caps rounded-full glow-emerging">Emerging</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="deerwork-ai/deer-workflow an open-source graph engineering runtime that keeps orchestration in typescript and delegates semantic work to replaceable agent runtimes.">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">09</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/deerwork-ai/deer-workflow" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">deerwork-ai/deer-workflow</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3178c6"></span> TypeScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">502</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+1</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">7/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-block px-sm py-xs bg-primary-container text-on-primary-container font-label-caps text-label-caps rounded-full glow-emerging">Emerging</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="yjh051108/dsh-routing-suite dsh-routing-suite — injector + router-standard kit: install the runtime injector first, then the task-aware reasoning-mode router preset (me">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">10</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/yjh051108/dsh-routing-suite" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">yjh051108/dsh-routing-suite</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#f1e05a"></span> JavaScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">6.8k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="fareedkhan-dev/kimi-k3-in-c a 2.78-trillion-parameter kimi k3 running inference on a single cpu in 8.24 gb of ram. portable c99: no blas, no framework, no gpu.">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">11</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/FareedKhan-dev/kimi-k3-in-c" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">FareedKhan-dev/kimi-k3-in-c</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#555555"></span> C
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">6.5k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="drumih/turbo-fieldfare gemma 4 26b-a4b inference in ~2 gb of ram on any m-series macbook">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">12</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/drumih/turbo-fieldfare" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">drumih/turbo-fieldfare</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#F05138"></span> Swift
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">6.4k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="vincentwei1021/video-shotcraft ai video skill for claude code & codex — cinematic product videos with remotion: 152 shot recipe cards, 209 motion previews, a production-re">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">13</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/Vincentwei1021/video-shotcraft" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">Vincentwei1021/video-shotcraft</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3178c6"></span> TypeScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">6.3k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="microsoft/skill-recorder desktop app that records your on-screen work session and uses the github copilot cli to reconstruct it as an intent + ordered steps, then bu">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">14</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/microsoft/skill-recorder" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">microsoft/skill-recorder</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3178c6"></span> TypeScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">3.4k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="kirodotdev/kirocrew a persistent workspace for development work that self-improves and continues beyond one session.">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">15</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/kirodotdev/KiroCrew" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">kirodotdev/KiroCrew</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3572A5"></span> Python
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">3.3k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="tiger3807861189/j-space-cognition-suite-v3.7 j-space cognition suite v3.7 - ai cognitive-enhancement skills based on anthropic's j-space global workspace research. | 哔哩哔哩：tiger380 (uid ">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">16</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/Tiger3807861189/J-Space-Cognition-Suite-V3.7" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">Tiger3807861189/J-Space-Cognition-Suite-V3.7</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3572A5"></span> Python
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">3k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="jakubantalik/thinking-orbs dotted thought-orb loading indicators for ai & agent uis, 9 tuned types, two sizes, auto dark/light">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">17</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/Jakubantalik/thinking-orbs" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">Jakubantalik/thinking-orbs</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3178c6"></span> TypeScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">2.6k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="leonxlnx/unlazy anti-laziness skill for ai agents. core: the depth tree method, which splits a task n layers deep and gives every leaf the full time budget ">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">18</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/Leonxlnx/unlazy" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">Leonxlnx/unlazy</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#f1e05a"></span> JavaScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">2.4k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="makecindy/cindy consider it done. the open-source ai agent that works out of the box · 想到，就能做到。开源、开箱即用的 ai agent。">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">19</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/makecindy/cindy" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">makecindy/cindy</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3178c6"></span> TypeScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">2.3k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="fuxicodex/fuxi fuxi is a fast, self-contained ai coding agent that lives in your terminal — edit code, run commands, and drive tools, with cost-aware routi">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">20</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/fuxicodex/Fuxi" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">fuxicodex/Fuxi</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3572A5"></span> Python
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">2.1k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="kritt-ai/open-kritt open-source, self-hosted ai vulnerability research tool that orchestrates agents to find and validate security issues in code.">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">21</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/Kritt-ai/open-kritt" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">Kritt-ai/open-kritt</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#f1e05a"></span> JavaScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">2k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="prism-shadow/penguin-harness 🐧 harness for rsi. let ai build ai. everything is transparent.">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">22</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/Prism-Shadow/penguin-harness" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">Prism-Shadow/penguin-harness</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3178c6"></span> TypeScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">1.7k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="paritok-official/paritok-4b-v1 non-destructive compression gateway for ai coding agents. cuts token bills 25% on turn 1 to past 85% in long or saturated sessions, and fits">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">23</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/Paritok-official/paritok-4b-v1" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">Paritok-official/paritok-4b-v1</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3572A5"></span> Python
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">1.4k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="hahhforest/pi-textbook 《动手学 pi》：沿 15 个真实 checkpoint 从零构建 pi-style agent">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">24</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/hahhforest/pi-textbook" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">hahhforest/pi-textbook</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3178c6"></span> TypeScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">1.3k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="petergyang/human-review a visual tool to edit html and markdown files, leave comments like a google doc, and send feedback to your ai agent. works inside your favor">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">25</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/petergyang/human-review" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">petergyang/human-review</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#f1e05a"></span> JavaScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">1.2k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="lexmount/moli best headless browser for ai agents. lite, fast, high-compatibility. built in rust">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">26</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/lexmount/moli" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">lexmount/moli</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#dea584"></span> Rust
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">1.1k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="saladday/pi-from-scratch 600 行 typescript 写成的超级迷你版 pi，让你轻松从 0 写出属于你的 pi-agent">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">27</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/SaladDay/pi-from-scratch" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">SaladDay/pi-from-scratch</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3178c6"></span> TypeScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">1.1k</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="memtensor/memmy-agent 🍙  a personal ai agent & local memory hub for all ai agents, gives every ai one shared, fully controlled memory and persistent context — all">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">28</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/MemTensor/memmy-agent" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">MemTensor/memmy-agent</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3178c6"></span> TypeScript
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">989</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="ai-agents" data-name="perplexityai/numbat visibility into ai agent activity on endpoints, with on-device detection, optional pre-action blocking, and forensic reconstruction.">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">29</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/perplexityai/numbat" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">perplexityai/numbat</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#00ADD8"></span> Go
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">ai-agents</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">969</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="llm" data-name="0xsline/awesome-deepseek-harness deepseek harness (dsh) ecosystem: curated plugins, tools, and infrastructure from dsh-external/hub and the public dsh-plugin topic.">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">30</td>
+                <td class="px-md py-md">
+                  <a href="https://github.com/0xsline/awesome-deepseek-harness" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">0xsline/awesome-deepseek-harness</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:#3572A5"></span> Python
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">llm</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">900</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">+0</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: 4%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">0/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  
+                </td>
+              </tr>
+              
+              <tr id="noResults" class="hidden"><td colspan="7" class="px-md py-xl text-center text-text-muted-dark">No repos match your filters.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="text-center font-body-sm text-body-sm text-text-muted-dark py-md">
+        Data from the GitHub Search API · Generated 2026-08-26 02:59 UTC · <a class="text-primary-container hover:underline" href="https://github.com/BerniUCb/github-ai-radar">source on GitHub</a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Theme toggle
+  document.getElementById("themeBtn").addEventListener("click", () => {
+    document.documentElement.classList.toggle("dark");
+  });
+
+  // Search + topic filter
+  const rows = Array.from(document.querySelectorAll(".repo-row"));
+  const search = document.getElementById("search");
+  const noResults = document.getElementById("noResults");
+  let activeTopic = "all";
+
+  function apply() {
+    const q = search.value.trim().toLowerCase();
+    let shown = 0;
+    rows.forEach(row => {
+      const okTopic = activeTopic === "all" || row.dataset.topic === activeTopic;
+      const okSearch = q === "" || row.dataset.name.includes(q);
+      const show = okTopic && okSearch;
+      row.classList.toggle("hidden", !show);
+      if (show) shown++;
+    });
+    noResults.classList.toggle("hidden", shown > 0);
+  }
+
+  document.getElementById("chips").addEventListener("click", e => {
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    activeTopic = chip.dataset.topic;
+    document.querySelectorAll(".chip").forEach(c => {
+      const on = c === chip;
+      c.classList.toggle("bg-primary-container/20", on);
+      c.classList.toggle("border-primary-container/40", on);
+      c.classList.toggle("text-text-primary-dark", on);
+      c.classList.toggle("bg-surface-container", !on);
+      c.classList.toggle("text-text-muted-dark", !on);
+    });
+    apply();
+  });
+  search.addEventListener("input", apply);
+</script>
+</body>
+</html>

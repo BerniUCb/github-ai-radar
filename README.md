@@ -6,7 +6,11 @@ popularity.
 
 In an ecosystem where hundreds of AI tools ship every week, knowing which ones
 are growing fast — not which are already famous — is information that has value.
-This project turns that signal into a clean, actionable CSV.
+This project turns that signal into a clean, actionable CSV **and a live dashboard**.
+
+[![AI Radar](https://github.com/BerniUCb/github-ai-radar/actions/workflows/radar.yml/badge.svg)](https://github.com/BerniUCb/github-ai-radar/actions/workflows/radar.yml)
+
+**🔗 Live dashboard: https://berniucb.github.io/github-ai-radar/** — refreshed every 6 hours by GitHub Actions.
 
 ## Example output
 
@@ -20,8 +24,8 @@ This project turns that signal into a clean, actionable CSV.
    building a history over time.
 3. **Transform** — with **Polars**, compares the current run against the previous
    snapshot and computes stars gained and stars per hour (momentum).
-4. **Report** — flags repos that break growth thresholds as `EMERGING` and
-   exports a ranking to `ai_radar_report.csv`.
+4. **Report** — flags repos that break growth thresholds as `EMERGING`, exports a
+   ranking to `ai_radar_report.csv`, and renders a static HTML dashboard.
 
 ## Architecture
 
@@ -34,8 +38,12 @@ GitHub Search API  ──►  Extract  ──►  SQLite (historical snapshots)
                                   · stars_per_hour  (momentum)
                                   · emerging flag
                                           │
-                                          ▼
-                                  ai_radar_report.csv
+                          ┌───────────────┴───────────────┐
+                          ▼                               ▼
+                  ai_radar_report.csv          docs/index.html (Jinja2)
+                                                        │
+                                                        ▼
+                                                 GitHub Pages
 ```
 
 It's a classic mini **ETL** pipeline: the value isn't in a one-off scrape, but in
@@ -53,9 +61,16 @@ ai_radar/
   extract.py     # GitHub Search API scraping
   storage.py     # SQLite snapshots (history)
   transform.py   # momentum calculation (pure, Polars)
+  render.py      # fills the HTML template from the report
   cli.py         # pipeline orchestration + argparse
+templates/
+  dashboard.html.j2   # Jinja2 dashboard template
+docs/            # generated site served by GitHub Pages (index.html + CSV)
 tests/
   test_transform.py
+  test_cli.py
+.github/workflows/
+  radar.yml      # scheduled run + git-scraping + deploy
 ```
 
 Run the tests:
@@ -93,10 +108,24 @@ export GITHUB_TOKEN=<PAT>
 python -m ai_radar            # picks up $GITHUB_TOKEN automatically
 ```
 
-## Automate (cron every 4 hours)
+## Deploy (GitHub Actions + Pages)
+
+The dashboard updates itself. [`.github/workflows/radar.yml`](.github/workflows/radar.yml)
+runs the radar every 6 hours and uses **git-scraping**: it commits the updated
+`radar.db` and `docs/` back to the repo. Persisting the snapshot DB between runs
+is what lets momentum accumulate over time; GitHub Pages then serves `docs/`.
+
+The workflow authenticates with the built-in `GITHUB_TOKEN` (5000 req/h) — no
+secret to configure. One-time setup after the first push:
+
+1. **Settings → Pages → Source:** *Deploy from a branch* → branch `main`, folder `/docs`.
+2. **Settings → Actions → General → Workflow permissions:** *Read and write* (so the
+   job can commit the refreshed data).
+
+To run it locally on a schedule instead:
 
 ```cron
-0 */4 * * * cd /path/github-ai-radar && GITHUB_TOKEN=<PAT> python -m ai_radar
+0 */6 * * * cd /path/github-ai-radar && GITHUB_TOKEN=<PAT> python -m ai_radar
 ```
 
 ## How it can be monetized
@@ -108,15 +137,15 @@ python -m ai_radar            # picks up $GITHUB_TOKEN automatically
 
 ## Stack
 
-Python · Polars · SQLite · GitHub REST API
+Python · Polars · SQLite · Jinja2 · GitHub REST API · GitHub Actions · GitHub Pages
 
 ## Ideas for v2
 
 - Enrich with commit/contributor data (development velocity).
 - Anomaly detection to filter out star-farming (artificial growth).
 - Email/Telegram alerts when a repo crosses the threshold.
-- Dashboard with Streamlit or Next.js.
 - Filter for "hidden gems": repos under X stars but accelerating fast.
+- Prune old snapshots to keep the committed `radar.db` small over time.
 
 ---
 

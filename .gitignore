@@ -2,11 +2,11 @@
 venv/
 .venv/
 
-# Base de datos de snapshots (se genera al correr)
-radar.db
+# Working copy of the report at the repo root (the committed copy lives in docs/).
+/ai_radar_report.csv
 
-# Reportes generados
-ai_radar_report.csv
+# Note: radar.db and docs/ ARE committed on purpose (git-scraping): the snapshot
+# history must persist between scheduled runs so momentum can be computed.
 
 # Python
 __pycache__/

@@ -159,7 +159,7 @@ def render_dashboard(
     report: pl.DataFrame,
     con: sqlite3.Connection,
     out_path: Path = OUTPUT_HTML,
-    repo_slug: str = "BerniUCB/github-ai-radar",
+    repo_slug: str = "BerniUCb/github-ai-radar",
 ) -> Path:
     """Render the report into a static HTML dashboard at `out_path`."""
     env = Environment(
