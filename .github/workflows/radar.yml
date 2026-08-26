@@ -1,35 +1,33 @@
 name: AI Radar
 
-# Git-scraping: the workflow runs the radar on a schedule, then commits the
-# updated snapshot DB and rendered dashboard back to the repo. The committed
-# radar.db is what lets momentum accumulate across runs, and docs/ is served
-# by GitHub Pages.
+# Git-scraping + build: the workflow runs the radar on a schedule, rebuilds the
+# React dashboard, and commits the updated snapshot DB and built site (docs/)
+# back to the repo. The committed radar.db is what lets momentum accumulate
+# across runs; GitHub Pages serves docs/.
 
 on:
   schedule:
     - cron: "0 */6 * * *"   # every 6 hours (UTC)
-  workflow_dispatch:         # allow manual runs from the Actions tab
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
       - "ai_radar/**"
-      - "templates/**"
+      - "web/**"
       - ".github/workflows/radar.yml"
 
-# Avoid overlapping runs racing on the same commit.
 concurrency:
   group: ai-radar
   cancel-in-progress: false
 
 permissions:
-  contents: write            # needed to commit the updated data back
+  contents: write
 
 jobs:
   radar:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (with history so we can push)
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -37,15 +35,28 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      - name: Run radar and render dashboard
+      - name: Run radar (scrape + snapshot + export data.json)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # 5000 req/h for the API
         run: python -m ai_radar --days 45
 
-      - name: Commit updated data
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Build dashboard
+        working-directory: web
+        run: |
+          npm ci
+          npm run build   # emits ../docs
+
+      - name: Commit updated data and site
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
