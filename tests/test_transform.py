@@ -1,8 +1,8 @@
 """
-Tests de la capa de TRANSFORM (cálculo de momentum).
+Tests for the TRANSFORM layer (momentum calculation).
 
-`compute_momentum` es lógica pura (sin I/O), así que se testea directo:
-le pasamos DataFrames de entrada y verificamos las columnas derivadas.
+`compute_momentum` is pure logic (no I/O), so we test it directly: feed it
+input DataFrames and assert on the derived columns.
 """
 
 from datetime import datetime, timedelta, timezone
@@ -18,12 +18,12 @@ from ai_radar import (
 
 
 def _iso_hours_ago(hours: float) -> str:
-    """Timestamp ISO de hace `hours` horas (como lo guarda el snapshot)."""
+    """ISO timestamp `hours` hours in the past (as a snapshot stores it)."""
     return (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
 
 
 def _current(rows: list[dict]) -> pl.DataFrame:
-    """Construye el DataFrame 'actual' con el esquema mínimo que usa transform."""
+    """Build the 'current' DataFrame with the minimal schema transform uses."""
     return pl.DataFrame(rows, schema={"id": pl.Int64, "stars": pl.Int64})
 
 
@@ -34,7 +34,7 @@ def _empty_previous() -> pl.DataFrame:
 
 
 def test_first_run_has_no_momentum():
-    """Sin snapshot previo: no hay con qué comparar → nada emerge."""
+    """No previous snapshot: nothing to compare against -> nothing emerges."""
     current = _current([{"id": 1, "stars": 500}])
 
     out = compute_momentum(current, _empty_previous())
@@ -46,7 +46,7 @@ def test_first_run_has_no_momentum():
 
 
 def test_computes_stars_gained_and_momentum():
-    """Repo que ganó 80★ en 10h → 8.0 ★/h."""
+    """Repo that gained 80★ in 10h -> 8.0 ★/h."""
     current = _current([{"id": 1, "stars": 200}])
     previous = pl.DataFrame(
         [{"id": 1, "prev_stars": 120, "prev_time": _iso_hours_ago(10)}],
@@ -60,7 +60,7 @@ def test_computes_stars_gained_and_momentum():
 
 
 def test_high_momentum_repo_is_flagged_emerging():
-    """Cruza ambos umbrales (momentum y estrellas) → emerging=True."""
+    """Crosses both thresholds (momentum and stars) -> emerging=True."""
     current = _current([{"id": 1, "stars": EMERGING_MIN_STARS + 100}])
     previous = pl.DataFrame(
         [{"id": 1, "prev_stars": EMERGING_MIN_STARS, "prev_time": _iso_hours_ago(1)}],
@@ -74,7 +74,7 @@ def test_high_momentum_repo_is_flagged_emerging():
 
 
 def test_slow_repo_is_not_emerging():
-    """Muchas estrellas pero crecimiento lento → no emerge."""
+    """Lots of stars but slow growth -> does not emerge."""
     current = _current([{"id": 1, "stars": 5000}])
     previous = pl.DataFrame(
         [{"id": 1, "prev_stars": 4998, "prev_time": _iso_hours_ago(10)}],
@@ -88,7 +88,7 @@ def test_slow_repo_is_not_emerging():
 
 
 def test_fast_growth_but_too_few_stars_is_not_emerging():
-    """Momentum alto pero aún sin tracción (pocas estrellas) → no emerge."""
+    """High momentum but no traction yet (few stars) -> does not emerge."""
     current = _current([{"id": 1, "stars": EMERGING_MIN_STARS - 1}])
     previous = pl.DataFrame(
         [{"id": 1, "prev_stars": 0, "prev_time": _iso_hours_ago(1)}],
@@ -102,10 +102,10 @@ def test_fast_growth_but_too_few_stars_is_not_emerging():
 
 
 def test_emerging_repos_are_sorted_first():
-    """El ranking ordena por momentum descendente (emergentes arriba)."""
+    """The ranking sorts by momentum descending (emerging repos on top)."""
     current = _current([
-        {"id": 1, "stars": 300},   # +150 en 10h → 15 ★/h
-        {"id": 2, "stars": 300},   # +10  en 10h → 1  ★/h
+        {"id": 1, "stars": 300},   # +150 in 10h -> 15 ★/h
+        {"id": 2, "stars": 300},   # +10  in 10h -> 1  ★/h
     ])
     previous = pl.DataFrame(
         [

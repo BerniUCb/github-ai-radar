@@ -42,14 +42,37 @@ It's a classic mini **ETL** pipeline: the value isn't in a one-off scrape, but i
 running on a schedule and **accumulating history** — so momentum becomes more
 accurate with every run.
 
+## Project structure
+
+Each ETL stage lives in its own module — `transform` is pure (no I/O), which
+makes the momentum logic trivial to unit-test.
+
+```
+ai_radar/
+  config.py      # topics, thresholds, paths
+  extract.py     # GitHub Search API scraping
+  storage.py     # SQLite snapshots (history)
+  transform.py   # momentum calculation (pure, Polars)
+  cli.py         # pipeline orchestration + argparse
+tests/
+  test_transform.py
+```
+
+Run the tests:
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
 ## Usage
 
 ```bash
 pip install -r requirements.txt
 
-python ai_radar.py                 # repos from the last 30 days
-python ai_radar.py --days 14       # shorter window = "fresher"
-python ai_radar.py --token <PAT>   # optional token: 5000 req/h vs 60
+python -m ai_radar                 # repos from the last 30 days
+python -m ai_radar --days 14       # shorter window = "fresher"
+python -m ai_radar --token <PAT>   # optional token: 5000 req/h vs 60
 ```
 
 > The **first** run only stores the baseline snapshot (nothing to compare against
@@ -65,7 +88,7 @@ you get 5000/hour. The script respects the rate limit automatically.
 ## Automate (cron every 4 hours)
 
 ```cron
-0 */4 * * * cd /path/github-ai-radar && python ai_radar.py --token <PAT>
+0 */4 * * * cd /path/github-ai-radar && python -m ai_radar --token <PAT>
 ```
 
 ## How it can be monetized
