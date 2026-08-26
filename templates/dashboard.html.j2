@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GitHub AI Radar — Analytics Dashboard</title>
+<meta name="description" content="Emerging AI repositories on GitHub, ranked by momentum (stars gained per hour)."/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Sora:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: { extend: {
+      colors: {
+        "surface-dark": "#171A23", "surface-dim": "#12131a",
+        "surface-container-high": "#282a31", "surface-container": "#1e1f26",
+        "surface-container-low": "#1a1b22", "surface-container-lowest": "#0d0e15",
+        "surface-container-highest": "#33343c", "surface-variant": "#33343c",
+        "on-surface": "#e2e1eb", "on-surface-variant": "#c4c5d6",
+        "background-dark": "#0F1117", "border-dark": "#262B38",
+        "outline": "#8e909f", "outline-variant": "#444653",
+        "primary": "#b7c4ff", "primary-container": "#6e8bff",
+        "on-primary-container": "#002179",
+        "secondary-container": "#00c599", "on-secondary-container": "#004b39",
+        "tertiary-container": "#cd8200",
+        "text-primary-dark": "#E6E9F0", "text-muted-dark": "#8A92A6",
+        "error-coral": "#FF6B7D"
+      },
+      borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+      spacing: { xs: "4px", sm: "12px", base: "8px", md: "16px", lg: "24px", gutter: "24px", xl: "32px", margin: "32px" },
+      fontFamily: {
+        "display-lg": ["Sora", "sans-serif"], "headline-lg": ["Sora", "sans-serif"], "headline-md": ["Sora", "sans-serif"],
+        "body-lg": ["IBM Plex Sans", "sans-serif"], "body-md": ["IBM Plex Sans", "sans-serif"], "body-sm": ["IBM Plex Sans", "sans-serif"],
+        "mono-metrics": ["IBM Plex Mono", "monospace"], "label-caps": ["IBM Plex Mono", "monospace"]
+      },
+      fontSize: {
+        "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+        "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "600" }],
+        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+        "body-lg": ["18px", { lineHeight: "28px" }], "body-md": ["16px", { lineHeight: "24px" }], "body-sm": ["14px", { lineHeight: "20px" }],
+        "mono-metrics": ["16px", { lineHeight: "24px", letterSpacing: "-0.01em", fontWeight: "500" }],
+        "label-caps": ["12px", { lineHeight: "16px", fontWeight: "600" }]
+      }
+    } }
+  }
+</script>
+<style>
+  .glow-emerging { box-shadow: 0 0 16px rgba(110, 139, 255, 0.4); }
+  .pulse-dot { animation: pulse-op 2s infinite; }
+  @keyframes pulse-op { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .bar-gradient { background: linear-gradient(90deg, #6e8bff, #00c599); }
+  @media (prefers-reduced-motion: reduce) { .pulse-dot { animation: none; } .radar-sweep { animation: none !important; } }
+  .radar-sweep { transform-origin: center; animation: spin 4s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body class="bg-background-dark text-on-surface min-h-screen font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+
+<!-- Top nav -->
+<header class="bg-surface-container-high border-b border-border-dark flex justify-between items-center w-full px-lg h-16 sticky top-0 z-50">
+  <div class="flex items-center gap-md">
+    <svg viewBox="0 0 40 40" class="w-9 h-9" aria-hidden="true">
+      <rect width="40" height="40" rx="9" fill="#171A23" stroke="#262B38"/>
+      <g class="radar-sweep"><path d="M20 20 L20 5 A15 15 0 0 1 33 13 Z" fill="#6e8bff" opacity="0.35"/></g>
+      <circle cx="20" cy="20" r="13" fill="none" stroke="#262B38" stroke-width="1"/>
+      <circle cx="20" cy="20" r="7" fill="none" stroke="#262B38" stroke-width="1"/>
+      <circle cx="20" cy="20" r="2.4" fill="#6e8bff"/>
+    </svg>
+    <h1 class="text-headline-md font-headline-md font-bold text-primary">GitHub AI Radar</h1>
+  </div>
+  <div class="flex items-center gap-lg">
+    <div class="hidden md:flex items-center gap-xs font-label-caps text-label-caps text-text-muted-dark">
+      <span class="w-2 h-2 rounded-full bg-secondary-container pulse-dot"></span>
+      Last updated {{ last_updated }}
+    </div>
+    <div class="flex items-center gap-md">
+      <button id="themeBtn" aria-label="Toggle theme" class="text-on-surface-variant hover:text-primary transition-colors duration-200 p-2">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 0;">light_mode</span>
+      </button>
+      <a href="{{ csv_href }}" download class="flex items-center gap-xs bg-primary-container hover:bg-primary text-on-primary-container font-label-caps text-label-caps px-md py-sm rounded transition-colors duration-200">
+        <span class="material-symbols-outlined text-[16px]">download</span>
+        Download CSV
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="flex min-h-[calc(100vh-64px)]">
+  <!-- Sidebar -->
+  <nav class="bg-surface-dim w-64 border-r border-border-dark hidden lg:flex flex-col py-md flex-shrink-0">
+    <div class="px-md mb-xl">
+      <div class="flex items-center gap-sm">
+        <div class="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center border border-border-dark">
+          <span class="material-symbols-outlined text-text-muted-dark">radar</span>
+        </div>
+        <div>
+          <div class="font-headline-md text-headline-md text-primary">AI Radar</div>
+          <div class="font-body-sm text-body-sm text-text-muted-dark">{{ topic_count }} topics tracked</div>
+        </div>
+      </div>
+    </div>
+    <div class="flex-1 flex flex-col gap-xs px-sm">
+      <a class="flex items-center gap-md px-md py-sm rounded-md text-primary font-bold bg-surface-container font-label-caps text-label-caps" href="#">
+        <span class="material-symbols-outlined">dashboard</span> Overview</a>
+      <a class="flex items-center gap-md px-md py-sm rounded-md text-on-surface-variant hover:bg-surface-variant transition-all font-label-caps text-label-caps" href="#momentum">
+        <span class="material-symbols-outlined">trending_up</span> Momentum</a>
+      <a class="flex items-center gap-md px-md py-sm rounded-md text-on-surface-variant hover:bg-surface-variant transition-all font-label-caps text-label-caps" href="#repos">
+        <span class="material-symbols-outlined">list_alt</span> Repositories</a>
+      <a class="flex items-center gap-md px-md py-sm rounded-md text-on-surface-variant hover:bg-surface-variant transition-all font-label-caps text-label-caps" href="https://github.com/{{ repo_slug }}" target="_blank" rel="noopener">
+        <span class="material-symbols-outlined">code</span> Source</a>
+    </div>
+    <div class="px-md mt-auto pt-md font-body-sm text-body-sm text-text-muted-dark border-t border-border-dark">
+      Built with Python · Polars · SQLite
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="flex-1 overflow-x-hidden p-gutter relative">
+    <div class="absolute inset-0 pointer-events-none opacity-20" style="background: radial-gradient(circle at top right, #6e8bff, transparent 40%);"></div>
+    <div class="max-w-7xl mx-auto space-y-gutter relative z-10">
+
+      <!-- KPIs -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+        <div class="bg-surface-dark border border-border-dark rounded-xl p-lg relative overflow-hidden hover:border-outline-variant transition-colors">
+          <div class="font-label-caps text-label-caps text-text-muted-dark uppercase tracking-wider mb-sm">Repos tracked</div>
+          <div class="font-mono-metrics text-headline-lg text-text-primary-dark">{{ kpi.repos_tracked }}</div>
+          <div class="font-body-sm text-body-sm text-text-muted-dark mt-xs">across {{ topic_count }} AI topics</div>
+        </div>
+        <div class="bg-surface-dark border border-border-dark rounded-xl p-lg relative overflow-hidden hover:border-outline-variant transition-colors">
+          <div class="flex justify-between items-start mb-sm">
+            <div class="font-label-caps text-label-caps text-text-muted-dark uppercase tracking-wider">Emerging now</div>
+          </div>
+          <div class="font-mono-metrics text-headline-lg text-primary-container">{{ kpi.emerging_now }}</div>
+          <div class="font-body-sm text-body-sm text-text-muted-dark mt-xs">breaking growth thresholds</div>
+        </div>
+        <div class="bg-surface-dark border border-border-dark rounded-xl p-lg relative overflow-hidden hover:border-outline-variant transition-colors">
+          <div class="font-label-caps text-label-caps text-text-muted-dark uppercase tracking-wider mb-sm">Top momentum ★/h</div>
+          <div class="font-mono-metrics text-headline-lg text-text-primary-dark">{{ kpi.top_momentum }}</div>
+          <div class="font-body-sm text-body-sm text-text-muted-dark mt-xs truncate">{{ kpi.top_momentum_repo }}</div>
+        </div>
+        <div class="bg-surface-dark border border-border-dark rounded-xl p-lg relative overflow-hidden hover:border-outline-variant transition-colors">
+          <div class="font-label-caps text-label-caps text-text-muted-dark uppercase tracking-wider mb-sm">Stars gained (run)</div>
+          <div class="font-mono-metrics text-headline-lg text-text-primary-dark">{{ kpi.stars_gained }}</div>
+          <div class="font-body-sm text-body-sm text-text-muted-dark mt-xs">since previous snapshot</div>
+        </div>
+      </div>
+
+      <!-- Charts row -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter" id="momentum">
+        <!-- Top momentum bars -->
+        <div class="lg:col-span-8 bg-surface-dark border border-border-dark rounded-xl p-lg flex flex-col">
+          <div class="flex justify-between items-center mb-lg">
+            <h2 class="font-headline-md text-headline-md text-text-primary-dark">Top momentum</h2>
+            <div class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-sm py-xs rounded">★ per hour</div>
+          </div>
+          <div class="flex-1 flex flex-col justify-between gap-md">
+            {% for b in top_momentum %}
+            <div class="flex items-center gap-md">
+              <div class="w-28 font-mono-metrics text-body-sm text-text-primary-dark truncate" title="{{ b.name }}">{{ b.short }}</div>
+              <div class="flex-1 bg-surface-container h-2 rounded-full overflow-hidden">
+                <div class="h-full bar-gradient" style="width: {{ b.pct }}%"></div>
+              </div>
+              <div class="w-14 text-right font-mono-metrics text-body-sm text-text-muted-dark">{{ b.value }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <!-- Donut -->
+        <div class="lg:col-span-4 bg-surface-dark border border-border-dark rounded-xl p-lg flex flex-col">
+          <h2 class="font-headline-md text-headline-md text-text-primary-dark mb-lg">Repos by topic</h2>
+          <div class="flex items-center justify-center gap-md flex-1">
+            <div class="relative w-40 h-40 flex-shrink-0">
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#1e1f26" stroke-width="14"/>
+                {% for s in donut %}
+                <circle cx="50" cy="50" r="40" fill="transparent" stroke="{{ s.color }}" stroke-width="14"
+                        stroke-dasharray="{{ s.dash }} {{ s.gap }}" stroke-dashoffset="{{ s.offset }}"/>
+                {% endfor %}
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="font-mono-metrics text-headline-md text-text-primary-dark">{{ kpi.repos_tracked }}</span>
+                <span class="font-label-caps text-label-caps text-text-muted-dark">repos</span>
+              </div>
+            </div>
+          </div>
+          <div class="w-full flex flex-wrap gap-x-md gap-y-xs justify-center font-label-caps text-label-caps text-text-muted-dark mt-md">
+            {% for s in donut %}
+            <span class="flex items-center gap-xs"><span class="w-2 h-2 rounded-full" style="background:{{ s.color }}"></span>{{ s.name }} <span class="text-text-primary-dark">{{ s.count }}</span></span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Area chart -->
+      <div class="bg-surface-dark border border-border-dark rounded-xl p-lg overflow-hidden relative">
+        <h2 class="font-headline-md text-headline-md text-text-primary-dark mb-lg relative z-10">Total stars tracked over time
+          <span class="font-body-sm text-body-sm text-text-muted-dark font-normal ml-sm">{{ trend.span }}</span></h2>
+        <div class="h-48 w-full relative z-10">
+          <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1000 200">
+            <defs><linearGradient id="areaGrad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#6e8bff" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#0F1117" stop-opacity="0"/>
+            </linearGradient></defs>
+            {% for gy in trend.grid %}<line x1="0" y1="{{ gy }}" x2="1000" y2="{{ gy }}" stroke="#262B38" stroke-width="1"/>{% endfor %}
+            <path d="{{ trend.area }}" fill="url(#areaGrad)"/>
+            <path d="{{ trend.line }}" fill="none" stroke="#6e8bff" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="bg-surface-dark border border-border-dark rounded-xl overflow-hidden flex flex-col" id="repos">
+        <div class="p-lg border-b border-border-dark flex flex-col md:flex-row justify-between items-start md:items-center gap-md">
+          <h2 class="font-headline-md text-headline-md text-text-primary-dark">Emerging repositories</h2>
+          <div class="flex flex-wrap items-center gap-md w-full md:w-auto">
+            <div class="relative flex-1 md:w-64">
+              <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-text-muted-dark text-[18px]">search</span>
+              <input id="search" class="w-full bg-surface-container border border-border-dark rounded-md pl-xl pr-md py-sm font-body-sm text-text-primary-dark focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none placeholder-text-muted-dark" placeholder="Search repos..." type="text"/>
+            </div>
+            <div class="flex flex-wrap gap-sm" id="chips">
+              <span class="chip font-label-caps text-label-caps text-text-primary-dark bg-primary-container/20 border border-primary-container/40 px-sm py-xs rounded-full cursor-pointer transition-colors" data-topic="all">all</span>
+              {% for t in topics %}
+              <span class="chip font-label-caps text-label-caps text-text-muted-dark bg-surface-container border border-border-dark px-sm py-xs rounded-full cursor-pointer hover:bg-surface-variant transition-colors" data-topic="{{ t }}">{{ t }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse min-w-[820px]">
+            <thead class="bg-surface-container-low font-label-caps text-label-caps text-text-muted-dark uppercase tracking-wider">
+              <tr>
+                <th class="px-md py-sm font-medium border-b border-border-dark w-16 text-center">Rank</th>
+                <th class="px-md py-sm font-medium border-b border-border-dark">Repository</th>
+                <th class="px-md py-sm font-medium border-b border-border-dark w-32">Topic</th>
+                <th class="px-md py-sm font-medium border-b border-border-dark text-right w-24">Stars</th>
+                <th class="px-md py-sm font-medium border-b border-border-dark text-right w-24">Gained</th>
+                <th class="px-md py-sm font-medium border-b border-border-dark w-48">Momentum</th>
+                <th class="px-md py-sm font-medium border-b border-border-dark text-center w-28">Status</th>
+              </tr>
+            </thead>
+            <tbody class="font-body-sm text-text-primary-dark divide-y divide-border-dark" id="tbody">
+              {% for r in rows %}
+              <tr class="repo-row hover:bg-surface-container/50 transition-colors" data-topic="{{ r.topic }}" data-name="{{ r.search }}">
+                <td class="px-md py-md font-mono-metrics text-text-muted-dark text-center">{{ "%02d"|format(r.rank) }}</td>
+                <td class="px-md py-md">
+                  <a href="{{ r.url }}" target="_blank" rel="noopener" class="font-mono-metrics text-primary-container font-medium mb-xs block hover:underline">{{ r.name }}</a>
+                  <div class="text-text-muted-dark text-xs flex items-center gap-xs">
+                    <span class="w-2 h-2 rounded-full" style="background:{{ r.lang_color }}"></span> {{ r.lang }}
+                  </div>
+                </td>
+                <td class="px-md py-md"><span class="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-2 py-1 rounded">{{ r.topic }}</span></td>
+                <td class="px-md py-md font-mono-metrics text-right">{{ r.stars }}</td>
+                <td class="px-md py-md font-mono-metrics text-secondary-container text-right">{{ r.gained }}</td>
+                <td class="px-md py-md">
+                  <div class="flex items-center gap-sm">
+                    <div class="flex-1 bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="h-full bar-gradient" style="width: {{ r.pct }}%"></div>
+                    </div>
+                    <span class="font-mono-metrics text-label-caps text-text-muted-dark whitespace-nowrap">{{ r.momentum }}/h</span>
+                  </div>
+                </td>
+                <td class="px-md py-md text-center">
+                  {% if r.emerging %}
+                  <span class="inline-block px-sm py-xs bg-primary-container text-on-primary-container font-label-caps text-label-caps rounded-full glow-emerging">Emerging</span>
+                  {% else %}
+                  <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container text-text-muted-dark font-label-caps text-label-caps rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-outline"></span> Steady</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+              <tr id="noResults" class="hidden"><td colspan="7" class="px-md py-xl text-center text-text-muted-dark">No repos match your filters.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="text-center font-body-sm text-body-sm text-text-muted-dark py-md">
+        Data from the GitHub Search API · Generated {{ generated_at }} · <a class="text-primary-container hover:underline" href="https://github.com/{{ repo_slug }}">source on GitHub</a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Theme toggle
+  document.getElementById("themeBtn").addEventListener("click", () => {
+    document.documentElement.classList.toggle("dark");
+  });
+
+  // Search + topic filter
+  const rows = Array.from(document.querySelectorAll(".repo-row"));
+  const search = document.getElementById("search");
+  const noResults = document.getElementById("noResults");
+  let activeTopic = "all";
+
+  function apply() {
+    const q = search.value.trim().toLowerCase();
+    let shown = 0;
+    rows.forEach(row => {
+      const okTopic = activeTopic === "all" || row.dataset.topic === activeTopic;
+      const okSearch = q === "" || row.dataset.name.includes(q);
+      const show = okTopic && okSearch;
+      row.classList.toggle("hidden", !show);
+      if (show) shown++;
+    });
+    noResults.classList.toggle("hidden", shown > 0);
+  }
+
+  document.getElementById("chips").addEventListener("click", e => {
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    activeTopic = chip.dataset.topic;
+    document.querySelectorAll(".chip").forEach(c => {
+      const on = c === chip;
+      c.classList.toggle("bg-primary-container/20", on);
+      c.classList.toggle("border-primary-container/40", on);
+      c.classList.toggle("text-text-primary-dark", on);
+      c.classList.toggle("bg-surface-container", !on);
+      c.classList.toggle("text-text-muted-dark", !on);
+    });
+    apply();
+  });
+  search.addEventListener("input", apply);
+</script>
+</body>
+</html>

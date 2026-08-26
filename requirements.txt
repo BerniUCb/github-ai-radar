@@ -1,2 +1,3 @@
 polars>=1.0
 requests>=2.31
+jinja2>=3.1
