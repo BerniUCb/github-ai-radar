@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./components/dashboard/Sidebar.jsx";
 import TopNav from "./components/dashboard/TopNav.jsx";
@@ -5,15 +6,17 @@ import { useRadarData } from "./lib/data.js";
 
 export default function Dashboard() {
   const { data, error } = useRadarData();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex bg-background-dark text-on-surface">
-      <Sidebar />
+      <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
       <div className="flex-1 flex flex-col min-h-screen md:ml-64">
         <TopNav
           lastUpdated={data?.last_updated}
           csvHref={`${import.meta.env.BASE_URL}ai_radar_report.csv`}
           repos={data?.all_repos || []}
+          onMenuOpen={() => setMenuOpen(true)}
         />
         <main className="flex-1 overflow-y-auto p-gutter">
           {error ? (

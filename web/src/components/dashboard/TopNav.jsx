@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, useEffect } from "react";
-import { Search, Radar, Download, Star, ExternalLink } from "lucide-react";
+import { Search, Radar, Download, Star, ExternalLink, Menu } from "lucide-react";
 import { human, langColor } from "../../lib/data.js";
 
 // "2026-08-26 03:45 UTC" -> "2h ago" (with the absolute time kept as a tooltip).
@@ -15,7 +15,7 @@ function relativeTime(s) {
   return `${Math.round(h / 24)}d ago`;
 }
 
-export default function TopNav({ lastUpdated, csvHref, repos = [] }) {
+export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = () => {} }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const boxRef = useRef(null);
@@ -47,8 +47,15 @@ export default function TopNav({ lastUpdated, csvHref, repos = [] }) {
   return (
     <header className="flex justify-between items-center w-full px-lg h-16 sticky top-0 z-50 bg-surface-container-high border-b border-border-dark">
       <div className="flex items-center gap-md flex-1">
+        <button
+          onClick={onMenuOpen}
+          aria-label="Open menu"
+          className="md:hidden p-2 -ml-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors"
+        >
+          <Menu size={22} aria-hidden="true" />
+        </button>
         <div className="md:hidden flex items-center gap-2 text-primary font-headline-md text-headline-md font-bold">
-          <Radar size={22} />
+          <Radar size={22} aria-hidden="true" />
         </div>
 
         <div className="relative w-full max-w-md hidden sm:block" ref={boxRef}>
