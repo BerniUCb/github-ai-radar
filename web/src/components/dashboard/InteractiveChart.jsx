@@ -46,6 +46,19 @@ export default function InteractiveChart({ series = [], labels = [], area = fals
   const line = (pts) => pts.map((p, i) => `${i ? "L" : "M"}${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(" ");
   const fmt = (v) => (mode === "index" ? `${v >= 0 ? "+" : ""}${v.toFixed(1)}%` : human(v));
 
+  // Text summary for screen readers: each series' start → end value.
+  const summary = prepared
+    .map((s) => {
+      const start = human(s.raw[0]);
+      const end = human(s.raw[s.raw.length - 1]);
+      const name = s.name.split("/").pop();
+      return mode === "index"
+        ? `${name}: ${fmt(s.disp[s.disp.length - 1])} growth`
+        : `${name}: from ${start} to ${end}${unit ? ` ${unit}` : ""}`;
+    })
+    .join("; ");
+  const ariaLabel = `Line chart over ${n} points. ${summary}.`;
+
   function onMove(e) {
     const rect = ref.current.getBoundingClientRect();
     const frac = (e.clientX - rect.left) / rect.width;
@@ -61,7 +74,7 @@ export default function InteractiveChart({ series = [], labels = [], area = fals
         <span>{fmt(max)}</span><span>{fmt((max + min) / 2)}</span><span>{fmt(min)}</span>
       </div>
 
-      <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
+      <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100" role="img" aria-label={ariaLabel}>
         {[25, 50, 75].map((y) => <line key={y} x1="0" y1={y} x2="100" y2={y} stroke="#262B38" strokeDasharray="2" opacity="0.5" vectorEffect="non-scaling-stroke" />)}
         {area && prepared.length === 1 && (
           <>

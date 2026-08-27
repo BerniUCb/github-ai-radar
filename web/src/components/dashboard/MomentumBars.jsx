@@ -11,7 +11,7 @@ export default function MomentumBars({ items = [] }) {
         {items.map((b) => (
           <div key={b.full_name} className="flex items-center gap-md">
             <span className="w-28 text-sm font-mono-metrics text-on-surface-variant truncate" title={b.full_name}>{b.short}</span>
-            <div className="flex-1 h-2.5 bg-surface-container rounded-full overflow-hidden">
+            <div className="flex-1 h-2.5 bg-surface-container rounded-full overflow-hidden" aria-hidden="true">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-[#6e8bff] to-[#42e1b3]"
                 style={{ width: `${b.pct}%` }}

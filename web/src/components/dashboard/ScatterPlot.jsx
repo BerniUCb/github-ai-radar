@@ -7,10 +7,14 @@ export default function ScatterPlot({ repos = [] }) {
   const pts = repos.filter((r) => r.stars > 0 && r.momentum > 0);
   const maxMo = Math.max(...pts.map((r) => r.momentum), 1);
   const logMax = Math.log10(Math.max(...pts.map((r) => r.stars), 10));
+  const leader = pts.reduce((a, b) => (b.momentum > (a?.momentum ?? 0) ? b : a), null);
+  const scatterLabel = pts.length
+    ? `Scatter plot of ${pts.length} repositories plotting velocity in stars per hour against total stars on a log scale. Fastest mover: ${leader.full_name} at ${human(leader.momentum)} stars per hour.`
+    : "Scatter plot: no repositories with measurable velocity yet.";
 
   return (
     <SectionCard title="Velocity vs. total size" subtitle="★/hour against total stars (log scale)" className="h-[500px] flex flex-col">
-      <div className="flex-1 border-l border-b border-border-dark relative mt-2 ml-8 mb-8">
+      <div className="flex-1 border-l border-b border-border-dark relative mt-2 ml-8 mb-8" role="img" aria-label={scatterLabel}>
         <div className="absolute -left-8 top-0 h-full flex flex-col justify-between text-right font-mono-metrics text-[10px] text-text-muted-dark pb-2 pr-2">
           <span>{human(maxMo)}</span><span>{human(maxMo / 2)}</span><span>0</span>
         </div>

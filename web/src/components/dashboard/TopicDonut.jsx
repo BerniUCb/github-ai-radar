@@ -19,7 +19,7 @@ export default function TopicDonut({ topics = [], total }) {
     <SectionCard title="Repos by topic" className="flex flex-col">
       <div className="flex items-center justify-center gap-lg flex-1">
         <div className="relative w-40 h-40 flex-shrink-0">
-          <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+          <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100" aria-hidden="true">
             <circle cx="50" cy="50" r={R} fill="transparent" stroke="#1e1f26" strokeWidth="14" />
             {segments.map((s) => (
               <circle

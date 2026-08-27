@@ -18,6 +18,7 @@ function relativeTime(s) {
 export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = () => {} }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(-1);
   const boxRef = useRef(null);
 
   const results = useMemo(() => {
@@ -34,7 +35,7 @@ export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = 
       if (boxRef.current && !boxRef.current.contains(e.target)) setOpen(false);
     }
     function onKey(e) {
-      if (e.key === "Escape") { setOpen(false); setQuery(""); }
+      if (e.key === "Escape") { setOpen(false); setQuery(""); setActive(-1); }
     }
     document.addEventListener("mousedown", onDocClick);
     document.addEventListener("keydown", onKey);
@@ -43,6 +44,42 @@ export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = 
       document.removeEventListener("keydown", onKey);
     };
   }, []);
+
+  // Keep the highlighted option visible as the user arrows through the list.
+  useEffect(() => {
+    if (active >= 0) document.getElementById(`search-opt-${active}`)?.scrollIntoView({ block: "nearest" });
+  }, [active]);
+
+  // Keyboard navigation of the results list (combobox pattern).
+  function onKeyDown(e) {
+    if (!results.length) return;
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setOpen(true);
+        setActive((a) => Math.min(a + 1, results.length - 1));
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setActive((a) => Math.max(a - 1, 0));
+        break;
+      case "Home":
+        if (open) { e.preventDefault(); setActive(0); }
+        break;
+      case "End":
+        if (open) { e.preventDefault(); setActive(results.length - 1); }
+        break;
+      case "Enter":
+        if (open && active >= 0) {
+          e.preventDefault();
+          window.open(results[active].url, "_blank", "noopener,noreferrer");
+          setOpen(false);
+        }
+        break;
+      default:
+        break;
+    }
+  }
 
   return (
     <header className="flex justify-between items-center w-full px-lg h-16 sticky top-0 z-50 bg-surface-container-high border-b border-border-dark">
@@ -63,10 +100,16 @@ export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = 
           <input
             type="text"
             value={query}
-            onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
+            onChange={(e) => { setQuery(e.target.value); setOpen(true); setActive(-1); }}
             onFocus={() => query && setOpen(true)}
+            onKeyDown={onKeyDown}
             placeholder="Search repositories, topics…"
             aria-label="Search repositories"
+            role="combobox"
+            aria-expanded={open && !!query.trim()}
+            aria-controls="search-listbox"
+            aria-autocomplete="list"
+            aria-activedescendant={active >= 0 ? `search-opt-${active}` : undefined}
             className="w-full bg-background-dark border border-border-dark text-on-surface rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors placeholder-text-muted-dark"
           />
 
@@ -75,15 +118,16 @@ export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = 
               {results.length === 0 ? (
                 <div className="px-4 py-3 text-sm text-text-muted-dark">No matches for “{query.trim()}”.</div>
               ) : (
-                <ul className="max-h-80 overflow-y-auto py-1">
-                  {results.map((r) => (
-                    <li key={r.full_name}>
+                <ul id="search-listbox" role="listbox" className="max-h-80 overflow-y-auto py-1">
+                  {results.map((r, i) => (
+                    <li key={r.full_name} role="option" id={`search-opt-${i}`} aria-selected={active === i}>
                       <a
                         href={r.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => setOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2 hover:bg-surface-variant transition-colors group"
+                        onMouseEnter={() => setActive(i)}
+                        className={`flex items-center gap-3 px-4 py-2 transition-colors group ${active === i ? "bg-surface-variant" : "hover:bg-surface-variant"}`}
                       >
                         <span className="w-2 h-2 rounded-full shrink-0" style={{ background: langColor(r.language) }} />
                         <span className="flex-1 min-w-0">

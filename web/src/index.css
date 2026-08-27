@@ -11,6 +11,26 @@
   body {
     @apply bg-background-dark text-on-surface font-body-md antialiased;
   }
+
+  /* Keyboard focus ring, themed from the palette (primary-container). Only
+     shows for keyboard/programmatic focus, never on mouse click. */
+  :focus-visible {
+    outline: 2px solid #6e8bff;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+/* Text selection and caret in the brand's accent, not the browser default. */
+::selection {
+  background: rgba(110, 139, 255, 0.32);
+  color: #e2e1eb;
+}
+:root {
+  caret-color: #6e8bff;
 }
 
 /* Custom scrollbar (matches the Stitch dark theme) */
