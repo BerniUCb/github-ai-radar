@@ -5,8 +5,13 @@ venv/
 # Working copy of the report at the repo root (the committed copy lives in docs/).
 /ai_radar_report.csv
 
-# Note: radar.db and docs/ ARE committed on purpose (git-scraping): the snapshot
-# history must persist between scheduled runs so momentum can be computed.
+# radar.db is committed on purpose (git-scraping): the snapshot history must
+# persist between scheduled runs so momentum can be computed.
+#
+# docs/ is NOT tracked: it's the Vite build output. GitHub Pages is deployed
+# from a CI artifact (see .github/workflows/radar.yml), so nobody commits it —
+# this is what stops local builds from colliding with the bot's commits.
+docs/
 
 # Python
 __pycache__/
@@ -28,3 +33,6 @@ web/public/ai_radar_report.csv
 
 # Secretos
 .env
+
+# Claude Code local tooling config
+.claude/

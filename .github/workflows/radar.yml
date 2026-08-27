@@ -1,9 +1,13 @@
 name: AI Radar
 
-# Git-scraping + build: the workflow runs the radar on a schedule, rebuilds the
-# React dashboard, and commits the updated snapshot DB and built site (docs/)
-# back to the repo. The committed radar.db is what lets momentum accumulate
-# across runs; GitHub Pages serves docs/.
+# Runs the radar on a schedule, then:
+#   1. commits the updated radar.db back (git-scraping — persists the snapshot
+#      history so momentum can accumulate across runs), and
+#   2. builds the React dashboard and deploys it to GitHub Pages as a CI
+#      artifact — docs/ is NOT committed, which is what stops local builds from
+#      colliding with the bot's commits.
+#
+# One-time setup: Settings → Pages → Source → "GitHub Actions".
 
 on:
   schedule:
@@ -21,11 +25,16 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write
+  contents: write     # commit radar.db
+  pages: write        # deploy to Pages
+  id-token: write     # required by deploy-pages
 
 jobs:
   radar:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -43,6 +52,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # 5000 req/h for the API
         run: python -m ai_radar --days 45
 
+      - name: Commit refreshed snapshot history
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add radar.db
+          if git diff --cached --quiet; then
+            echo "No snapshot changes to commit."
+          else
+            git commit -m "chore(data): refresh radar snapshot [skip ci]"
+            git push
+          fi
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -56,14 +77,11 @@ jobs:
           npm ci
           npm run build   # emits ../docs
 
-      - name: Commit updated data and site
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add radar.db docs/
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-          else
-            git commit -m "chore(data): refresh radar snapshot and dashboard [skip ci]"
-            git push
-          fi
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
