@@ -39,7 +39,7 @@ export default function RepositoriesTable({ repos = [] }) {
     setSort((s) => (s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "desc" }));
     setPage(1);
   }
-  const sortIcon = (key) => (sort.key !== key ? <ArrowUpDown size={13} /> : sort.dir === "asc" ? <ArrowUp size={13} /> : <ArrowDown size={13} />);
+  const sortIcon = (key) => (sort.key !== key ? <ArrowUpDown size={13} aria-hidden="true" /> : sort.dir === "asc" ? <ArrowUp size={13} aria-hidden="true" /> : <ArrowDown size={13} aria-hidden="true" />);
 
   const selectCls = "appearance-none bg-background-dark border border-border-dark rounded py-1.5 pl-3 pr-8 text-on-surface font-label-caps text-label-caps focus:outline-none focus:border-primary-container hover:border-outline-variant cursor-pointer";
 
@@ -79,8 +79,10 @@ export default function RepositoriesTable({ repos = [] }) {
               <tr className="bg-surface-dim border-b border-border-dark">
                 <th className="py-3 px-md font-label-caps text-label-caps text-text-muted-dark font-medium w-2/5">Repository</th>
                 {COLUMNS.map((c) => (
-                  <th key={c.key} onClick={() => toggleSort(c.key)} className="py-3 px-md font-label-caps text-label-caps text-text-muted-dark font-medium whitespace-nowrap cursor-pointer hover:text-on-surface transition-colors text-right">
-                    <span className="inline-flex items-center gap-xs justify-end">{c.label} {sortIcon(c.key)}</span>
+                  <th key={c.key} aria-sort={sort.key === c.key ? (sort.dir === "asc" ? "ascending" : "descending") : "none"} className="py-0 px-0 font-label-caps text-label-caps text-text-muted-dark font-medium whitespace-nowrap text-right">
+                    <button type="button" onClick={() => toggleSort(c.key)} title={`Sort by ${c.label}`} className="w-full py-3 px-md inline-flex items-center gap-xs justify-end hover:text-on-surface transition-colors">
+                      {c.label} {sortIcon(c.key)}
+                    </button>
                   </th>
                 ))}
                 <th className="py-3 px-md font-label-caps text-label-caps text-text-muted-dark font-medium">Language</th>
