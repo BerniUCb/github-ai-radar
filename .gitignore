@@ -36,3 +36,4 @@ web/public/ai_radar_report.csv
 
 # Claude Code local tooling config
 .claude/
+.impeccable/

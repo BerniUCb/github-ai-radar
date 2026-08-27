@@ -1,31 +1,24 @@
 import { useOutletContext } from "react-router-dom";
-import { Database, Rocket, Gauge, Star } from "lucide-react";
-import StatCard from "../components/dashboard/StatCard.jsx";
+import OverviewHero from "../components/dashboard/OverviewHero.jsx";
 import MomentumBars from "../components/dashboard/MomentumBars.jsx";
 import TopicDonut from "../components/dashboard/TopicDonut.jsx";
 import TrendAreaChart from "../components/dashboard/TrendAreaChart.jsx";
 import EmergingTable from "../components/dashboard/EmergingTable.jsx";
-import { human } from "../lib/data.js";
 
 export default function Overview() {
   const data = useOutletContext();
   const k = data.kpis;
 
-  return (
-    <div className="space-y-gutter">
-      <div>
-        <h1 className="font-headline-lg text-headline-lg text-text-primary-dark">Overview</h1>
-        <p className="font-body-sm text-body-sm text-text-muted-dark mt-1">
-          Emerging AI repositories across {data.topic_count} topics, ranked by star momentum.
-        </p>
-      </div>
+  // The lead story is the repo climbing fastest — resolve its full record so the
+  // hero can show its description, topic, language and stars.
+  const feature =
+    (data.repos || []).find((r) => r.full_name === k.top_momentum_repo) ||
+    (data.repos || [])[0] ||
+    null;
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter">
-        <StatCard label="Repos tracked" value={human(k.repos_tracked)} sub={`across ${data.topic_count} AI topics`} icon={Database} spark={k.spark_tracked} />
-        <StatCard label="Emerging now" value={k.emerging_now} sub="breaking growth thresholds" icon={Rocket} accent spark={k.spark_emerging} />
-        <StatCard label="Top momentum" value={k.top_momentum} unit="★/h" sub={k.top_momentum_repo} icon={Gauge} spark={k.spark_momentum} />
-        <StatCard label="Stars gained (run)" value={k.stars_gained} sub="since previous snapshot" icon={Star} spark={k.spark_gained} />
-      </div>
+  return (
+    <div className="space-y-xl">
+      <OverviewHero kpis={k} feature={feature} topicCount={data.topic_count} />
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-gutter">
         <div className="lg:col-span-3"><MomentumBars items={data.top_momentum} /></div>
