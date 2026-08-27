@@ -1,4 +1,5 @@
 import Sparkline from "./Sparkline.jsx";
+import { BRAND } from "../../lib/colors.js";
 
 export default function StatCard({ label, value, unit, sub, spark, icon: Icon, accent = false }) {
   return (
@@ -14,7 +15,7 @@ export default function StatCard({ label, value, unit, sub, spark, icon: Icon, a
       {sub && <div className="font-body-sm text-body-sm text-text-muted-dark mt-xs truncate">{sub}</div>}
       {spark && (
         <div className="mt-md opacity-60 group-hover:opacity-100 transition-opacity">
-          <Sparkline data={spark} color={accent ? "#6e8bff" : "#42e1b3"} />
+          <Sparkline data={spark} color={accent ? BRAND.primaryContainer : BRAND.secondary} />
         </div>
       )}
     </div>

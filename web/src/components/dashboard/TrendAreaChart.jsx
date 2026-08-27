@@ -1,8 +1,9 @@
 import SectionCard from "./SectionCard.jsx";
 import InteractiveChart from "./InteractiveChart.jsx";
+import { BRAND } from "../../lib/colors.js";
 
 export default function TrendAreaChart({ trend = [], span }) {
-  const series = [{ name: "Total stars", values: trend.map((p) => p.total), color: "#6e8bff" }];
+  const series = [{ name: "Total stars", values: trend.map((p) => p.total), color: BRAND.primaryContainer }];
   const labels = trend.map((p) => p.t);
 
   return (

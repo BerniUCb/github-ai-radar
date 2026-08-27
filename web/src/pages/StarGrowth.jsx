@@ -3,8 +3,7 @@ import { TrendingUp } from "lucide-react";
 import SectionCard from "../components/dashboard/SectionCard.jsx";
 import MultiLineChart from "../components/dashboard/MultiLineChart.jsx";
 import { human } from "../lib/data.js";
-
-const DOT = ["#6e8bff", "#42e1b3", "#b7c4ff", "#ffb960", "#FF6B7D"];
+import { CHART_PALETTE as DOT } from "../lib/colors.js";
 
 export default function StarGrowth() {
   const data = useOutletContext();

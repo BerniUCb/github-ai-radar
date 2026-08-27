@@ -1,5 +1,6 @@
 import SectionCard from "./SectionCard.jsx";
 import { human, langColor } from "../../lib/data.js";
+import { BRAND } from "../../lib/colors.js";
 
 // Velocity (★/h) vs total size (stars). X is log-scaled so the long tail of
 // small repos stays readable next to the giants.
@@ -36,7 +37,7 @@ export default function ScatterPlot({ repos = [] }) {
                 left: `calc(${Math.min(x, 97)}% - ${size / 2}px)`,
                 top: `calc(${Math.max(Math.min(y, 97), 2)}% - ${size / 2}px)`,
                 width: size, height: size,
-                background: r.emerging ? "#6e8bff" : langColor(r.language),
+                background: r.emerging ? BRAND.primaryContainer : langColor(r.language),
                 boxShadow: r.emerging ? "0 0 12px rgba(110,139,255,0.7)" : "none",
               }}
             >

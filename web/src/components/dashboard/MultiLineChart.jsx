@@ -1,6 +1,5 @@
 import InteractiveChart from "./InteractiveChart.jsx";
-
-const COLORS = ["#6e8bff", "#42e1b3", "#b7c4ff", "#ffb960", "#FF6B7D"];
+import { CHART_PALETTE as COLORS } from "../../lib/colors.js";
 
 // Star-growth chart: normalises every repo to percent growth from its own start
 // (mode="index") so a 200k-star giant and a 600-star newcomer are comparable.

@@ -1,7 +1,6 @@
 import SectionCard from "./SectionCard.jsx";
 import { human } from "../../lib/data.js";
-
-const COLORS = ["#6e8bff", "#42e1b3", "#b7c4ff", "#00c599", "#3edeb1", "#8e909f", "#3554c6"];
+import { TOPIC_PALETTE as COLORS } from "../../lib/colors.js";
 const R = 40;
 const C = 2 * Math.PI * R;
 

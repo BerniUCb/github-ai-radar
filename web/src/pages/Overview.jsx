@@ -13,6 +13,13 @@ export default function Overview() {
 
   return (
     <div className="space-y-gutter">
+      <div>
+        <h1 className="font-headline-lg text-headline-lg text-text-primary-dark">Overview</h1>
+        <p className="font-body-sm text-body-sm text-text-muted-dark mt-1">
+          Emerging AI repositories across {data.topic_count} topics, ranked by star momentum.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter">
         <StatCard label="Repos tracked" value={human(k.repos_tracked)} sub={`across ${data.topic_count} AI topics`} icon={Database} spark={k.spark_tracked} />
         <StatCard label="Emerging now" value={k.emerging_now} sub="breaking growth thresholds" icon={Rocket} accent spark={k.spark_emerging} />

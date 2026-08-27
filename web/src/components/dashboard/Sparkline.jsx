@@ -1,8 +1,9 @@
 import { scale, linePath, areaPath } from "../../lib/chart.js";
+import { BRAND } from "../../lib/colors.js";
 
 let uid = 0;
 
-export default function Sparkline({ data = [], color = "#6e8bff", height = 32 }) {
+export default function Sparkline({ data = [], color = BRAND.primaryContainer, height = 32 }) {
   if (!data.length) return null;
   const W = 200, H = height;
   const pts = scale(data, W, H, { padTop: 3, padBottom: 3 });

@@ -78,13 +78,13 @@ export default function EmergingTable({ repos = [], topics = [] }) {
                   <div className="flex items-center gap-3 justify-end">
                     <span className="text-xs font-mono-metrics text-text-muted-dark whitespace-nowrap">{human(r.momentum)} ★/h</span>
                     <div className="h-1.5 w-16 bg-border-dark rounded-full overflow-hidden">
-                      <div className="h-full rounded-full bg-gradient-to-r from-[#6e8bff] to-[#42e1b3]" style={{ width: `${Math.max(4, (r.momentum / maxMo) * 100)}%` }} />
+                      <div className="h-full rounded-full bg-gradient-to-r from-primary-container to-secondary" style={{ width: `${Math.max(4, (r.momentum / maxMo) * 100)}%` }} />
                     </div>
                   </div>
                 </td>
                 <td className="py-4 px-md text-center">
                   {r.emerging ? (
-                    <span className="px-2 py-0.5 rounded-full bg-[#6e8bff]/10 text-[#6e8bff] text-[10px] font-label-caps border border-[#6e8bff]/30 shadow-[0_0_8px_rgba(110,139,255,0.2)]">Emerging</span>
+                    <span className="px-2 py-0.5 rounded-full bg-primary-container/10 text-primary-container text-[10px] font-label-caps border border-primary-container/30 shadow-[0_0_8px_rgba(110,139,255,0.2)]">Emerging</span>
                   ) : (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-text-muted-dark text-[10px] font-label-caps"><span className="w-1.5 h-1.5 rounded-full bg-outline" />Steady</span>
                   )}

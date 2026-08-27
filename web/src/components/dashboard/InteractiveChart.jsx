@@ -1,7 +1,6 @@
 import { useRef, useState, useMemo } from "react";
 import { human } from "../../lib/data.js";
-
-const PALETTE = ["#6e8bff", "#42e1b3", "#b7c4ff", "#ffb960", "#FF6B7D"];
+import { CHART_PALETTE as PALETTE } from "../../lib/colors.js";
 const PAD = 6; // vertical padding, in percent of the plot height
 
 function fmtLabel(iso) {
