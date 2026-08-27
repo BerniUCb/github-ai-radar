@@ -10,7 +10,11 @@ export default function Dashboard() {
     <div className="min-h-screen flex bg-background-dark text-on-surface">
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen md:ml-64">
-        <TopNav lastUpdated={data?.last_updated} csvHref={`${import.meta.env.BASE_URL}ai_radar_report.csv`} />
+        <TopNav
+          lastUpdated={data?.last_updated}
+          csvHref={`${import.meta.env.BASE_URL}ai_radar_report.csv`}
+          repos={data?.all_repos || []}
+        />
         <main className="flex-1 overflow-y-auto p-gutter">
           {error ? (
             <div className="max-w-2xl mx-auto mt-16 text-center text-text-muted-dark">
