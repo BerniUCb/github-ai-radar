@@ -1,22 +1,22 @@
 {
-  "generated_at": "2026-08-27 00:02 UTC",
-  "last_updated": "2026-08-27 00:02 UTC",
+  "generated_at": "2026-08-27 00:06 UTC",
+  "last_updated": "2026-08-27 00:06 UTC",
   "repo_slug": "BerniUCb/github-ai-radar",
   "topic_count": 7,
   "kpis": {
     "repos_tracked": 176,
-    "emerging_now": 5,
-    "top_momentum": "14",
+    "emerging_now": 4,
+    "top_momentum": "59",
     "top_momentum_repo": "deepseek-ai/deepseek-harness",
-    "stars_gained": "5",
+    "stars_gained": "8",
     "spark_tracked": [
-      175,
       175,
       80,
       175,
       175,
       175,
       175,
+      176,
       176,
       176,
       176,
@@ -25,7 +25,6 @@
     ],
     "spark_emerging": [
       175,
-      175,
       80,
       175,
       175,
@@ -35,10 +34,10 @@
       176,
       176,
       176,
+      176,
       176
     ],
     "spark_momentum": [
-      213392,
       319999,
       292959,
       320060,
@@ -49,10 +48,10 @@
       323029,
       324694,
       325184,
-      325026
+      325026,
+      325034
     ],
     "spark_gained": [
-      213392,
       319999,
       292959,
       320060,
@@ -63,16 +62,17 @@
       323029,
       324694,
       325184,
-      325026
+      325026,
+      325034
     ]
   },
   "topics": [
     {
-      "name": "rag",
+      "name": "llm",
       "count": 30
     },
     {
-      "name": "llm",
+      "name": "rag",
       "count": 30
     },
     {
@@ -88,11 +88,11 @@
       "count": 21
     },
     {
-      "name": "mcp",
+      "name": "agentic-ai",
       "count": 20
     },
     {
-      "name": "agentic-ai",
+      "name": "mcp",
       "count": 20
     }
   ],
@@ -100,36 +100,36 @@
     {
       "full_name": "deepseek-ai/deepseek-harness",
       "short": "deepseek-harness",
-      "value": "14",
-      "pct": 100
-    },
-    {
-      "full_name": "CopilotKit/OpenBot",
-      "short": "OpenBot",
-      "value": "14",
-      "pct": 100
-    },
-    {
-      "full_name": "elie222/rakazo",
-      "short": "rakazo",
-      "value": "14",
-      "pct": 100
-    },
-    {
-      "full_name": "fy-agent/fyagent",
-      "short": "fyagent",
-      "value": "14",
-      "pct": 100
-    },
-    {
-      "full_name": "dondai44423/donsetch",
-      "short": "donsetch",
-      "value": "14",
+      "value": "59",
       "pct": 100
     },
     {
       "full_name": "img2threejs/img2threejs",
       "short": "img2threejs",
+      "value": "15",
+      "pct": 25
+    },
+    {
+      "full_name": "elie222/rakazo",
+      "short": "rakazo",
+      "value": "15",
+      "pct": 25
+    },
+    {
+      "full_name": "Pinvou/pinvou-agent",
+      "short": "pinvou-agent",
+      "value": "15",
+      "pct": 25
+    },
+    {
+      "full_name": "Ninnix/q36",
+      "short": "q36",
+      "value": "15",
+      "pct": 25
+    },
+    {
+      "full_name": "yjh051108/dsh-routing-suite",
+      "short": "dsh-routing-suite",
       "value": "0",
       "pct": 6
     }
@@ -190,6 +190,10 @@
     {
       "t": "2026-08-27T00:02:53.703448+00:00",
       "total": 325026
+    },
+    {
+      "t": "2026-08-27T00:06:57.560718+00:00",
+      "total": 325034
     }
   ],
   "trend_span": "9-day trend",
@@ -201,14 +205,13 @@
       "description": "DeepSeek Harness: Everything is a Plugin.",
       "language": "TypeScript",
       "topic": "ai-agents",
-      "stars": 197929,
+      "stars": 197933,
       "forks": 22498,
       "license": "MIT",
-      "gained": 1,
-      "momentum": 14,
+      "gained": 4,
+      "momentum": 59,
       "emerging": true,
       "spark": [
-        195639,
         195646,
         195749,
         195771,
@@ -217,33 +220,34 @@
         197062,
         197761,
         197928,
-        197929
+        197929,
+        197933
       ]
     },
     {
       "rank": 2,
-      "full_name": "CopilotKit/OpenBot",
-      "url": "https://github.com/CopilotKit/OpenBot",
-      "description": "Open-source AI coworkers that each get a computer of their own: a browser, files and tools, with every action decided before it happens and ",
-      "language": "TypeScript",
+      "full_name": "img2threejs/img2threejs",
+      "url": "https://github.com/img2threejs/img2threejs",
+      "description": "Rebuild the object in a reference image as a code-only, procedural, quality-gated, animation-ready Three.js model. Token-efficient image-to-",
+      "language": "Python",
       "topic": "ai-agents",
-      "stars": 3025,
-      "forks": 368,
-      "license": "MIT",
+      "stars": 14017,
+      "forks": 1126,
+      "license": "Apache-2.0",
       "gained": 1,
-      "momentum": 14,
+      "momentum": 15,
       "emerging": true,
       "spark": [
-        2923,
-        2923,
-        2925,
-        2925,
-        2925,
-        2935,
-        2970,
-        3009,
-        3024,
-        3025
+        13807,
+        13815,
+        13817,
+        13819,
+        13857,
+        13927,
+        13995,
+        14016,
+        14016,
+        14017
       ]
     },
     {
@@ -253,14 +257,13 @@
       "description": "Open-source Grok Bot alternative. Choose your own model and sandbox.",
       "language": "TypeScript",
       "topic": "llm",
-      "stars": 1352,
+      "stars": 1353,
       "forks": 214,
       "license": "Apache-2.0",
       "gained": 1,
-      "momentum": 14,
+      "momentum": 15,
       "emerging": true,
       "spark": [
-        1291,
         1291,
         1294,
         1294,
@@ -269,53 +272,40 @@
         1325,
         1340,
         1351,
-        1352
+        1352,
+        1353
       ]
     },
     {
       "rank": 4,
-      "full_name": "fy-agent/fyagent",
-      "url": "https://github.com/fy-agent/fyagent",
-      "description": "For You Agent——AI 时代的个人随身数字人格。把你的模型、AI 账号、技能、提示词和工作方式，带到每一个 AI 工具里。",
+      "full_name": "Pinvou/pinvou-agent",
+      "url": "https://github.com/Pinvou/pinvou-agent",
+      "description": "Open-source desktop AI agent for tools, files, knowledge, workflows, and real deliverables.",
       "language": "Rust",
       "topic": "llm",
-      "stars": 448,
-      "forks": 48,
-      "license": "",
+      "stars": 1298,
+      "forks": 190,
+      "license": "MIT",
       "gained": 1,
-      "momentum": 14,
+      "momentum": 15,
       "emerging": true
     },
     {
       "rank": 5,
-      "full_name": "dondai44423/donsetch",
-      "url": "https://github.com/dondai44423/donsetch",
-      "description": "Web fetch, search, and crawl for AI agents. Built from scratch in Rust. No keys, no accounts. AGPL v3.",
-      "language": "Rust",
-      "topic": "mcp",
-      "stars": 349,
-      "forks": 17,
-      "license": "AGPL-3.0",
+      "full_name": "Ninnix/q36",
+      "url": "https://github.com/Ninnix/q36",
+      "description": "Qwen3.6-35B-A3B local inference engine for Vulkan and Metal",
+      "language": "C",
+      "topic": "llm-inference",
+      "stars": 35,
+      "forks": 5,
+      "license": "MIT",
       "gained": 1,
-      "momentum": 14,
-      "emerging": true
-    },
-    {
-      "rank": 6,
-      "full_name": "img2threejs/img2threejs",
-      "url": "https://github.com/img2threejs/img2threejs",
-      "description": "Rebuild the object in a reference image as a code-only, procedural, quality-gated, animation-ready Three.js model. Token-efficient image-to-",
-      "language": "Python",
-      "topic": "ai-agents",
-      "stars": 14016,
-      "forks": 1126,
-      "license": "Apache-2.0",
-      "gained": 0,
-      "momentum": 0,
+      "momentum": 15,
       "emerging": false
     },
     {
-      "rank": 7,
+      "rank": 6,
       "full_name": "yjh051108/dsh-routing-suite",
       "url": "https://github.com/yjh051108/dsh-routing-suite",
       "description": "dsh-routing-suite — injector + router-standard kit: install the runtime injector first, then the task-aware reasoning-mode router preset (me",
@@ -329,7 +319,7 @@
       "emerging": false
     },
     {
-      "rank": 8,
+      "rank": 7,
       "full_name": "FareedKhan-dev/kimi-k3-in-c",
       "url": "https://github.com/FareedKhan-dev/kimi-k3-in-c",
       "description": "A 2.78-trillion-parameter Kimi K3 running inference on a single CPU in 8.24 GB of RAM. Portable C99: no BLAS, no framework, no GPU.",
@@ -343,7 +333,7 @@
       "emerging": false
     },
     {
-      "rank": 9,
+      "rank": 8,
       "full_name": "Vincentwei1021/video-shotcraft",
       "url": "https://github.com/Vincentwei1021/video-shotcraft",
       "description": "AI video skill for Claude Code & Codex — cinematic product videos with Remotion: 152 shot recipe cards, 209 motion previews, a production-re",
@@ -357,7 +347,7 @@
       "emerging": false
     },
     {
-      "rank": 10,
+      "rank": 9,
       "full_name": "drumih/turbo-fieldfare",
       "url": "https://github.com/drumih/turbo-fieldfare",
       "description": "Gemma 4 26B-A4B inference in ~2 GB of RAM on any M-series MacBook",
@@ -371,7 +361,7 @@
       "emerging": false
     },
     {
-      "rank": 11,
+      "rank": 10,
       "full_name": "truefoundry/trueforge",
       "url": "https://github.com/truefoundry/trueforge",
       "description": "The open-source agent harness - the runtime layer that turns an LLM into a working agent.",
@@ -385,7 +375,7 @@
       "emerging": false
     },
     {
-      "rank": 12,
+      "rank": 11,
       "full_name": "microsoft/skill-recorder",
       "url": "https://github.com/microsoft/skill-recorder",
       "description": "Desktop app that records your on-screen work session and uses the GitHub Copilot CLI to reconstruct it as an intent + ordered steps, then bu",
@@ -399,7 +389,7 @@
       "emerging": false
     },
     {
-      "rank": 13,
+      "rank": 12,
       "full_name": "kirodotdev/KiroCrew",
       "url": "https://github.com/kirodotdev/KiroCrew",
       "description": "A persistent workspace for development work that self-improves and continues beyond one session.",
@@ -408,6 +398,20 @@
       "stars": 3279,
       "forks": 386,
       "license": "Apache-2.0",
+      "gained": 0,
+      "momentum": 0,
+      "emerging": false
+    },
+    {
+      "rank": 13,
+      "full_name": "CopilotKit/OpenBot",
+      "url": "https://github.com/CopilotKit/OpenBot",
+      "description": "Open-source AI coworkers that each get a computer of their own: a browser, files and tools, with every action decided before it happens and ",
+      "language": "TypeScript",
+      "topic": "ai-agents",
+      "stars": 3025,
+      "forks": 368,
+      "license": "MIT",
       "gained": 0,
       "momentum": 0,
       "emerging": false
@@ -596,20 +600,6 @@
     },
     {
       "rank": 27,
-      "full_name": "Pinvou/pinvou-agent",
-      "url": "https://github.com/Pinvou/pinvou-agent",
-      "description": "Open-source desktop AI agent for tools, files, knowledge, workflows, and real deliverables.",
-      "language": "Rust",
-      "topic": "llm",
-      "stars": 1297,
-      "forks": 190,
-      "license": "MIT",
-      "gained": 0,
-      "momentum": 0,
-      "emerging": false
-    },
-    {
-      "rank": 28,
       "full_name": "hahhforest/pi-textbook",
       "url": "https://github.com/hahhforest/pi-textbook",
       "description": "《动手学 Pi》：沿 15 个真实 checkpoint 从零构建 Pi-style Agent",
@@ -623,7 +613,7 @@
       "emerging": false
     },
     {
-      "rank": 29,
+      "rank": 28,
       "full_name": "lexmount/moli",
       "url": "https://github.com/lexmount/moli",
       "description": "Best headless browser for AI agents. Lite, Fast, High-Compatibility. Built in Rust",
@@ -637,7 +627,7 @@
       "emerging": false
     },
     {
-      "rank": 30,
+      "rank": 29,
       "full_name": "cinderline/northcinder",
       "url": "https://github.com/cinderline/northcinder",
       "description": "Open-source MCP server for comparing products and asking the buyer before purchase.",
@@ -651,7 +641,7 @@
       "emerging": false
     },
     {
-      "rank": 31,
+      "rank": 30,
       "full_name": "petergyang/human-review",
       "url": "https://github.com/petergyang/human-review",
       "description": "A visual tool to edit HTML and Markdown files, leave comments like a Google Doc, and send feedback to your AI agent. Works inside your favor",
@@ -665,7 +655,7 @@
       "emerging": false
     },
     {
-      "rank": 32,
+      "rank": 31,
       "full_name": "SaladDay/pi-from-scratch",
       "url": "https://github.com/SaladDay/pi-from-scratch",
       "description": "600 行 TypeScript 写成的超级迷你版 pi，让你轻松从 0 写出属于你的 pi-agent",
@@ -679,7 +669,7 @@
       "emerging": false
     },
     {
-      "rank": 33,
+      "rank": 32,
       "full_name": "MemTensor/memmy-agent",
       "url": "https://github.com/MemTensor/memmy-agent",
       "description": "🍙  A personal AI agent & local memory hub for all AI agents, gives every AI one shared, fully controlled memory and persistent context — all",
@@ -693,7 +683,7 @@
       "emerging": false
     },
     {
-      "rank": 34,
+      "rank": 33,
       "full_name": "perplexityai/numbat",
       "url": "https://github.com/perplexityai/numbat",
       "description": "Visibility into AI agent activity on endpoints, with on-device detection, optional pre-action blocking, and forensic reconstruction.",
@@ -707,7 +697,7 @@
       "emerging": false
     },
     {
-      "rank": 35,
+      "rank": 34,
       "full_name": "ApodexAI/FrontierAgent",
       "url": "https://github.com/ApodexAI/FrontierAgent",
       "description": "🧩 FrontierAgent, our agent framework, open-sourced alongside it — native command-line TUI, ReAct and Agent Team modes, one command on macOS ",
@@ -721,7 +711,7 @@
       "emerging": false
     },
     {
-      "rank": 36,
+      "rank": 35,
       "full_name": "TryCaspian/caspian-sdk",
       "url": "https://github.com/TryCaspian/caspian-sdk",
       "description": "Agent communication SDK. The open-source agent communication layer for AI agents — email, WhatsApp, Slack, Discord, Telegram, SMS. Python & ",
@@ -735,7 +725,7 @@
       "emerging": false
     },
     {
-      "rank": 37,
+      "rank": 36,
       "full_name": "memorax-ai/memorax-code",
       "url": "https://github.com/memorax-ai/memorax-code",
       "description": "A memory plugin for AI coding that turns engineering experience, repository knowledge, and your way of working into memory that remains usef",
@@ -749,7 +739,7 @@
       "emerging": false
     },
     {
-      "rank": 38,
+      "rank": 37,
       "full_name": "0xsline/awesome-deepseek-harness",
       "url": "https://github.com/0xsline/awesome-deepseek-harness",
       "description": "DeepSeek Harness (DSH) ecosystem: curated plugins, tools, and infrastructure from dsh-external/hub and the public dsh-plugin topic.",
@@ -763,7 +753,7 @@
       "emerging": false
     },
     {
-      "rank": 39,
+      "rank": 38,
       "full_name": "Pan-Chera/Multi-Agent-CAD",
       "url": "https://github.com/Pan-Chera/Multi-Agent-CAD",
       "description": "MAC (Multi-Agent CAD): A decoupled multi-agent framework for text-to-CAD generation via constrained test-time compute",
@@ -777,7 +767,7 @@
       "emerging": false
     },
     {
-      "rank": 40,
+      "rank": 39,
       "full_name": "Spielewoy/autoprompt-skill",
       "url": "https://github.com/Spielewoy/autoprompt-skill",
       "description": "Autoprompt is a coding-agent skill that cuts failures by 45% on agentic coding tasks.",
@@ -785,6 +775,20 @@
       "topic": "ai-agents",
       "stars": 894,
       "forks": 60,
+      "license": "MIT",
+      "gained": 0,
+      "momentum": 0,
+      "emerging": false
+    },
+    {
+      "rank": 40,
+      "full_name": "xmanrui/dsh-im",
+      "url": "https://github.com/xmanrui/dsh-im",
+      "description": "通过扫码或机器人凭据把IM机器人接入DeepSeek Harness（支持飞书、微信、钉钉、企业微信、QQ、Slack、Telegram、Discord和WhatsApp）。 Connect IM bots to DeepSeek Harness via QR code or c",
+      "language": "JavaScript",
+      "topic": "ai-agents",
+      "stars": 888,
+      "forks": 91,
       "license": "MIT",
       "gained": 0,
       "momentum": 0,
@@ -799,25 +803,25 @@
       "description": "DeepSeek Harness: Everything is a Plugin.",
       "language": "TypeScript",
       "topic": "ai-agents",
-      "stars": 197929,
+      "stars": 197933,
       "forks": 22498,
       "license": "MIT",
-      "gained": 1,
-      "momentum": 14,
+      "gained": 4,
+      "momentum": 59,
       "emerging": true
     },
     {
       "rank": 2,
-      "full_name": "CopilotKit/OpenBot",
-      "url": "https://github.com/CopilotKit/OpenBot",
-      "description": "Open-source AI coworkers that each get a computer of their own: a browser, files and tools, with every action decided before it happens and ",
-      "language": "TypeScript",
+      "full_name": "img2threejs/img2threejs",
+      "url": "https://github.com/img2threejs/img2threejs",
+      "description": "Rebuild the object in a reference image as a code-only, procedural, quality-gated, animation-ready Three.js model. Token-efficient image-to-",
+      "language": "Python",
       "topic": "ai-agents",
-      "stars": 3025,
-      "forks": 368,
-      "license": "MIT",
+      "stars": 14017,
+      "forks": 1126,
+      "license": "Apache-2.0",
       "gained": 1,
-      "momentum": 14,
+      "momentum": 15,
       "emerging": true
     },
     {
@@ -827,57 +831,43 @@
       "description": "Open-source Grok Bot alternative. Choose your own model and sandbox.",
       "language": "TypeScript",
       "topic": "llm",
-      "stars": 1352,
+      "stars": 1353,
       "forks": 214,
       "license": "Apache-2.0",
       "gained": 1,
-      "momentum": 14,
+      "momentum": 15,
       "emerging": true
     },
     {
       "rank": 4,
-      "full_name": "fy-agent/fyagent",
-      "url": "https://github.com/fy-agent/fyagent",
-      "description": "For You Agent——AI 时代的个人随身数字人格。把你的模型、AI 账号、技能、提示词和工作方式，带到每一个 AI 工具里。",
+      "full_name": "Pinvou/pinvou-agent",
+      "url": "https://github.com/Pinvou/pinvou-agent",
+      "description": "Open-source desktop AI agent for tools, files, knowledge, workflows, and real deliverables.",
       "language": "Rust",
       "topic": "llm",
-      "stars": 448,
-      "forks": 48,
-      "license": "",
+      "stars": 1298,
+      "forks": 190,
+      "license": "MIT",
       "gained": 1,
-      "momentum": 14,
+      "momentum": 15,
       "emerging": true
     },
     {
       "rank": 5,
-      "full_name": "dondai44423/donsetch",
-      "url": "https://github.com/dondai44423/donsetch",
-      "description": "Web fetch, search, and crawl for AI agents. Built from scratch in Rust. No keys, no accounts. AGPL v3.",
-      "language": "Rust",
-      "topic": "mcp",
-      "stars": 349,
-      "forks": 17,
-      "license": "AGPL-3.0",
+      "full_name": "Ninnix/q36",
+      "url": "https://github.com/Ninnix/q36",
+      "description": "Qwen3.6-35B-A3B local inference engine for Vulkan and Metal",
+      "language": "C",
+      "topic": "llm-inference",
+      "stars": 35,
+      "forks": 5,
+      "license": "MIT",
       "gained": 1,
-      "momentum": 14,
-      "emerging": true
-    },
-    {
-      "rank": 6,
-      "full_name": "img2threejs/img2threejs",
-      "url": "https://github.com/img2threejs/img2threejs",
-      "description": "Rebuild the object in a reference image as a code-only, procedural, quality-gated, animation-ready Three.js model. Token-efficient image-to-",
-      "language": "Python",
-      "topic": "ai-agents",
-      "stars": 14016,
-      "forks": 1126,
-      "license": "Apache-2.0",
-      "gained": 0,
-      "momentum": 0,
+      "momentum": 15,
       "emerging": false
     },
     {
-      "rank": 7,
+      "rank": 6,
       "full_name": "yjh051108/dsh-routing-suite",
       "url": "https://github.com/yjh051108/dsh-routing-suite",
       "description": "dsh-routing-suite — injector + router-standard kit: install the runtime injector first, then the task-aware reasoning-mode router preset (me",
@@ -891,7 +881,7 @@
       "emerging": false
     },
     {
-      "rank": 8,
+      "rank": 7,
       "full_name": "FareedKhan-dev/kimi-k3-in-c",
       "url": "https://github.com/FareedKhan-dev/kimi-k3-in-c",
       "description": "A 2.78-trillion-parameter Kimi K3 running inference on a single CPU in 8.24 GB of RAM. Portable C99: no BLAS, no framework, no GPU.",
@@ -905,7 +895,7 @@
       "emerging": false
     },
     {
-      "rank": 9,
+      "rank": 8,
       "full_name": "Vincentwei1021/video-shotcraft",
       "url": "https://github.com/Vincentwei1021/video-shotcraft",
       "description": "AI video skill for Claude Code & Codex — cinematic product videos with Remotion: 152 shot recipe cards, 209 motion previews, a production-re",
@@ -919,7 +909,7 @@
       "emerging": false
     },
     {
-      "rank": 10,
+      "rank": 9,
       "full_name": "drumih/turbo-fieldfare",
       "url": "https://github.com/drumih/turbo-fieldfare",
       "description": "Gemma 4 26B-A4B inference in ~2 GB of RAM on any M-series MacBook",
@@ -933,7 +923,7 @@
       "emerging": false
     },
     {
-      "rank": 11,
+      "rank": 10,
       "full_name": "truefoundry/trueforge",
       "url": "https://github.com/truefoundry/trueforge",
       "description": "The open-source agent harness - the runtime layer that turns an LLM into a working agent.",
@@ -947,7 +937,7 @@
       "emerging": false
     },
     {
-      "rank": 12,
+      "rank": 11,
       "full_name": "microsoft/skill-recorder",
       "url": "https://github.com/microsoft/skill-recorder",
       "description": "Desktop app that records your on-screen work session and uses the GitHub Copilot CLI to reconstruct it as an intent + ordered steps, then bu",
@@ -961,7 +951,7 @@
       "emerging": false
     },
     {
-      "rank": 13,
+      "rank": 12,
       "full_name": "kirodotdev/KiroCrew",
       "url": "https://github.com/kirodotdev/KiroCrew",
       "description": "A persistent workspace for development work that self-improves and continues beyond one session.",
@@ -970,6 +960,20 @@
       "stars": 3279,
       "forks": 386,
       "license": "Apache-2.0",
+      "gained": 0,
+      "momentum": 0,
+      "emerging": false
+    },
+    {
+      "rank": 13,
+      "full_name": "CopilotKit/OpenBot",
+      "url": "https://github.com/CopilotKit/OpenBot",
+      "description": "Open-source AI coworkers that each get a computer of their own: a browser, files and tools, with every action decided before it happens and ",
+      "language": "TypeScript",
+      "topic": "ai-agents",
+      "stars": 3025,
+      "forks": 368,
+      "license": "MIT",
       "gained": 0,
       "momentum": 0,
       "emerging": false
@@ -1158,20 +1162,6 @@
     },
     {
       "rank": 27,
-      "full_name": "Pinvou/pinvou-agent",
-      "url": "https://github.com/Pinvou/pinvou-agent",
-      "description": "Open-source desktop AI agent for tools, files, knowledge, workflows, and real deliverables.",
-      "language": "Rust",
-      "topic": "llm",
-      "stars": 1297,
-      "forks": 190,
-      "license": "MIT",
-      "gained": 0,
-      "momentum": 0,
-      "emerging": false
-    },
-    {
-      "rank": 28,
       "full_name": "hahhforest/pi-textbook",
       "url": "https://github.com/hahhforest/pi-textbook",
       "description": "《动手学 Pi》：沿 15 个真实 checkpoint 从零构建 Pi-style Agent",
@@ -1185,7 +1175,7 @@
       "emerging": false
     },
     {
-      "rank": 29,
+      "rank": 28,
       "full_name": "lexmount/moli",
       "url": "https://github.com/lexmount/moli",
       "description": "Best headless browser for AI agents. Lite, Fast, High-Compatibility. Built in Rust",
@@ -1199,7 +1189,7 @@
       "emerging": false
     },
     {
-      "rank": 30,
+      "rank": 29,
       "full_name": "cinderline/northcinder",
       "url": "https://github.com/cinderline/northcinder",
       "description": "Open-source MCP server for comparing products and asking the buyer before purchase.",
@@ -1213,7 +1203,7 @@
       "emerging": false
     },
     {
-      "rank": 31,
+      "rank": 30,
       "full_name": "petergyang/human-review",
       "url": "https://github.com/petergyang/human-review",
       "description": "A visual tool to edit HTML and Markdown files, leave comments like a Google Doc, and send feedback to your AI agent. Works inside your favor",
@@ -1227,7 +1217,7 @@
       "emerging": false
     },
     {
-      "rank": 32,
+      "rank": 31,
       "full_name": "SaladDay/pi-from-scratch",
       "url": "https://github.com/SaladDay/pi-from-scratch",
       "description": "600 行 TypeScript 写成的超级迷你版 pi，让你轻松从 0 写出属于你的 pi-agent",
@@ -1241,7 +1231,7 @@
       "emerging": false
     },
     {
-      "rank": 33,
+      "rank": 32,
       "full_name": "MemTensor/memmy-agent",
       "url": "https://github.com/MemTensor/memmy-agent",
       "description": "🍙  A personal AI agent & local memory hub for all AI agents, gives every AI one shared, fully controlled memory and persistent context — all",
@@ -1255,7 +1245,7 @@
       "emerging": false
     },
     {
-      "rank": 34,
+      "rank": 33,
       "full_name": "perplexityai/numbat",
       "url": "https://github.com/perplexityai/numbat",
       "description": "Visibility into AI agent activity on endpoints, with on-device detection, optional pre-action blocking, and forensic reconstruction.",
@@ -1269,7 +1259,7 @@
       "emerging": false
     },
     {
-      "rank": 35,
+      "rank": 34,
       "full_name": "ApodexAI/FrontierAgent",
       "url": "https://github.com/ApodexAI/FrontierAgent",
       "description": "🧩 FrontierAgent, our agent framework, open-sourced alongside it — native command-line TUI, ReAct and Agent Team modes, one command on macOS ",
@@ -1283,7 +1273,7 @@
       "emerging": false
     },
     {
-      "rank": 36,
+      "rank": 35,
       "full_name": "TryCaspian/caspian-sdk",
       "url": "https://github.com/TryCaspian/caspian-sdk",
       "description": "Agent communication SDK. The open-source agent communication layer for AI agents — email, WhatsApp, Slack, Discord, Telegram, SMS. Python & ",
@@ -1297,7 +1287,7 @@
       "emerging": false
     },
     {
-      "rank": 37,
+      "rank": 36,
       "full_name": "memorax-ai/memorax-code",
       "url": "https://github.com/memorax-ai/memorax-code",
       "description": "A memory plugin for AI coding that turns engineering experience, repository knowledge, and your way of working into memory that remains usef",
@@ -1311,7 +1301,7 @@
       "emerging": false
     },
     {
-      "rank": 38,
+      "rank": 37,
       "full_name": "0xsline/awesome-deepseek-harness",
       "url": "https://github.com/0xsline/awesome-deepseek-harness",
       "description": "DeepSeek Harness (DSH) ecosystem: curated plugins, tools, and infrastructure from dsh-external/hub and the public dsh-plugin topic.",
@@ -1325,7 +1315,7 @@
       "emerging": false
     },
     {
-      "rank": 39,
+      "rank": 38,
       "full_name": "Pan-Chera/Multi-Agent-CAD",
       "url": "https://github.com/Pan-Chera/Multi-Agent-CAD",
       "description": "MAC (Multi-Agent CAD): A decoupled multi-agent framework for text-to-CAD generation via constrained test-time compute",
@@ -1339,7 +1329,7 @@
       "emerging": false
     },
     {
-      "rank": 40,
+      "rank": 39,
       "full_name": "Spielewoy/autoprompt-skill",
       "url": "https://github.com/Spielewoy/autoprompt-skill",
       "description": "Autoprompt is a coding-agent skill that cuts failures by 45% on agentic coding tasks.",
@@ -1353,7 +1343,7 @@
       "emerging": false
     },
     {
-      "rank": 41,
+      "rank": 40,
       "full_name": "xmanrui/dsh-im",
       "url": "https://github.com/xmanrui/dsh-im",
       "description": "通过扫码或机器人凭据把IM机器人接入DeepSeek Harness（支持飞书、微信、钉钉、企业微信、QQ、Slack、Telegram、Discord和WhatsApp）。 Connect IM bots to DeepSeek Harness via QR code or c",
@@ -1367,7 +1357,7 @@
       "emerging": false
     },
     {
-      "rank": 42,
+      "rank": 41,
       "full_name": "ant-research/4DAnyone",
       "url": "https://github.com/ant-research/4DAnyone",
       "description": "[SIGGRAPH Asia 2026] 4DAnyone: Create Anyone in 4D from a Casual Monocular Video",
@@ -1381,7 +1371,7 @@
       "emerging": false
     },
     {
-      "rank": 43,
+      "rank": 42,
       "full_name": "patchy631/time-to-first-token",
       "url": "https://github.com/patchy631/time-to-first-token",
       "description": "A 10-week, 30-minutes-a-day roadmap for LLM inference serving and optimization. vLLM, SGLang, quantization, speculative decoding, benchmarki",
@@ -1395,7 +1385,7 @@
       "emerging": false
     },
     {
-      "rank": 44,
+      "rank": 43,
       "full_name": "syv-ai/qwen38-27b-rtx3090",
       "url": "https://github.com/syv-ai/qwen38-27b-rtx3090",
       "description": "Qwen3.8-27B on a single RTX 3090 with vLLM: ~1,000 tok/s at 64 concurrent (int8 tensor-core GEMMs, fp16 DeltaNet state), ~114 tok/s single-u",
@@ -1409,7 +1399,7 @@
       "emerging": false
     },
     {
-      "rank": 45,
+      "rank": 44,
       "full_name": "karanb192/itr-wala",
       "url": "https://github.com/karanb192/itr-wala",
       "description": "File your Indian income tax return (ITR) from your terminal. Deterministic tax engine, both regimes, AY 2026-27. Claude Code / Codex / Gemin",
@@ -1423,7 +1413,7 @@
       "emerging": false
     },
     {
-      "rank": 46,
+      "rank": 45,
       "full_name": "vshulcz/deja-vu",
       "url": "https://github.com/vshulcz/deja-vu",
       "description": "Search your past AI coding sessions — Claude Code, Codex, Cursor and 17 more. Indexes the session history they already wrote to disk, includ",
@@ -1437,7 +1427,7 @@
       "emerging": false
     },
     {
-      "rank": 47,
+      "rank": 46,
       "full_name": "zenstory-ai/novel-to-game",
       "url": "https://github.com/zenstory-ai/novel-to-game",
       "description": "Agent Skills that turn novels into source-grounded, fully playable games for Claude Code, Codex, and Kimi Code(K3).",
@@ -1451,7 +1441,7 @@
       "emerging": false
     },
     {
-      "rank": 48,
+      "rank": 47,
       "full_name": "Electricitysheep/dsh-handbook",
       "url": "https://github.com/Electricitysheep/dsh-handbook",
       "description": "DeepSeek Harness (dsh) 从 0 到 1 深度手册：安装/插件开发/性能调优/实测案例/同模型多 Agent 实测对比（中文 + 英文 PDF）",
@@ -1465,7 +1455,7 @@
       "emerging": false
     },
     {
-      "rank": 49,
+      "rank": 48,
       "full_name": "AmazingAng/old-coder",
       "url": "https://github.com/AmazingAng/old-coder",
       "description": "An old coder's strategy for the agent era: don't read the code — make it run the gauntlet. Evidence-first development skill for coding agent",
@@ -1479,7 +1469,7 @@
       "emerging": false
     },
     {
-      "rank": 50,
+      "rank": 49,
       "full_name": "icebird1998/scientific-illustrator",
       "url": "https://github.com/icebird1998/scientific-illustrator",
       "description": "Editable scientific figures in PowerPoint and draw.io via Codex/MCP with Designer-Drawer-Reviewer-Corrector quality gates.",
@@ -1493,7 +1483,7 @@
       "emerging": false
     },
     {
-      "rank": 51,
+      "rank": 50,
       "full_name": "mikehasa/agentacct",
       "url": "https://github.com/mikehasa/agentacct",
       "description": "See what your coding agents did and what it cost. Breaks each task down into work steps — tools used, files changed, tests run, time and tok",
@@ -1507,7 +1497,7 @@
       "emerging": false
     },
     {
-      "rank": 52,
+      "rank": 51,
       "full_name": "alikon-art/DeterminFlow",
       "url": "https://github.com/alikon-art/DeterminFlow",
       "description": "A production-oriented AI workflow runtime for building, validating, recovering, and shipping complex AI workflows as dependable services. 面向",
@@ -1521,7 +1511,7 @@
       "emerging": false
     },
     {
-      "rank": 53,
+      "rank": 52,
       "full_name": "vibeinging/dsh-desktop",
       "url": "https://github.com/vibeinging/dsh-desktop",
       "description": "DeepSeek Harness Desktop App: a local AI desktop workspace for DSH Sessions, projects, files, web research, plugins, and Office artifacts.",
@@ -1535,7 +1525,7 @@
       "emerging": false
     },
     {
-      "rank": 54,
+      "rank": 53,
       "full_name": "superdesigndev/treg",
       "url": "https://github.com/superdesigndev/treg",
       "description": "OpenRouter for agent tools. Join community here: https://discord.gg/6mQYYfFMAn",
@@ -1549,7 +1539,7 @@
       "emerging": false
     },
     {
-      "rank": 55,
+      "rank": 54,
       "full_name": "HarnessRouter/harnessrouter",
       "url": "https://github.com/HarnessRouter/harnessrouter",
       "description": "HarnessRouter Community Edition: the self-hosted, Apache-2.0 edition of the unified interface for agent harnesses. Run Codex, Claude Code, H",
@@ -1563,7 +1553,7 @@
       "emerging": false
     },
     {
-      "rank": 56,
+      "rank": 55,
       "full_name": "aigclink/geolook",
       "url": "https://github.com/aigclink/geolook",
       "description": "Open-source end-to-end GEO implementation: status analysis, diagnosis, strategy, tickets, execution, verification",
@@ -1577,7 +1567,7 @@
       "emerging": false
     },
     {
-      "rank": 57,
+      "rank": 56,
       "full_name": "flatkey-ai/flatkey-cli",
       "url": "https://github.com/flatkey-ai/flatkey-cli",
       "description": "Flatkey media generation CLI for images, videos, audio, text, credits, and model discovery.",
@@ -1591,7 +1581,7 @@
       "emerging": false
     },
     {
-      "rank": 58,
+      "rank": 57,
       "full_name": "MaxFreedomPollard/Compartment",
       "url": "https://github.com/MaxFreedomPollard/Compartment",
       "description": "Encrypted, fully offline agentic memory. One click install, GUI w/ memory map, all OS and agents. Superior memory creation, storage and retr",
@@ -1605,7 +1595,7 @@
       "emerging": false
     },
     {
-      "rank": 59,
+      "rank": 58,
       "full_name": "sv-number/mcp-server",
       "url": "https://github.com/sv-number/mcp-server",
       "description": "MCP server for AI agents that need a phone number: order a private number in 200+ countries, read the SMS verification code, hand it back. T",
@@ -1619,7 +1609,7 @@
       "emerging": false
     },
     {
-      "rank": 60,
+      "rank": 59,
       "full_name": "decionis/agent-safe-pipeline",
       "url": "https://github.com/decionis/agent-safe-pipeline",
       "description": "Reference architecture for AI agents that propose actions but cannot authorize them — immutable intent capture, an independent Decionis poli",
@@ -1633,7 +1623,7 @@
       "emerging": false
     },
     {
-      "rank": 61,
+      "rank": 60,
       "full_name": "criptogus/HermesOffice",
       "url": "https://github.com/criptogus/HermesOffice",
       "description": "AI-native office suite (Docs, Sheets, Slides, PDF) where the Hermes Agent is the brain — open standards, byte-preserving round-trip, 100% lo",
@@ -1647,7 +1637,7 @@
       "emerging": false
     },
     {
-      "rank": 62,
+      "rank": 61,
       "full_name": "deerwork-ai/deer-workflow",
       "url": "https://github.com/deerwork-ai/deer-workflow",
       "description": "An open-source graph engineering runtime that keeps orchestration in TypeScript and delegates semantic work to replaceable Agent runtimes.",
@@ -1661,7 +1651,7 @@
       "emerging": false
     },
     {
-      "rank": 63,
+      "rank": 62,
       "full_name": "jundizhou/easy-stock",
       "url": "https://github.com/jundizhou/easy-stock",
       "description": "A 股行情分析与AI智能投研智能体——easy stock",
@@ -1669,6 +1659,20 @@
       "topic": "llm",
       "stars": 488,
       "forks": 7,
+      "license": "",
+      "gained": 0,
+      "momentum": 0,
+      "emerging": false
+    },
+    {
+      "rank": 63,
+      "full_name": "fy-agent/fyagent",
+      "url": "https://github.com/fy-agent/fyagent",
+      "description": "For You Agent——AI 时代的个人随身数字人格。把你的模型、AI 账号、技能、提示词和工作方式，带到每一个 AI 工具里。",
+      "language": "Rust",
+      "topic": "llm",
+      "stars": 448,
+      "forks": 48,
       "license": "",
       "gained": 0,
       "momentum": 0,
@@ -1802,6 +1806,20 @@
     },
     {
       "rank": 73,
+      "full_name": "dondai44423/donsetch",
+      "url": "https://github.com/dondai44423/donsetch",
+      "description": "Web fetch, search, and crawl for AI agents. Built from scratch in Rust. No keys, no accounts. AGPL v3.",
+      "language": "Rust",
+      "topic": "mcp",
+      "stars": 349,
+      "forks": 17,
+      "license": "AGPL-3.0",
+      "gained": 0,
+      "momentum": 0,
+      "emerging": false
+    },
+    {
+      "rank": 74,
       "full_name": "CyberSunil/LLMVault",
       "url": "https://github.com/CyberSunil/LLMVault",
       "description": "An intentionally vulnerable OWASP LLM Top 10 training platform for AI Security, Prompt Injection, RAG Security, Agent Security, and GenAI pe",
@@ -1815,7 +1833,7 @@
       "emerging": false
     },
     {
-      "rank": 74,
+      "rank": 75,
       "full_name": "Appllama/appllama-skills",
       "url": "https://github.com/Appllama/appllama-skills",
       "description": "A builder, not just a researcher. Agent skills that turn top-grossing app patterns into native-quality mobile screens.",
@@ -1829,7 +1847,7 @@
       "emerging": false
     },
     {
-      "rank": 75,
+      "rank": 76,
       "full_name": "Mr-funny/hbg-classical-poem-silk-video",
       "url": "https://github.com/Mr-funny/hbg-classical-poem-silk-video",
       "description": "Agent Skill for turning Chinese classical poems into vertical Chinese-art videos with ImageGen stills, Docker I2V, calligraphy captions, ret",
@@ -1843,7 +1861,7 @@
       "emerging": false
     },
     {
-      "rank": 76,
+      "rank": 77,
       "full_name": "Carasibana/ComfyUI-H3-FaceRefine",
       "url": "https://github.com/Carasibana/ComfyUI-H3-FaceRefine",
       "description": "Refine and improve the quality of small faces in MiniMax H3 video. Per-frame face tracking, crop, refine with H3, stitch back.",
@@ -1857,7 +1875,7 @@
       "emerging": false
     },
     {
-      "rank": 77,
+      "rank": 78,
       "full_name": "i3T4AN/KADATH",
       "url": "https://github.com/i3T4AN/KADATH",
       "description": "Evolutionary multi-agent runtime that breeds, evaluates, and improves autonomous agents across reproducible epochs to converge on optimizati",
@@ -1871,7 +1889,7 @@
       "emerging": false
     },
     {
-      "rank": 78,
+      "rank": 79,
       "full_name": "agentpit-io/hunter-community",
       "url": "https://github.com/agentpit-io/hunter-community",
       "description": "Hunter Community Edition · your private financial AI team · open-source self-hosted · powered by opencode + MCP + multi-agent · 15 min docke",
@@ -1885,7 +1903,7 @@
       "emerging": false
     },
     {
-      "rank": 79,
+      "rank": 80,
       "full_name": "NoizAI/HelixWorld",
       "url": "https://github.com/NoizAI/HelixWorld",
       "description": "🪐 HelixWorld: real-time interactive audio-visual world model.",
@@ -1899,7 +1917,7 @@
       "emerging": false
     },
     {
-      "rank": 80,
+      "rank": 81,
       "full_name": "cristicretu/diri",
       "url": "https://github.com/cristicretu/diri",
       "description": "Native macOS orchestrator for coding agents — run Claude Code, Codex, Cursor, Gemini and shells in parallel across git worktrees and remote ",
@@ -1913,7 +1931,7 @@
       "emerging": false
     },
     {
-      "rank": 81,
+      "rank": 82,
       "full_name": "mrpulor-gh/nuphus-mcp",
       "url": "https://github.com/mrpulor-gh/nuphus-mcp",
       "description": "Desktop automation MCP server — computer use for any AI agent: control screen, windows, mouse/keyboard, and Chrome via Model Context Protoco",
@@ -1927,7 +1945,7 @@
       "emerging": false
     },
     {
-      "rank": 82,
+      "rank": 83,
       "full_name": "Get-Concord-AI/concord-mcp",
       "url": "https://github.com/Get-Concord-AI/concord-mcp",
       "description": "Live messaging for coding agents",
@@ -1941,7 +1959,7 @@
       "emerging": false
     },
     {
-      "rank": 83,
+      "rank": 84,
       "full_name": "ZSeven-W/dsh-ios",
       "url": "https://github.com/ZSeven-W/dsh-ios",
       "description": "DeepSeek Harness (DSH) plugin: a live iOS Simulator — and a USB-connected iPhone — inside the conversation. 22 agent tools for booting, buil",
@@ -1955,7 +1973,7 @@
       "emerging": false
     },
     {
-      "rank": 84,
+      "rank": 85,
       "full_name": "KimGLee/Cambium",
       "url": "https://github.com/KimGLee/Cambium",
       "description": "Governance standard and reference toolset for LLM-maintained knowledge corpora",
@@ -1969,7 +1987,7 @@
       "emerging": false
     },
     {
-      "rank": 85,
+      "rank": 86,
       "full_name": "PatilShreyas/debroid",
       "url": "https://github.com/PatilShreyas/debroid",
       "description": "Autonomous, headless Android debugger designed for AI coding agents. Inspect runtime memory, set breakpoints, and debug live apps.",
@@ -1983,7 +2001,7 @@
       "emerging": false
     },
     {
-      "rank": 86,
+      "rank": 87,
       "full_name": "amitshekhariitbhu/llm-inference-engineering",
       "url": "https://github.com/amitshekhariitbhu/llm-inference-engineering",
       "description": "Learn LLM Inference Engineering step by step - from KV cache, PagedAttention, and continuous batching to vLLM, SGLang, and GPUs.",
@@ -1997,7 +2015,7 @@
       "emerging": false
     },
     {
-      "rank": 87,
+      "rank": 88,
       "full_name": "AgentSwarms-fyi/agentswarms",
       "url": "https://github.com/AgentSwarms-fyi/agentswarms",
       "description": "Unified Agentic AI and Business Intelligence Platform",
@@ -2011,7 +2029,7 @@
       "emerging": false
     },
     {
-      "rank": 88,
+      "rank": 89,
       "full_name": "HezaoHezao/poirot",
       "url": "https://github.com/HezaoHezao/poirot",
       "description": "Poirot is a deep research agent kernel built for those who care about how agents are architected. ",
@@ -2025,7 +2043,7 @@
       "emerging": false
     },
     {
-      "rank": 89,
+      "rank": 90,
       "full_name": "PromptPartner/agentsmith",
       "url": "https://github.com/PromptPartner/agentsmith",
       "description": "Universal, model-agnostic operating harness for AI agents (Claude, Codex, Gemini, …) — a lean core + work-type profiles assembled by one set",
@@ -2039,7 +2057,7 @@
       "emerging": false
     },
     {
-      "rank": 90,
+      "rank": 91,
       "full_name": "AlgoNoRhythm/Flare",
       "url": "https://github.com/AlgoNoRhythm/Flare",
       "description": "The graph based agentic IDE",
@@ -2053,7 +2071,7 @@
       "emerging": false
     },
     {
-      "rank": 91,
+      "rank": 92,
       "full_name": "Gnosil/semantix",
       "url": "https://github.com/Gnosil/semantix",
       "description": "semantic agent kernel which make agent efficient and self-evolve",
@@ -2067,7 +2085,7 @@
       "emerging": false
     },
     {
-      "rank": 92,
+      "rank": 93,
       "full_name": "Vendredi218/awesome-ai-harness",
       "url": "https://github.com/Vendredi218/awesome-ai-harness",
       "description": "The model is the engine; the harness is the car. Curated knowledge on harness engineering — context management, tool design, agent loops, me",
@@ -2081,7 +2099,7 @@
       "emerging": false
     },
     {
-      "rank": 93,
+      "rank": 94,
       "full_name": "krishagarwal314/CodeJury",
       "url": "https://github.com/krishagarwal314/CodeJury",
       "description": "Terminal-first, knowledge-grounded multi-agent software delivery pipeline: scope requirements, implement changes, run tests, and gate pull r",
@@ -2095,7 +2113,7 @@
       "emerging": false
     },
     {
-      "rank": 94,
+      "rank": 95,
       "full_name": "memoket/memoket-kite",
       "url": "https://github.com/memoket/memoket-kite",
       "description": "An open-source, vector-free long-term memory engine for AI agents, achieving SOTA on LoCoMo and LongMemEval with significantly less context.",
@@ -2109,7 +2127,7 @@
       "emerging": false
     },
     {
-      "rank": 95,
+      "rank": 96,
       "full_name": "zorost/AI-Engineering-Lab",
       "url": "https://github.com/zorost/AI-Engineering-Lab",
       "description": "A free, self-paced 24-week AI engineering course: Python, machine learning, LLMs, RAG, fine-tuning, agents and MCP, Azure and Vertex and Bed",
@@ -2123,7 +2141,7 @@
       "emerging": false
     },
     {
-      "rank": 96,
+      "rank": 97,
       "full_name": "wanmol/goal-flow",
       "url": "https://github.com/wanmol/goal-flow",
       "description": "Graph-Orchestrated Agent Loop — a production-grade framework on LangGraph. Combine workflow graphs and agent loops, transpile Dify DSL to ru",
@@ -2137,7 +2155,7 @@
       "emerging": false
     },
     {
-      "rank": 97,
+      "rank": 98,
       "full_name": "YizhiSong/FriesTrader",
       "url": "https://github.com/YizhiSong/FriesTrader",
       "description": "Robinhood Agentic Trading agent — a fully automated AI trading bot placing real orders through Robinhood's Agentic Trading MCP, under mechan",
@@ -2151,7 +2169,7 @@
       "emerging": false
     },
     {
-      "rank": 98,
+      "rank": 99,
       "full_name": "astropuzzo/ComfyUI-MiniMax-H3-Image-Studio",
       "url": "https://github.com/astropuzzo/ComfyUI-MiniMax-H3-Image-Studio",
       "description": "ComfyUI nodes and tested workflows for MiniMax H3 still-image generation, reference editing, and Qwen detail refinement.",
@@ -2165,7 +2183,7 @@
       "emerging": false
     },
     {
-      "rank": 99,
+      "rank": 100,
       "full_name": "BeatAPI/awesome-minimax-h3-prompts",
       "url": "https://github.com/BeatAPI/awesome-minimax-h3-prompts",
       "description": "🎬 Curated MiniMax H3 video generation prompts — cinematic, ads, anime, UGC, product videos, and more. Includes playable examples and creator",
@@ -2179,7 +2197,7 @@
       "emerging": false
     },
     {
-      "rank": 100,
+      "rank": 101,
       "full_name": "h4444433333/net-deep-research",
       "url": "https://github.com/h4444433333/net-deep-research",
       "description": "Deep research skill for AI agents: live web research, source reputation checks, safer URL fetches, and structured evidence feedback.",
@@ -2193,7 +2211,7 @@
       "emerging": false
     },
     {
-      "rank": 101,
+      "rank": 102,
       "full_name": "dnv2003/v100-skinny",
       "url": "https://github.com/dnv2003/v100-skinny",
       "description": "Hand-written NVFP4 W4A16 CUDA kernels for Volta",
@@ -2207,7 +2225,7 @@
       "emerging": false
     },
     {
-      "rank": 102,
+      "rank": 103,
       "full_name": "Nathanw1014/strix-halo-llamacpp",
       "url": "https://github.com/Nathanw1014/strix-halo-llamacpp",
       "description": "Performance-tuned llama.cpp for AMD Strix Halo (gfx1151): FA + MoE-prefill fixes with a bundled current Mesa driver. Vulkan and HIP; portabl",
@@ -2221,7 +2239,7 @@
       "emerging": false
     },
     {
-      "rank": 103,
+      "rank": 104,
       "full_name": "irzix/nestjs-agentic",
       "url": "https://github.com/irzix/nestjs-agentic",
       "description": "The NestJS-native runtime for governed AI agents",
@@ -2235,7 +2253,7 @@
       "emerging": false
     },
     {
-      "rank": 104,
+      "rank": 105,
       "full_name": "bybit-exchange/kaas",
       "url": "https://github.com/bybit-exchange/kaas",
       "description": "Turn scattered notes, docs and transcripts into a queryable Markdown wiki — an LLM knowledge-base compiler with MCP access, no embeddings, s",
@@ -2249,7 +2267,7 @@
       "emerging": false
     },
     {
-      "rank": 105,
+      "rank": 106,
       "full_name": "liyupi/yu-ai-learn",
       "url": "https://github.com/liyupi/yu-ai-learn",
       "description": "2026 年编程导航 AI 编程实战新项目，基于 Taro + React + FastAPI + DeepSeek 的 AI 闯关学习小程序，支持一句话 / 文本主题 AI 出题、闯关答题与即时讲解、联网搜索增强、RAG 私有知识库出题、AI 生图配图、微信登录与通关复盘报告。",
@@ -2263,7 +2281,7 @@
       "emerging": false
     },
     {
-      "rank": 106,
+      "rank": 107,
       "full_name": "NeelM0906/Mference",
       "url": "https://github.com/NeelM0906/Mference",
       "description": "Swift + Metal MoE inference for Apple Silicon: Qwen 3.6 35B at 23.5–29.3 tok/s decode with 2.20× faster long-prompt prefill on a 24 GB M5; G",
@@ -2277,7 +2295,7 @@
       "emerging": false
     },
     {
-      "rank": 107,
+      "rank": 108,
       "full_name": "Ali-hey-0/ai-runtime-lab",
       "url": "https://github.com/Ali-hey-0/ai-runtime-lab",
       "description": "Engineering deterministic, production-grade systems around non-deterministic LLMs — FSM, durable execution, retries, DAGs, agent runtimes, m",
@@ -2291,7 +2309,7 @@
       "emerging": false
     },
     {
-      "rank": 108,
+      "rank": 109,
       "full_name": "z15114664687-dot/hr-onboarding-agent",
       "url": "https://github.com/z15114664687-dot/hr-onboarding-agent",
       "description": "Open-source AI-assisted HR onboarding for Feishu/Lark: configurable workflows, document OCR and review, Bitable sync, reminders, and a zero-",
@@ -2305,7 +2323,7 @@
       "emerging": false
     },
     {
-      "rank": 109,
+      "rank": 110,
       "full_name": "drpwchen/textbook-to-note",
       "url": "https://github.com/drpwchen/textbook-to-note",
       "description": "Turn your own PDF textbooks into an AI-searchable knowledge base and structured, fully-cited notes — figures included. Local-first, token-fr",
@@ -2319,7 +2337,7 @@
       "emerging": false
     },
     {
-      "rank": 110,
+      "rank": 111,
       "full_name": "vins13pattar/principal-ai-engineer-handbook",
       "url": "https://github.com/vins13pattar/principal-ai-engineer-handbook",
       "description": "Production AI Systems, Agentic AI & Distributed Infrastructure",
@@ -2333,7 +2351,7 @@
       "emerging": false
     },
     {
-      "rank": 111,
+      "rank": 112,
       "full_name": "wladimiravila/esp32s3-distributed-ai",
       "url": "https://github.com/wladimiravila/esp32s3-distributed-ai",
       "description": "Distributed 56M-parameter LLM inference across 3 ESP32-S3 boards via ESP-NOW , Split-PLE + KV cache, fully offline.",
@@ -2347,7 +2365,7 @@
       "emerging": false
     },
     {
-      "rank": 112,
+      "rank": 113,
       "full_name": "memovai/mimimodel",
       "url": "https://github.com/memovai/mimimodel",
       "description": "MimiModel: Agentic LLM on a $5 chip. 100% on-device. Private by design.",
@@ -2361,7 +2379,7 @@
       "emerging": false
     },
     {
-      "rank": 113,
+      "rank": 114,
       "full_name": "rafmacalaba/armada",
       "url": "https://github.com/rafmacalaba/armada",
       "description": "Loop engineering for software development. Turn any repository into a self-organizing AI engineering team — 8 specialists, contract-driven, ",
@@ -2375,7 +2393,7 @@
       "emerging": false
     },
     {
-      "rank": 114,
+      "rank": 115,
       "full_name": "Hilbert-beinghappy/seektty",
       "url": "https://github.com/Hilbert-beinghappy/seektty",
       "description": "Pluggable DeepSeek-colored TUI for DeepSeek Harness",
@@ -2389,7 +2407,7 @@
       "emerging": false
     },
     {
-      "rank": 115,
+      "rank": 116,
       "full_name": "Keksuccino/Better-Codex-App-Custom-Provider-Support",
       "url": "https://github.com/Keksuccino/Better-Codex-App-Custom-Provider-Support",
       "description": "Adds support for selecting a custom model provider to use for a thread/chat, without logging out of your ChatGPT account.",
@@ -2403,7 +2421,7 @@
       "emerging": false
     },
     {
-      "rank": 116,
+      "rank": 117,
       "full_name": "unstonio/pixelgpt-24x24",
       "url": "https://github.com/unstonio/pixelgpt-24x24",
       "description": "Tiny local text-to-24x24 pixel art model, trained on roughly 200K samples in 30 minutes on an RTX 5090.",
@@ -2417,7 +2435,7 @@
       "emerging": false
     },
     {
-      "rank": 117,
+      "rank": 118,
       "full_name": "WayneJin0918/Omni-Rewriter",
       "url": "https://github.com/WayneJin0918/Omni-Rewriter",
       "description": "Open agentic prompt-expansion harness for image and video generation, bridging polished demos, public APIs, and deployable workflows.",
@@ -2431,7 +2449,7 @@
       "emerging": false
     },
     {
-      "rank": 118,
+      "rank": 119,
       "full_name": "YintongHuo/awesome-agent-trajectory",
       "url": "https://github.com/YintongHuo/awesome-agent-trajectory",
       "description": "A collection of agent trajectory analysis techniques and benchmark",
@@ -2445,7 +2463,7 @@
       "emerging": false
     },
     {
-      "rank": 119,
+      "rank": 120,
       "full_name": "deepmemteam/deepmem",
       "url": "https://github.com/deepmemteam/deepmem",
       "description": "Drop-in AI memory layer with 2x faster response and 10x lower cost. Fully compatible with Mem0 API. Migrate in 5 minutes without any code ch",
@@ -2459,7 +2477,7 @@
       "emerging": false
     },
     {
-      "rank": 120,
+      "rank": 121,
       "full_name": "Greninja9257/LabLLM",
       "url": "https://github.com/Greninja9257/LabLLM",
       "description": "A native macOS lab for teaching tiny language models to think — build the architecture, train the weights, and watch a small LLM emerge from",
@@ -2473,7 +2491,7 @@
       "emerging": false
     },
     {
-      "rank": 121,
+      "rank": 122,
       "full_name": "pbshgthm/arc-skill",
       "url": "https://github.com/pbshgthm/arc-skill",
       "description": "An agent skill that plays ARC-AGI-3. One rule: say what an action will do before you spend it. Claude Code on Opus 5 finished all 25 public ",
@@ -2487,7 +2505,7 @@
       "emerging": false
     },
     {
-      "rank": 122,
+      "rank": 123,
       "full_name": "dacnay816y62-hub/fantasy-dongfang-jianyuehaibao",
       "url": "https://github.com/dacnay816y62-hub/fantasy-dongfang-jianyuehaibao",
       "description": "东方文化编辑海报 v2 Codex skill：Image 2 出图、中文标题精炼、真实文化物证、A/B/C 三联测试",
@@ -2501,7 +2519,7 @@
       "emerging": false
     },
     {
-      "rank": 123,
+      "rank": 124,
       "full_name": "SergiioB/intel-arc-pro-b70-inference-cookbook",
       "url": "https://github.com/SergiioB/intel-arc-pro-b70-inference-cookbook",
       "description": "Open recipes, engine patches, and benchmark harnesses for LLM inference on Intel Arc Pro B60/B70 (Battlemage, Xe2). MoE 35B at 160 t/s decod",
@@ -2515,7 +2533,7 @@
       "emerging": false
     },
     {
-      "rank": 124,
+      "rank": 125,
       "full_name": "swping999/scene-card-studio",
       "url": "https://github.com/swping999/scene-card-studio",
       "description": "AI visual director for turning personal photos into structured, editable visual narratives.",
@@ -2529,7 +2547,7 @@
       "emerging": false
     },
     {
-      "rank": 125,
+      "rank": 126,
       "full_name": "worldbench/DiffusionOPSD",
       "url": "https://github.com/worldbench/DiffusionOPSD",
       "description": "🔥 On-Policy Self-Distillation in Diffusion Models",
@@ -2543,7 +2561,7 @@
       "emerging": false
     },
     {
-      "rank": 126,
+      "rank": 127,
       "full_name": "helasaoudi/llm-inspector",
       "url": "https://github.com/helasaoudi/llm-inspector",
       "description": "The htop for LLM inference  see exactly where every GB of VRAM goes and get measured quantization savings.",
@@ -2557,7 +2575,7 @@
       "emerging": false
     },
     {
-      "rank": 127,
+      "rank": 128,
       "full_name": "yalun753/moe-l2",
       "url": "https://github.com/yalun753/moe-l2",
       "description": "MoE expert offload for low-VRAM GPUs — run 100B+ MoE models (DeepSeek, Qwen, Mixtral) on 8 GB cards. Expert cache with LRU hot experts, Open",
@@ -2571,7 +2589,7 @@
       "emerging": false
     },
     {
-      "rank": 128,
+      "rank": 129,
       "full_name": "Tylogi/TyloQuant",
       "url": "https://github.com/Tylogi/TyloQuant",
       "description": "Get more intelligence from every bit. Better quantization formats and smarter calibration let larger, stronger models run smoothly on the ha",
@@ -2585,7 +2603,7 @@
       "emerging": false
     },
     {
-      "rank": 129,
+      "rank": 130,
       "full_name": "MoMoM101/RAG-ReActAgent",
       "url": "https://github.com/MoMoM101/RAG-ReActAgent",
       "description": "RAG ReAct Agent - A Retrieval-Augmented Generation system with ReAct (Reasoning+Acting) agent loop for intelligent question answering with m",
@@ -2599,7 +2617,7 @@
       "emerging": false
     },
     {
-      "rank": 130,
+      "rank": 131,
       "full_name": "melocream/awesome-llm-study",
       "url": "https://github.com/melocream/awesome-llm-study",
       "description": "LLM/ML 스터디·지식공유 큐레이션 — 검증된 강의·논문·자료 링크 (by @melocream · marblo.app)",
@@ -2613,7 +2631,7 @@
       "emerging": false
     },
     {
-      "rank": 131,
+      "rank": 132,
       "full_name": "AhmadHassan-BTed/OpenOPC-Shadow-Adapter",
       "url": "https://github.com/AhmadHassan-BTed/OpenOPC-Shadow-Adapter",
       "description": "Zero-modification Human-in-the-Loop adapter for OpenOPC's agentic DAG runtime.",
@@ -2627,7 +2645,7 @@
       "emerging": false
     },
     {
-      "rank": 132,
+      "rank": 133,
       "full_name": "AI4CharityPL/kancelaria-lex",
       "url": "https://github.com/AI4CharityPL/kancelaria-lex",
       "description": "Fully local AI for Polish legal case files - zero fabricated citations by construction. Free; please support a Wroclaw animal shelter instea",
@@ -2641,7 +2659,7 @@
       "emerging": false
     },
     {
-      "rank": 133,
+      "rank": 134,
       "full_name": "karthikreddy-7/ai-engineering-playbook",
       "url": "https://github.com/karthikreddy-7/ai-engineering-playbook",
       "description": "A zero-to-100 learning path for applied AI engineering — RAG, embeddings, vector search, agents, MCP, and the production engineering around ",
@@ -2655,7 +2673,7 @@
       "emerging": false
     },
     {
-      "rank": 134,
+      "rank": 135,
       "full_name": "ArihantDeva/heimdall",
       "url": "https://github.com/ArihantDeva/heimdall",
       "description": "A lightweight CPU only memory approach with ranked retrieval. Simple, yet effective.",
@@ -2669,7 +2687,7 @@
       "emerging": false
     },
     {
-      "rank": 135,
+      "rank": 136,
       "full_name": "GGBond121211/CodeInsight",
       "url": "https://github.com/GGBond121211/CodeInsight",
       "description": "基于 Hybrid RAG 与 LangGraph 的本地代码仓库理解工具，支持中英文提问、语义检索、证据引用和多问题拆分",
@@ -2683,7 +2701,7 @@
       "emerging": false
     },
     {
-      "rank": 136,
+      "rank": 137,
       "full_name": "Cripacx/mediagen",
       "url": "https://github.com/Cripacx/mediagen",
       "description": "AI image and video generation skill for Claude Code and other coding agents — Gemini, OpenAI and Kie AI behind one CLI and MCP server, with ",
@@ -2697,7 +2715,7 @@
       "emerging": false
     },
     {
-      "rank": 137,
+      "rank": 138,
       "full_name": "Hao0321/ai-short-drama",
       "url": "https://github.com/Hao0321/ai-short-drama",
       "description": "AI short-drama story architecture, Studio routing, model-aware shot timelines, continuity, validation, and resumable workflows for Codex and",
@@ -2711,7 +2729,7 @@
       "emerging": false
     },
     {
-      "rank": 138,
+      "rank": 139,
       "full_name": "FareedKhan-dev/glm-5.2-in-c",
       "url": "https://github.com/FareedKhan-dev/glm-5.2-in-c",
       "description": "GLM-5.2, a 744 billion parameter mixture of experts model, in a pure C inference engine: quantized to int4, experts streamed from disk, depl",
@@ -2725,7 +2743,7 @@
       "emerging": false
     },
     {
-      "rank": 139,
+      "rank": 140,
       "full_name": "MaximilianYes/Build-ai-agent-no-code",
       "url": "https://github.com/MaximilianYes/Build-ai-agent-no-code",
       "description": "Learn how to build 24/7 automated AI agents & chatbots for your website, SaaS, or Shopify store with zero coding required.",
@@ -2739,7 +2757,7 @@
       "emerging": false
     },
     {
-      "rank": 140,
+      "rank": 141,
       "full_name": "Vaquill-AI/open-us-law",
       "url": "https://github.com/Vaquill-AI/open-us-law",
       "description": "Open, structured corpus of US primary law: 2M+ sections of state statutory codes, the US Code, and state constitutions, plus the ingestion p",
@@ -2753,7 +2771,7 @@
       "emerging": false
     },
     {
-      "rank": 141,
+      "rank": 142,
       "full_name": "fyfsxkh/TokBrain",
       "url": "https://github.com/fyfsxkh/TokBrain",
       "description": "Preserve knowledge, sustain wisdom forever.",
@@ -2767,7 +2785,7 @@
       "emerging": false
     },
     {
-      "rank": 142,
+      "rank": 143,
       "full_name": "Johnson-Durui/Companion-Space",
       "url": "https://github.com/Johnson-Durui/Companion-Space",
       "description": "本地优先的二次元陪伴学习应用 · Local-first anime companion and study app.",
@@ -2781,7 +2799,7 @@
       "emerging": false
     },
     {
-      "rank": 143,
+      "rank": 144,
       "full_name": "Evvvvvvvan/XianYuSmart",
       "url": "https://github.com/Evvvvvvvan/XianYuSmart",
       "description": "闲鱼全流程自动化运营系统：从商机挖掘、商品发布，到 AI 客服、固定内容/卡密自动发货、评价与售后跟进一站式完成；支持多账号、多租户、异常恢复和 Docker 自部署。",
@@ -2795,7 +2813,7 @@
       "emerging": false
     },
     {
-      "rank": 144,
+      "rank": 145,
       "full_name": "scenepilotLLM/scenepilot",
       "url": "https://github.com/scenepilotLLM/scenepilot",
       "description": "World's first open-source, agentic video production system. 12 production pipelines, 100+ tools, 700+ agent skill and production-knowledge f",
@@ -2809,7 +2827,7 @@
       "emerging": false
     },
     {
-      "rank": 145,
+      "rank": 146,
       "full_name": "worldbench/awesome-agentic-world-model",
       "url": "https://github.com/worldbench/awesome-agentic-world-model",
       "description": "🔥 Quo Vadis, World Modeling? Towards Interactive World Proxies for Continually Improving Agents",
@@ -2823,7 +2841,7 @@
       "emerging": false
     },
     {
-      "rank": 146,
+      "rank": 147,
       "full_name": "formetaohy/Thuban",
       "url": "https://github.com/formetaohy/Thuban",
       "description": "Fast, cross-platform LLM inference engine in Rust. Runs anywhere, no CUDA.",
@@ -2837,7 +2855,7 @@
       "emerging": false
     },
     {
-      "rank": 147,
+      "rank": 148,
       "full_name": "bestdeejay-design/awesome-ai-handbook",
       "url": "https://github.com/bestdeejay-design/awesome-ai-handbook",
       "description": "A practical guide to AI: from running your first local model to building your own agents. 52 files covering LLMs, Ollama, RAG, prompt engine",
@@ -2851,7 +2869,7 @@
       "emerging": false
     },
     {
-      "rank": 148,
+      "rank": 149,
       "full_name": "0xBakeer/Qwen3.8-27B-FP8-on-a-single-DGX-Spark",
       "url": "https://github.com/0xBakeer/Qwen3.8-27B-FP8-on-a-single-DGX-Spark",
       "description": "Serving Qwen3.8-27B-FP8 on a single DGX Spark (GB10): 7.88 to 58.5 tok/s single-stream from decode strategy alone, weights untouched. Specul",
@@ -2865,7 +2883,7 @@
       "emerging": false
     },
     {
-      "rank": 149,
+      "rank": 150,
       "full_name": "Drobiazkin/ai-agent-architecture",
       "url": "https://github.com/Drobiazkin/ai-agent-architecture",
       "description": "Build LLM systems you actually control. A free, open engineering book + course — from tokenization to serving your own models. Mechanisms, t",
@@ -2879,7 +2897,7 @@
       "emerging": false
     },
     {
-      "rank": 150,
+      "rank": 151,
       "full_name": "antonellof/ferrox",
       "url": "https://github.com/antonellof/ferrox",
       "description": "Pure-Rust GGUF inference engine with quantized CPU, Metal & CUDA kernels, MoE support, OpenAI-compatible server. Benchmarked head-to-head ag",
@@ -2893,7 +2911,7 @@
       "emerging": false
     },
     {
-      "rank": 151,
+      "rank": 152,
       "full_name": "888newstep/ai-agent-platform",
       "url": "https://github.com/888newstep/ai-agent-platform",
       "description": "企业级 AI Agent 平台 | Spring Boot 3 + LangChain4j | ReAct 推理 + 多路召回 RAG + 语义缓存 + 多智能体协作",
@@ -2907,7 +2925,7 @@
       "emerging": false
     },
     {
-      "rank": 152,
+      "rank": 153,
       "full_name": "libnyx/LT2MD",
       "url": "https://github.com/libnyx/LT2MD",
       "description": "AI-agent skill producing reusable Markdown from PDFs. It turns flowcharts, diagrams, and charts into text beside each caption instead of emp",
@@ -2921,7 +2939,7 @@
       "emerging": false
     },
     {
-      "rank": 153,
+      "rank": 154,
       "full_name": "0xBakeer/Qwen3.8-27B-4-bit-on-a-single-DGX-Spark",
       "url": "https://github.com/0xBakeer/Qwen3.8-27B-4-bit-on-a-single-DGX-Spark",
       "description": "Serving 4-bit Qwen3.8-27B on a single DGX Spark (GB10): 75 tok/s single-stream, 246 tok/s aggregate at 8-way concurrency. NVFP4 vs MixedInt4",
@@ -2935,7 +2953,7 @@
       "emerging": false
     },
     {
-      "rank": 154,
+      "rank": 155,
       "full_name": "noyce6983981-max/ocr-vlm-local-retrieval",
       "url": "https://github.com/noyce6983981-max/ocr-vlm-local-retrieval",
       "description": "Local-first OCR-VLM multimodal document retrieval and independent evaluation prototype.",
@@ -2949,7 +2967,7 @@
       "emerging": false
     },
     {
-      "rank": 155,
+      "rank": 156,
       "full_name": "zjy1346/OpenThesis",
       "url": "https://github.com/zjy1346/OpenThesis",
       "description": "Open-source, model-agnostic AI company research for long-term investors. · 面向长期投资者的开源、模型无关 AI 公司研究系统。",
@@ -2963,7 +2981,7 @@
       "emerging": false
     },
     {
-      "rank": 156,
+      "rank": 157,
       "full_name": "jaeseok614/llm-gpu-checker-ko",
       "url": "https://github.com/jaeseok614/llm-gpu-checker-ko",
       "description": "AI hardware fit calculator for LLM, embedding, reranker, OCR and VLM workloads — VRAM, throughput, licensing and multi-GPU planning",
@@ -2977,7 +2995,7 @@
       "emerging": false
     },
     {
-      "rank": 157,
+      "rank": 158,
       "full_name": "EricSun0218/OpenGameAgent",
       "url": "https://github.com/EricSun0218/OpenGameAgent",
       "description": "Open-source C# agent runtime for AI NPCs and in-game agents. Structured context, ReAct tool use, complex task planning, memory, and reliable",
@@ -2991,7 +3009,7 @@
       "emerging": false
     },
     {
-      "rank": 158,
+      "rank": 159,
       "full_name": "RightNow-AI/local-kimi",
       "url": "https://github.com/RightNow-AI/local-kimi",
       "description": "Optimized local serving engine for Kimi-Linear-48B: INT4 quantizer, fused decode kernels for a measured 3.18x, and an OpenAI-compatible serv",
@@ -3005,7 +3023,7 @@
       "emerging": false
     },
     {
-      "rank": 159,
+      "rank": 160,
       "full_name": "sunyifeng11111/sun-felt-wechat-illustrator",
       "url": "https://github.com/sunyifeng11111/sun-felt-wechat-illustrator",
       "description": "为中文公众号文章生成真实 3D 毛毡质感的封面、正文配图与精确插入指南的 Codex Skill。",
@@ -3019,7 +3037,7 @@
       "emerging": false
     },
     {
-      "rank": 160,
+      "rank": 161,
       "full_name": "VantageInc/LucyLive-AI-Render",
       "url": "https://github.com/VantageInc/LucyLive-AI-Render",
       "description": "Real-time AI creative preview plugin for Cinema 4D",
@@ -3033,7 +3051,7 @@
       "emerging": false
     },
     {
-      "rank": 161,
+      "rank": 162,
       "full_name": "tonyd2wild/The-Sparky-Command-Center",
       "url": "https://github.com/tonyd2wild/The-Sparky-Command-Center",
       "description": "Plug-and-play, dependency-free web command center for DGX Spark fleets (and any GPU boxes): live per-node GPU/CPU/mem/temps/power, optional ",
@@ -3047,7 +3065,7 @@
       "emerging": false
     },
     {
-      "rank": 162,
+      "rank": 163,
       "full_name": "GregorBiswanger/featherspec",
       "url": "https://github.com/GregorBiswanger/featherspec",
       "description": "A featherweight spec-driven development template with a Memory Bank, for Claude Code and GitHub Copilot.",
@@ -3061,7 +3079,7 @@
       "emerging": false
     },
     {
-      "rank": 163,
+      "rank": 164,
       "full_name": "baker27727/ds4-8gb-cpu",
       "url": "https://github.com/baker27727/ds4-8gb-cpu",
       "description": "DeepSeek V4 Flash CPU/NVMe research fork: 78.62 GiB GGUF validated on 7.7 GiB RAM, CPU-only, using demand paging.",
@@ -3069,20 +3087,6 @@
       "topic": "llm-inference",
       "stars": 34,
       "forks": 11,
-      "license": "MIT",
-      "gained": 0,
-      "momentum": 0,
-      "emerging": false
-    },
-    {
-      "rank": 164,
-      "full_name": "Ninnix/q36",
-      "url": "https://github.com/Ninnix/q36",
-      "description": "Qwen3.6-35B-A3B local inference engine for Vulkan and Metal",
-      "language": "C",
-      "topic": "llm-inference",
-      "stars": 34,
-      "forks": 5,
       "license": "MIT",
       "gained": 0,
       "momentum": 0,
@@ -3276,34 +3280,36 @@
           197062,
           197761,
           197928,
-          197929
+          197929,
+          197933
         ],
-        "last": 197929,
+        "last": 197933,
         "growth_pct": 31,
-        "velocity": 5276
+        "velocity": 5274
       },
       {
-        "full_name": "CopilotKit/OpenBot",
-        "url": "https://github.com/CopilotKit/OpenBot",
+        "full_name": "img2threejs/img2threejs",
+        "url": "https://github.com/img2threejs/img2threejs",
         "values": [
-          2920,
-          2920,
-          2920,
-          2920,
-          2923,
-          2923,
-          2925,
-          2925,
-          2925,
-          2935,
-          2970,
-          3009,
-          3024,
-          3025
+          13802,
+          13802,
+          13802,
+          13802,
+          13806,
+          13807,
+          13815,
+          13817,
+          13819,
+          13857,
+          13927,
+          13995,
+          14016,
+          14016,
+          14017
         ],
-        "last": 3025,
-        "growth_pct": 4,
-        "velocity": 12
+        "last": 14017,
+        "growth_pct": 2,
+        "velocity": 24
       },
       {
         "full_name": "elie222/rakazo",
@@ -3322,57 +3328,60 @@
           1325,
           1340,
           1351,
-          1352
+          1352,
+          1353
         ],
-        "last": 1352,
+        "last": 1353,
         "growth_pct": 74,
         "velocity": 64
       },
       {
-        "full_name": "fy-agent/fyagent",
-        "url": "https://github.com/fy-agent/fyagent",
+        "full_name": "Pinvou/pinvou-agent",
+        "url": "https://github.com/Pinvou/pinvou-agent",
         "values": [
-          356,
-          356,
-          356,
-          356,
-          356,
-          356,
-          358,
-          359,
-          361,
-          373,
-          399,
-          429,
-          447,
-          448
+          906,
+          908,
+          930,
+          1263,
+          1264,
+          1264,
+          1265,
+          1265,
+          1265,
+          1270,
+          1282,
+          1293,
+          1297,
+          1297,
+          1298
         ],
-        "last": 448,
-        "growth_pct": 26,
-        "velocity": 10
+        "last": 1298,
+        "growth_pct": 43,
+        "velocity": 44
       },
       {
-        "full_name": "dondai44423/donsetch",
-        "url": "https://github.com/dondai44423/donsetch",
+        "full_name": "Ninnix/q36",
+        "url": "https://github.com/Ninnix/q36",
         "values": [
-          314,
-          314,
-          314,
-          314,
-          314,
-          314,
-          314,
-          314,
-          314,
-          314,
-          314,
-          314,
-          348,
-          349
+          31,
+          31,
+          31,
+          33,
+          33,
+          33,
+          33,
+          33,
+          33,
+          33,
+          34,
+          34,
+          34,
+          34,
+          35
         ],
-        "last": 349,
-        "growth_pct": 11,
-        "velocity": 4
+        "last": 35,
+        "growth_pct": 13,
+        "velocity": 0
       }
     ],
     "labels": [
@@ -3389,24 +3398,25 @@
       "2026-08-26T12:44:49.968188+00:00",
       "2026-08-26T19:44:39.758185+00:00",
       "2026-08-26T23:58:29.907967+00:00",
-      "2026-08-27T00:02:53.703448+00:00"
+      "2026-08-27T00:02:53.703448+00:00",
+      "2026-08-27T00:06:57.560718+00:00"
     ]
   },
   "movers": [
     {
       "full_name": "deepseek-ai/deepseek-harness",
       "url": "https://github.com/deepseek-ai/deepseek-harness",
-      "gained": 1,
-      "momentum": 14,
+      "gained": 4,
+      "momentum": 59,
       "topic": "ai-agents",
       "kind": "new",
       "threshold": null
     },
     {
-      "full_name": "CopilotKit/OpenBot",
-      "url": "https://github.com/CopilotKit/OpenBot",
+      "full_name": "img2threejs/img2threejs",
+      "url": "https://github.com/img2threejs/img2threejs",
       "gained": 1,
-      "momentum": 14,
+      "momentum": 15,
       "topic": "ai-agents",
       "kind": "new",
       "threshold": null
@@ -3415,35 +3425,26 @@
       "full_name": "elie222/rakazo",
       "url": "https://github.com/elie222/rakazo",
       "gained": 1,
-      "momentum": 14,
+      "momentum": 15,
       "topic": "llm",
       "kind": "new",
       "threshold": null
     },
     {
-      "full_name": "fy-agent/fyagent",
-      "url": "https://github.com/fy-agent/fyagent",
+      "full_name": "Pinvou/pinvou-agent",
+      "url": "https://github.com/Pinvou/pinvou-agent",
       "gained": 1,
-      "momentum": 14,
+      "momentum": 15,
       "topic": "llm",
       "kind": "new",
       "threshold": null
     },
     {
-      "full_name": "dondai44423/donsetch",
-      "url": "https://github.com/dondai44423/donsetch",
+      "full_name": "Ninnix/q36",
+      "url": "https://github.com/Ninnix/q36",
       "gained": 1,
-      "momentum": 14,
-      "topic": "mcp",
-      "kind": "new",
-      "threshold": null
-    },
-    {
-      "full_name": "img2threejs/img2threejs",
-      "url": "https://github.com/img2threejs/img2threejs",
-      "gained": 0,
-      "momentum": 0,
-      "topic": "ai-agents",
+      "momentum": 15,
+      "topic": "llm-inference",
       "kind": "new",
       "threshold": null
     },
@@ -3462,6 +3463,15 @@
       "gained": 0,
       "momentum": 0,
       "topic": "llm",
+      "kind": "new",
+      "threshold": null
+    },
+    {
+      "full_name": "Vincentwei1021/video-shotcraft",
+      "url": "https://github.com/Vincentwei1021/video-shotcraft",
+      "gained": 0,
+      "momentum": 0,
+      "topic": "ai-agents",
       "kind": "new",
       "threshold": null
     }
