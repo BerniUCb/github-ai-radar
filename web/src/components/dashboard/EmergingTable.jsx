@@ -2,6 +2,13 @@ import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { human, langColor } from "../../lib/data.js";
 
+// Plain-language definitions for the coined metrics, shown as column tooltips.
+const COL_HINTS = {
+  Gained: "Stars gained since the previous snapshot",
+  Momentum: "New stars per hour since the previous snapshot",
+  Status: "Emerging = 5+ ★/h with 50+ total stars; otherwise Steady",
+};
+
 export default function EmergingTable({ repos = [], topics = [] }) {
   const [query, setQuery] = useState("");
   const [topic, setTopic] = useState("all");
@@ -21,7 +28,10 @@ export default function EmergingTable({ repos = [], topics = [] }) {
   return (
     <div className="bg-surface-dark border border-border-dark rounded-xl flex flex-col overflow-hidden">
       <div className="p-lg border-b border-border-dark flex flex-col md:flex-row justify-between items-start md:items-center gap-md">
-        <h2 className="font-headline-md text-headline-md text-text-primary-dark">Emerging repositories</h2>
+        <div>
+          <h2 className="font-headline-md text-headline-md text-text-primary-dark">Emerging repositories</h2>
+          <p className="font-body-sm text-body-sm text-text-muted-dark mt-1">Emerging = gaining 5+ ★/h with 50+ total stars.</p>
+        </div>
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted-dark" />
@@ -55,7 +65,7 @@ export default function EmergingTable({ repos = [], topics = [] }) {
           <thead>
             <tr className="border-b border-border-dark bg-surface-container-low">
               {["Rank", "Repository", "Topic", "Stars", "Gained", "Momentum", "Status"].map((h, i) => (
-                <th key={h} className={`py-3 px-md font-label-caps text-label-caps text-text-muted-dark ${i >= 3 && i <= 4 ? "text-right" : ""}`}>{h}</th>
+                <th key={h} title={COL_HINTS[h]} className={`py-3 px-md font-label-caps text-label-caps text-text-muted-dark ${COL_HINTS[h] ? "cursor-help" : ""} ${i >= 3 && i <= 4 ? "text-right" : ""}`}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -84,9 +94,9 @@ export default function EmergingTable({ repos = [], topics = [] }) {
                 </td>
                 <td className="py-4 px-md text-center">
                   {r.emerging ? (
-                    <span className="px-2 py-0.5 rounded-full bg-primary-container/10 text-primary-container text-[10px] font-label-caps border border-primary-container/30 shadow-[0_0_8px_rgba(110,139,255,0.2)]">Emerging</span>
+                    <span title="Gaining 5+ ★/h with 50+ total stars" className="cursor-help px-2 py-0.5 rounded-full bg-primary-container/10 text-primary-container text-[10px] font-label-caps border border-primary-container/30 shadow-[0_0_8px_rgba(110,139,255,0.2)]">Emerging</span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-text-muted-dark text-[10px] font-label-caps"><span className="w-1.5 h-1.5 rounded-full bg-outline" />Steady</span>
+                    <span title="Below the emerging threshold (5+ ★/h with 50+ stars)" className="cursor-help inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-text-muted-dark text-[10px] font-label-caps"><span className="w-1.5 h-1.5 rounded-full bg-outline" aria-hidden="true" />Steady</span>
                   )}
                 </td>
               </tr>

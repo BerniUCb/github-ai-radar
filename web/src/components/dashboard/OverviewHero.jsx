@@ -35,7 +35,7 @@ export default function OverviewHero({ kpis: k, feature, topicCount }) {
           <a href={feature.url} target="_blank" rel="noopener noreferrer" className="lg:col-span-3 group flex flex-col">
             <div className="flex items-baseline gap-sm">
               <span className="font-mono-metrics text-[68px] leading-none tabular-nums text-secondary">{human(feature.momentum)}</span>
-              <span className="font-mono-metrics text-body-lg text-secondary-container">★/h</span>
+              <span title="New stars per hour since the last snapshot" className="cursor-help font-mono-metrics text-body-lg text-secondary-container">★/h</span>
               <span className="font-label-caps text-label-caps text-text-muted-dark uppercase tracking-wider ml-1">fastest riser</span>
             </div>
             <h2 className="mt-md font-headline-lg text-headline-lg text-on-surface group-hover:text-primary transition-colors flex items-center gap-2">
@@ -67,7 +67,7 @@ export default function OverviewHero({ kpis: k, feature, topicCount }) {
 
         {/* Ledger: supporting signals, hairline-separated, each with its trend */}
         <dl className="lg:col-span-2 flex flex-col justify-center divide-y divide-border-dark border-t border-border-dark">
-          <LedgerStat label="Emerging now" value={k.emerging_now} sub="breaking growth thresholds" accent />
+          <LedgerStat label="Emerging now" value={k.emerging_now} sub="gaining 5+ ★/h with 50+ stars" accent />
           <LedgerStat label="Repos tracked" value={human(k.repos_tracked)} sub={`across ${topicCount} AI topics`} />
           <LedgerStat label="Stars gained" value={human(k.stars_gained)} sub="since previous snapshot" />
         </dl>

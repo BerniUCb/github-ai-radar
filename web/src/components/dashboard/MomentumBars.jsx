@@ -4,6 +4,7 @@ export default function MomentumBars({ items = [] }) {
   return (
     <SectionCard
       title="Top momentum"
+      subtitle="New stars per hour since the last snapshot"
       actions={<span className="font-label-caps text-label-caps text-text-muted-dark bg-surface-container px-sm py-xs rounded">★ per hour</span>}
       className="flex flex-col"
     >
