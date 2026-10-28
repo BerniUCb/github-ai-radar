@@ -34,8 +34,8 @@ export default function LiveMoversFeed({ movers = [] }) {
                     )}
                   </p>
                   <div className="flex items-center gap-2">
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-label-caps bg-surface-container-high border border-border-dark text-text-muted-dark uppercase">{m.topic}</span>
-                    <span className="font-mono-metrics text-[10px] text-text-muted-dark">{human(m.momentum)} ★/h</span>
+                    <span className="px-1.5 py-0.5 rounded font-label-caps text-label-caps bg-surface-container-high border border-border-dark text-text-muted-dark">{m.topic}</span>
+                    <span className="font-mono-metrics text-label-caps text-text-muted-dark">{human(m.momentum)} ★/h</span>
                   </div>
                 </div>
               </div>

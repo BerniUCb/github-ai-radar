@@ -78,7 +78,7 @@ export default function InteractiveChart({ series = [], labels = [], area = fals
       onPointerLeave={() => setHover(null)}
     >
       {/* y-axis labels */}
-      <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-[10px] font-mono-metrics text-text-muted-dark pointer-events-none z-10">
+      <div className="absolute left-0 top-0 h-full flex flex-col justify-between font-mono-metrics text-label-caps text-text-muted-dark pointer-events-none z-10">
         <span>{fmt(max)}</span><span>{fmt((max + min) / 2)}</span><span>{fmt(min)}</span>
       </div>
 
@@ -116,7 +116,7 @@ export default function InteractiveChart({ series = [], labels = [], area = fals
           className="absolute z-20 bg-surface-container-high border border-border-dark rounded-lg p-3 shadow-lg pointer-events-none min-w-[160px]"
           style={{ left: `${hx}%`, top: 0, transform: `translateX(${tipSide})` }}
         >
-          {labels[hover] && <div className="text-[10px] font-label-caps text-text-muted-dark mb-2">{fmtLabel(labels[hover])}</div>}
+          {labels[hover] && <div className="font-label-caps text-label-caps text-text-muted-dark mb-2">{fmtLabel(labels[hover])}</div>}
           <div className="flex flex-col gap-1">
             {prepared.map((s) => (
               <div key={s.name} className="flex items-center justify-between gap-4 font-mono-metrics text-xs">

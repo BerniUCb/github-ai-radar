@@ -1,18 +1,21 @@
 import SectionCard from "./SectionCard.jsx";
 import { human } from "../../lib/data.js";
 import { TOPIC_PALETTE as COLORS } from "../../lib/colors.js";
+
 const R = 40;
 const C = 2 * Math.PI * R;
 
 export default function TopicDonut({ topics = [], total }) {
   const sum = (total ?? topics.reduce((s, t) => s + t.count, 0)) || 1;
+
+  // Each segment starts where the previous one ends, so the arcs tile the ring.
+  const segments = [];
   let offset = 0;
-  const segments = topics.map((t, i) => {
+  for (const [i, t] of topics.entries()) {
     const dash = (t.count / sum) * C;
-    const seg = { ...t, color: COLORS[i % COLORS.length], dash, offset: -offset };
+    segments.push({ ...t, color: COLORS[i % COLORS.length], dash, offset: -offset });
     offset += dash;
-    return seg;
-  });
+  }
 
   return (
     <SectionCard title="Repos by topic" className="flex flex-col">

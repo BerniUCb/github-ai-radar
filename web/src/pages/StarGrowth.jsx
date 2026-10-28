@@ -27,7 +27,7 @@ export default function StarGrowth() {
             <div className="font-label-caps text-label-caps text-text-muted-dark mb-1 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full" style={{ background: DOT[i % DOT.length] }} />{s.full_name}
             </div>
-            <div className="font-mono-metrics text-display-lg text-on-surface my-2">{human(s.last)}</div>
+            <div className="font-mono-metrics text-headline-lg text-on-surface my-2">{human(s.last)}</div>
             <div className="flex items-center gap-2 font-mono-metrics text-sm">
               <span className="text-secondary flex items-center bg-secondary/10 px-2 py-0.5 rounded text-xs">
                 <TrendingUp size={14} className="mr-1" /> {s.growth_pct != null ? `+${s.growth_pct}%` : "—"}

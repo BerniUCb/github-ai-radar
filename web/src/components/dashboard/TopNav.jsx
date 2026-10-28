@@ -132,7 +132,7 @@ export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = 
                         <span className="w-2 h-2 rounded-full shrink-0" style={{ background: langColor(r.language) }} />
                         <span className="flex-1 min-w-0">
                           <span className="block text-sm font-semibold text-on-surface truncate group-hover:text-primary">{r.full_name}</span>
-                          <span className="block text-[11px] text-text-muted-dark truncate">{r.topic} · {r.language || "—"}</span>
+                          <span className="block text-body-xs text-text-muted-dark truncate">{r.topic} · {r.language || "—"}</span>
                         </span>
                         <span className="flex items-center gap-1 text-xs font-mono-metrics text-text-muted-dark shrink-0">
                           <Star size={12} /> {human(r.stars)}
