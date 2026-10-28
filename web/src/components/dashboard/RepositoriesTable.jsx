@@ -51,6 +51,7 @@ export default function RepositoriesTable({ repos = [] }) {
     {
       key: "full_name",
       label: "Repository",
+      primary: true,
       cell: (r) => (
         <div className="flex items-start gap-sm">
           <BookMarked size={16} className="text-text-muted-dark mt-1 shrink-0" aria-hidden="true" />
@@ -108,6 +109,7 @@ export default function RepositoriesTable({ repos = [] }) {
       key: "action",
       label: "Action",
       align: "right",
+      footer: true,
       cell: (r) => (
         <button
           type="button"

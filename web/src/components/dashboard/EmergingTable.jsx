@@ -68,6 +68,7 @@ export default function EmergingTable({ repos = [], topics = [] }) {
       key: "full_name",
       label: "Repository",
       sortable: true,
+      primary: true,
       cell: (r) => (
         <>
           <button
