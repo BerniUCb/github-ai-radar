@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import DataTable from "./ui/DataTable.jsx";
 import FilterChips from "./ui/FilterChips.jsx";
 import SearchInput from "./ui/SearchInput.jsx";
+import { useRepoDetail } from "../../lib/repoDetail.js";
 import { human, langColor } from "../../lib/data.js";
 
 // Columns that sort A→Z first; every other column sorts high→low first.
@@ -12,6 +13,7 @@ const MOMENTUM_HINT = "New stars per hour since the previous snapshot";
 const STATUS_HINT = "Emerging = 5+ ★/h with 50+ total stars; otherwise Steady";
 
 export default function EmergingTable({ repos = [], topics = [] }) {
+  const openRepo = useRepoDetail();
   const [query, setQuery] = useState("");
   const [topic, setTopic] = useState("all");
   // Opens on emerging repos only, so the table matches its title. "All" shows
@@ -68,9 +70,13 @@ export default function EmergingTable({ repos = [], topics = [] }) {
       sortable: true,
       cell: (r) => (
         <>
-          <a href={r.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-primary group-hover:underline">
+          <button
+            type="button"
+            onClick={() => openRepo(r)}
+            className="font-semibold text-primary text-left hover:underline"
+          >
             {r.full_name}
-          </a>
+          </button>
           <div className="text-body-xs text-text-muted-dark truncate max-w-xs mt-0.5">{r.description}</div>
           <div className="flex items-center gap-1.5 mt-1">
             <span className="w-2 h-2 rounded-full" style={{ background: langColor(r.language) }} aria-hidden="true" />

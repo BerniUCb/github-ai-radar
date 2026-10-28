@@ -3,6 +3,7 @@ import { TrendingUp } from "lucide-react";
 import { human } from "../../lib/data.js";
 import { scale, linePath } from "../../lib/chart.js";
 import { BRAND } from "../../lib/colors.js";
+import { useRepoDetail } from "../../lib/repoDetail.js";
 
 function MiniSpark({ data }) {
   // Three cards render this, so the gradient id must be unique per instance.
@@ -23,6 +24,7 @@ function MiniSpark({ data }) {
 }
 
 export default function Podium({ repos = [] }) {
+  const openRepo = useRepoDetail();
   const top3 = repos.slice(0, 3);
   const rankColor = ["text-tertiary", "text-on-surface-variant", "text-tertiary-container"];
 
@@ -44,7 +46,7 @@ export default function Podium({ repos = [] }) {
               <TrendingUp size={14} className="text-secondary" /> Trending
             </span>
           </div>
-          <a href={r.url} target="_blank" rel="noopener noreferrer" className="font-headline-md text-headline-md text-text-primary-dark mb-1 truncate block hover:text-primary">{r.full_name}</a>
+          <button type="button" onClick={() => openRepo(r)} className="font-headline-md text-headline-md text-text-primary-dark mb-1 truncate block w-full text-left hover:text-primary">{r.full_name}</button>
           <p className="font-body-sm text-body-sm text-text-muted-dark mb-lg truncate">{r.description || "—"}</p>
           <div className="flex items-end justify-between">
             <div className="flex flex-col">

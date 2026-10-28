@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
-import { BookMarked, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { BookMarked, ChevronLeft, ChevronRight } from "lucide-react";
 import DataTable from "./ui/DataTable.jsx";
 import FilterChips from "./ui/FilterChips.jsx";
 import SearchInput from "./ui/SearchInput.jsx";
+import { useRepoDetail } from "../../lib/repoDetail.js";
 import { human, langColor } from "../../lib/data.js";
 
 const PAGE_SIZES = [10, 25, 50, 100];
@@ -14,6 +15,7 @@ const pageBtnCls =
   "w-8 h-8 rounded border border-border-dark bg-background-dark text-text-muted-dark hover:text-on-surface hover:border-outline-variant disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center";
 
 export default function RepositoriesTable({ repos = [] }) {
+  const openRepo = useRepoDetail();
   const [query, setQuery] = useState("");
   const [lang, setLang] = useState("all");
   const [topic, setTopic] = useState("all");
@@ -53,15 +55,13 @@ export default function RepositoriesTable({ repos = [] }) {
         <div className="flex items-start gap-sm">
           <BookMarked size={16} className="text-text-muted-dark mt-1 shrink-0" aria-hidden="true" />
           <div className="min-w-0">
-            <a
-              href={r.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-xs font-semibold text-body-md text-primary hover:underline"
+            <button
+              type="button"
+              onClick={() => openRepo(r)}
+              className="font-semibold text-body-md text-primary text-left hover:underline"
             >
               {r.full_name}
-              <ExternalLink size={13} className="opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
-            </a>
+            </button>
             <p className="text-body-sm text-text-muted-dark mt-1 line-clamp-2 max-w-md">{r.description}</p>
           </div>
         </div>
