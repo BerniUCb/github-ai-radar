@@ -4,10 +4,15 @@ import DataTable from "./ui/DataTable.jsx";
 import FilterChips from "./ui/FilterChips.jsx";
 import SearchInput from "./ui/SearchInput.jsx";
 import { useRepoDetail } from "../../lib/repoDetail.js";
+import { parseSort, useUrlState } from "../../lib/urlState.js";
 import { human, langColor } from "../../lib/data.js";
 
 const PAGE_SIZES = [10, 25, 50, 100];
 const MOMENTUM_HINT = "New stars per hour since the previous snapshot";
+
+// Filters and sort live in the URL so a view can be shared. Page and page size
+// stay local: they reset whenever a filter changes.
+const DEFAULTS = { q: "", lang: "all", topic: "all", sort: "stars:desc" };
 
 const selectCls =
   "appearance-none bg-background-dark border border-border-dark rounded py-1.5 pl-3 pr-8 text-on-surface font-label-caps text-label-caps focus:outline-none focus:border-primary-container hover:border-outline-variant cursor-pointer";
@@ -16,34 +21,36 @@ const pageBtnCls =
 
 export default function RepositoriesTable({ repos = [] }) {
   const openRepo = useRepoDetail();
-  const [query, setQuery] = useState("");
-  const [lang, setLang] = useState("all");
-  const [topic, setTopic] = useState("all");
-  const [sort, setSort] = useState({ key: "stars", dir: "desc" });
+  const [url, setUrl] = useUrlState(DEFAULTS);
   const [perPage, setPerPage] = useState(25);
   const [page, setPage] = useState(1);
+
+  const { q: query, lang, topic } = url;
+  const sort = parseSort(url.sort);
 
   const languages = useMemo(() => [...new Set(repos.map((r) => r.language).filter(Boolean))].sort(), [repos]);
   const topics = useMemo(() => [...new Set(repos.map((r) => r.topic).filter(Boolean))].sort(), [repos]);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const { key, dir } = parseSort(url.sort);
+    const q = url.q.trim().toLowerCase();
     const out = repos.filter(
       (r) =>
-        (lang === "all" || r.language === lang) &&
-        (topic === "all" || r.topic === topic) &&
+        (url.lang === "all" || r.language === url.lang) &&
+        (url.topic === "all" || r.topic === url.topic) &&
         (q === "" || `${r.full_name} ${r.description || ""}`.toLowerCase().includes(q))
     );
-    out.sort((a, b) => ((a[sort.key] || 0) - (b[sort.key] || 0)) * (sort.dir === "asc" ? 1 : -1));
+    out.sort((a, b) => ((a[key] || 0) - (b[key] || 0)) * (dir === "asc" ? 1 : -1));
     return out;
-  }, [repos, query, lang, topic, sort]);
+  }, [repos, url.q, url.lang, url.topic, url.sort]);
 
   const pages = Math.max(1, Math.ceil(filtered.length / perPage));
   const current = Math.min(page, pages);
   const slice = filtered.slice((current - 1) * perPage, current * perPage);
 
   function toggleSort(key) {
-    setSort((s) => (s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "desc" }));
+    const next = sort.key === key ? { key, dir: sort.dir === "asc" ? "desc" : "asc" } : { key, dir: "desc" };
+    setUrl({ sort: `${next.key}:${next.dir}` });
     setPage(1);
   }
 
@@ -122,7 +129,7 @@ export default function RepositoriesTable({ repos = [] }) {
     },
   ];
 
-  const hasFilters = lang !== "all" || topic !== "all" || query;
+  const hasFilters = lang !== "all" || topic !== "all" || query !== "";
   const langOptions = [{ value: "all", label: "All" }, ...languages.map((l) => ({ value: l, label: l }))];
   const topicOptions = [{ value: "all", label: "All" }, ...topics.map((t) => ({ value: t, label: t }))];
 
@@ -131,18 +138,18 @@ export default function RepositoriesTable({ repos = [] }) {
       <div className="p-md flex flex-col gap-md border-b border-border-dark">
         <SearchInput
           value={query}
-          onChange={(v) => { setQuery(v); setPage(1); }}
+          onChange={(v) => { setUrl({ q: v }); setPage(1); }}
           placeholder="Search repositories by name, description, or topic…"
           label="Search repositories"
         />
         <div className="flex flex-col gap-sm">
-          <FilterChips label="Filter by language" options={langOptions} value={lang} onChange={(v) => { setLang(v); setPage(1); }} />
-          <FilterChips label="Filter by topic" options={topicOptions} value={topic} onChange={(v) => { setTopic(v); setPage(1); }} />
+          <FilterChips label="Filter by language" options={langOptions} value={lang} onChange={(v) => { setUrl({ lang: v }); setPage(1); }} />
+          <FilterChips label="Filter by topic" options={topicOptions} value={topic} onChange={(v) => { setUrl({ topic: v }); setPage(1); }} />
         </div>
         {hasFilters && (
           <button
             type="button"
-            onClick={() => { setLang("all"); setTopic("all"); setQuery(""); setPage(1); }}
+            onClick={() => { setUrl({ q: "", lang: "all", topic: "all" }); setPage(1); }}
             className="self-end font-label-caps text-label-caps text-text-muted-dark hover:text-on-surface transition-colors"
           >
             Clear filters

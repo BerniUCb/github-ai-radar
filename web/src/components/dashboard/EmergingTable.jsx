@@ -1,12 +1,16 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import DataTable from "./ui/DataTable.jsx";
 import FilterChips from "./ui/FilterChips.jsx";
 import SearchInput from "./ui/SearchInput.jsx";
 import { useRepoDetail } from "../../lib/repoDetail.js";
 import { human, langColor } from "../../lib/data.js";
+import { parseSort, useUrlState } from "../../lib/urlState.js";
 
 // Columns that sort A→Z first; every other column sorts high→low first.
 const TEXT_SORT = new Set(["full_name", "topic"]);
+
+// What the URL omits: a default view has no query string.
+const DEFAULTS = { q: "", topic: "all", status: "emerging", sort: "" };
 
 const GAINED_HINT = "Stars gained since the previous snapshot";
 const MOMENTUM_HINT = "New stars per hour since the previous snapshot";
@@ -14,17 +18,20 @@ const STATUS_HINT = "Emerging = 5+ ★/h with 50+ total stars; otherwise Steady"
 
 export default function EmergingTable({ repos = [], topics = [] }) {
   const openRepo = useRepoDetail();
-  const [query, setQuery] = useState("");
-  const [topic, setTopic] = useState("all");
+  // Filters and sort live in the URL, so a filtered view can be shared.
+  const [url, setUrl] = useUrlState(DEFAULTS);
+  const query = url.q;
+  const topic = url.topic;
   // Opens on emerging repos only, so the table matches its title. "All" shows
   // the steady ones too.
-  const [status, setStatus] = useState("emerging");
-  // Default order matches the incoming ranking (momentum desc); null = unsorted.
-  const [sort, setSort] = useState({ key: null, dir: "desc" });
+  const status = url.status;
+  // Empty sort = the incoming ranking (momentum desc).
+  const sort = parseSort(url.sort);
 
   const maxMo = useMemo(() => Math.max(...repos.map((r) => r.momentum), 1), [repos]);
 
   const rows = useMemo(() => {
+    const { key, dir } = parseSort(url.sort);
     const q = query.trim().toLowerCase();
     const filtered = repos.filter(
       (r) =>
@@ -32,28 +39,28 @@ export default function EmergingTable({ repos = [], topics = [] }) {
         (topic === "all" || r.topic === topic) &&
         (q === "" || `${r.full_name} ${r.description || ""}`.toLowerCase().includes(q))
     );
-    if (!sort.key) return filtered;
+    if (!key) return filtered;
     const arr = [...filtered];
     arr.sort((a, b) => {
-      if (TEXT_SORT.has(sort.key)) {
-        const av = String(a[sort.key] || "").toLowerCase();
-        const bv = String(b[sort.key] || "").toLowerCase();
-        return sort.dir === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
+      if (TEXT_SORT.has(key)) {
+        const av = String(a[key] || "").toLowerCase();
+        const bv = String(b[key] || "").toLowerCase();
+        return dir === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
       }
-      const av = Number(a[sort.key]) || 0;
-      const bv = Number(b[sort.key]) || 0;
-      return sort.dir === "asc" ? av - bv : bv - av;
+      const av = Number(a[key]) || 0;
+      const bv = Number(b[key]) || 0;
+      return dir === "asc" ? av - bv : bv - av;
     });
     return arr;
-  }, [repos, query, status, topic, sort]);
+  }, [repos, query, status, topic, url.sort]);
 
   // First click on a column: text sorts A→Z, numbers high→low. Re-click flips.
   function toggleSort(key) {
-    setSort((s) =>
-      s.key === key
-        ? { key, dir: s.dir === "asc" ? "desc" : "asc" }
-        : { key, dir: TEXT_SORT.has(key) ? "asc" : "desc" }
-    );
+    const next =
+      sort.key === key
+        ? { key, dir: sort.dir === "asc" ? "desc" : "asc" }
+        : { key, dir: TEXT_SORT.has(key) ? "asc" : "desc" };
+    setUrl({ sort: `${next.key}:${next.dir}` });
   }
 
   const columns = [
@@ -171,13 +178,13 @@ export default function EmergingTable({ repos = [], topics = [] }) {
         <div className="flex flex-col gap-3 w-full md:w-auto md:max-w-md min-w-0">
           <SearchInput
             value={query}
-            onChange={setQuery}
+            onChange={(v) => setUrl({ q: v })}
             placeholder="Search repos…"
             label="Search emerging repositories"
             className="md:w-72"
           />
-          <FilterChips label="Show" options={statusOptions} value={status} onChange={setStatus} />
-          <FilterChips label="Filter by topic" options={topicOptions} value={topic} onChange={setTopic} />
+          <FilterChips label="Show" options={statusOptions} value={status} onChange={(v) => setUrl({ status: v })} />
+          <FilterChips label="Filter by topic" options={topicOptions} value={topic} onChange={(v) => setUrl({ topic: v })} />
         </div>
       </div>
 
