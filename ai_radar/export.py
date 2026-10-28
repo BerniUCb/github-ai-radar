@@ -140,13 +140,14 @@ def build_payload(report: pl.DataFrame, con: sqlite3.Connection, repo_slug: str)
         "pct": max(6, round(_mo(r.get("stars_per_hour")) / max_mo * 100)),
     } for r in bars_src]
 
-    # Table rows (Overview) + full list (Repositories)
-    repos = [_repo_dict(r, i) for i, r in enumerate(ordered[:TABLE_ROWS], start=1)]
-    # Attach a per-repo spark to the top few (for the Momentum podium).
-    for rep, src in zip(repos[:3], ordered[:3]):
+    # Full list (Repositories + detail panel). Every repo carries its last 10
+    # snapshot values as `spark`; the Overview table and Momentum podium reuse
+    # the same records.
+    all_repos = [_repo_dict(r, i) for i, r in enumerate(ordered, start=1)]
+    for rep, src in zip(all_repos, ordered):
         series = _aligned_series(hist["per_id_at"], src["id"], hist["times"])
         rep["spark"] = series[-10:] if len(series) >= 2 else []
-    all_repos = [_repo_dict(r, i) for i, r in enumerate(ordered, start=1)]
+    repos = all_repos[:TABLE_ROWS]
 
     # Trend (total stars over time)
     trend = [{"t": t, "total": v} for t, v in zip(hist["times"], hist["totals"])]
