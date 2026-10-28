@@ -11,9 +11,9 @@ const ICONS = {
 export default function LiveMoversFeed({ movers = [] }) {
   return (
     <div className="bg-surface-dark border border-border-dark rounded-xl flex flex-col h-[500px]">
-      <div className="p-lg border-b border-border-dark flex justify-between items-center">
-        <h2 className="font-headline-md text-headline-md text-text-primary-dark">Live movers feed</h2>
-        <Activity size={18} className="text-secondary live-dot" />
+      <div className="p-lg border-b border-border-dark">
+        <h2 className="font-headline-md text-headline-md text-text-primary-dark">Recent movers</h2>
+        <p className="font-body-sm text-body-sm text-text-muted-dark mt-1">Changes since the previous update.</p>
       </div>
       <div className="flex-1 overflow-y-auto p-xs">
         {movers.map((m, i) => {
