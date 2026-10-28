@@ -1,8 +1,8 @@
-// A row of toggle chips that picks one value out of a set. Scrolls sideways
-// when there are more options than fit, so long lists stay on one line.
+// A row of toggle chips that picks one value out of a set. Chips wrap onto
+// more lines when there are many, so nothing scrolls sideways.
 export default function FilterChips({ label, options, value, onChange }) {
   return (
-    <div role="group" aria-label={label} className="flex gap-2 overflow-x-auto pb-1">
+    <div role="group" aria-label={label} className="flex flex-wrap gap-2">
       {options.map((o) => {
         const active = value === o.value;
         return (
@@ -11,7 +11,7 @@ export default function FilterChips({ label, options, value, onChange }) {
             type="button"
             aria-pressed={active}
             onClick={() => onChange(o.value)}
-            className={`px-3 py-1 rounded-full border font-label-caps text-label-caps whitespace-nowrap transition-colors ${
+            className={`px-3 py-1 rounded-full border font-label-caps text-label-caps transition-colors ${
               active
                 ? "border-primary bg-primary/10 text-primary"
                 : "border-border-dark text-text-muted-dark hover:border-outline-variant hover:text-on-surface"

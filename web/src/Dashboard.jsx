@@ -20,7 +20,7 @@ export default function Dashboard() {
             repos={data?.all_repos || []}
             onMenuOpen={() => setMenuOpen(true)}
           />
-          <main className="flex-1 overflow-y-auto p-gutter">
+          <main className="flex-1 overflow-y-auto p-md md:p-gutter">
             {error ? (
               <div className="max-w-2xl mx-auto mt-16 text-center text-text-muted-dark">
                 <p className="font-headline-md text-headline-md text-on-surface mb-2">Couldn’t load data</p>

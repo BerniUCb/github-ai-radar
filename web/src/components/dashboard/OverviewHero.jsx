@@ -26,7 +26,7 @@ export default function OverviewHero({ kpis: k, feature, topicCount }) {
   const openRepo = useRepoDetail();
   return (
     <section className="border-b border-border-dark pb-xl">
-      <h1 className="font-display-lg text-display-lg text-text-primary-dark tracking-tight leading-none">On the radar</h1>
+      <h1 className="font-display-lg text-headline-lg md:text-display-lg text-text-primary-dark tracking-tight leading-none">On the radar</h1>
       <p className="mt-md font-body-lg text-body-lg text-text-muted-dark max-w-2xl">
         {human(k.repos_tracked)} AI repositories across {topicCount} topics, ranked by the stars they are gaining right now.
       </p>
@@ -40,8 +40,8 @@ export default function OverviewHero({ kpis: k, feature, topicCount }) {
               <span title="New stars per hour since the last snapshot" className="cursor-help font-mono-metrics text-body-lg text-secondary-container">★/h</span>
               <span className="font-label-caps text-label-caps text-text-muted-dark ml-1">fastest riser</span>
             </div>
-            <h2 className="mt-md font-headline-lg text-headline-lg text-on-surface group-hover:text-primary transition-colors flex items-center gap-2">
-              {feature.full_name}
+            <h2 className="mt-md font-headline-md text-headline-md md:text-headline-lg text-on-surface group-hover:text-primary transition-colors flex items-center gap-2 min-w-0">
+              <span className="break-words min-w-0">{feature.full_name}</span>
               <ArrowUpRight size={20} className="text-outline group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all -translate-x-1 group-hover:translate-x-0" aria-hidden="true" />
             </h2>
             {feature.description && (

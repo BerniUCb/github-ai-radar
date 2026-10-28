@@ -74,7 +74,7 @@ export default function EmergingTable({ repos = [], topics = [] }) {
           <button
             type="button"
             onClick={() => openRepo(r)}
-            className="font-semibold text-primary text-left hover:underline"
+            className="font-semibold text-primary text-left hover:underline break-words"
           >
             {r.full_name}
           </button>
