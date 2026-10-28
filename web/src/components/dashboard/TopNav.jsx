@@ -91,11 +91,11 @@ export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = 
         >
           <Menu size={22} aria-hidden="true" />
         </button>
-        <div className="md:hidden flex items-center gap-2 text-primary font-headline-md text-headline-md font-bold">
+        <div className="md:hidden hidden min-[420px]:flex items-center gap-2 text-primary font-headline-md text-headline-md font-bold">
           <Radar size={22} aria-hidden="true" />
         </div>
 
-        <div className="relative w-full max-w-md hidden sm:block" ref={boxRef}>
+        <div className="relative w-full max-w-md min-w-0" ref={boxRef}>
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted-dark pointer-events-none" />
           <input
             type="text"
@@ -159,7 +159,7 @@ export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = 
           className="ml-2 px-md py-2 bg-primary-container text-on-primary-container rounded-lg font-label-caps text-label-caps hover:brightness-110 transition-all flex items-center gap-2"
         >
           <Download size={16} />
-          <span className="hidden lg:inline">Download CSV</span>
+          <span className="sr-only lg:not-sr-only">Download CSV</span>
         </a>
       </div>
     </header>

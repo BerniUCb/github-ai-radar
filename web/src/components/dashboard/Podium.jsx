@@ -1,17 +1,21 @@
+import { useId } from "react";
 import { TrendingUp } from "lucide-react";
 import { human } from "../../lib/data.js";
 import { scale, linePath } from "../../lib/chart.js";
+import { BRAND } from "../../lib/colors.js";
 
 function MiniSpark({ data }) {
+  // Three cards render this, so the gradient id must be unique per instance.
+  const id = `podium${useId().replace(/:/g, "")}`;
   if (!data || data.length < 2) return null;
   const pts = scale(data, 100, 40, { padTop: 4, padBottom: 4 });
   return (
-    <svg className="w-24 h-12" viewBox="0 0 100 40" fill="none">
-      <path d={linePath(pts)} stroke="url(#podiumGrad)" strokeWidth="2" strokeLinecap="round" />
+    <svg className="w-24 h-12" viewBox="0 0 100 40" fill="none" aria-hidden="true">
+      <path d={linePath(pts)} stroke={`url(#${id})`} strokeWidth="2" strokeLinecap="round" />
       <defs>
-        <linearGradient id="podiumGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#4F46E5" />
-          <stop offset="100%" stopColor="#00c599" />
+        <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor={BRAND.accentLight} />
+          <stop offset="100%" stopColor={BRAND.secondaryContainer} />
         </linearGradient>
       </defs>
     </svg>

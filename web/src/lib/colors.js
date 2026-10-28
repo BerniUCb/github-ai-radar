@@ -7,6 +7,8 @@ export const BRAND = {
   secondary: "#42e1b3", // token: secondary
   tertiary: "#ffb960", // token: tertiary
   errorCoral: "#FF6B7D", // token: error-coral
+  accentLight: "#4F46E5", // token: accent-light
+  secondaryContainer: "#00c599", // token: secondary-container
 };
 
 // Five-color line-chart palette shared by InteractiveChart, MultiLineChart and
