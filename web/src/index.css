@@ -37,13 +37,3 @@
 ::-webkit-scrollbar-thumb { background: #262B38; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #33343c; }
 
-@keyframes pulse-dot {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(66, 225, 179, 0.7); opacity: 1; }
-  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(66, 225, 179, 0); opacity: 0.4; }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(66, 225, 179, 0); opacity: 1; }
-}
-.live-dot { animation: pulse-dot 2s infinite; }
-
-@media (prefers-reduced-motion: reduce) {
-  .live-dot { animation: none; }
-}

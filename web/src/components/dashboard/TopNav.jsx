@@ -1,19 +1,7 @@
 import { useMemo, useRef, useState, useEffect } from "react";
 import { Search, Radar, Download, Star, ExternalLink, Menu } from "lucide-react";
 import { human, langColor } from "../../lib/data.js";
-
-// "2026-08-26 03:45 UTC" -> "2h ago" (with the absolute time kept as a tooltip).
-function relativeTime(s) {
-  if (!s) return "—";
-  const d = new Date(s.replace(" UTC", "Z").replace(" ", "T"));
-  if (isNaN(d)) return s;
-  const mins = Math.round((Date.now() - d.getTime()) / 60000);
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const h = Math.round(mins / 60);
-  if (h < 24) return `${h}h ago`;
-  return `${Math.round(h / 24)}d ago`;
-}
+import Freshness from "./Freshness.jsx";
 
 export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = () => {} }) {
   const [query, setQuery] = useState("");
@@ -149,9 +137,8 @@ export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = 
       </div>
 
       <div className="flex items-center gap-md">
-        <div className="hidden md:flex items-center gap-xs font-label-caps text-label-caps text-text-muted-dark" title={lastUpdated ? `Data generated ${lastUpdated}` : undefined}>
-          <span className="w-2 h-2 rounded-full bg-secondary live-dot"></span>
-          Updated {relativeTime(lastUpdated)}
+        <div className="hidden md:flex items-center font-label-caps text-label-caps">
+          <Freshness lastUpdated={lastUpdated} compact />
         </div>
         <a
           href={csvHref || "#"}

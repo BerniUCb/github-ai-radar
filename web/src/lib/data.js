@@ -41,3 +41,40 @@ export const LANG_COLORS = {
 export function langColor(lang) {
   return LANG_COLORS[lang] || "#8A92A6";
 }
+
+// The radar runs on a cron every 6 hours (see .github/workflows/radar.yml).
+const RUN_EVERY_MS = 6 * 60 * 60 * 1000;
+
+/** "2026-08-26 03:45 UTC" -> Date, or null when it can't be read. */
+export function parseUpdated(s) {
+  if (!s) return null;
+  const d = new Date(s.replace(" UTC", "Z").replace(" ", "T"));
+  return isNaN(d) ? null : d;
+}
+
+/** Age of the data and time until the next scheduled run. `stale` means two
+ *  runs have been missed, so the numbers may no longer be current. */
+export function freshness(lastUpdated, now = Date.now()) {
+  const updated = parseUpdated(lastUpdated);
+  if (!updated) return null;
+  const age = now - updated.getTime();
+  const nextRun = Math.ceil(now / RUN_EVERY_MS) * RUN_EVERY_MS;
+  return { age, untilNext: nextRun - now, stale: age > 2 * RUN_EVERY_MS };
+}
+
+/** 150_000 -> "2 min ago", 7_200_000 -> "2 h ago". */
+export function formatAgo(ms) {
+  const mins = Math.round(ms / 60_000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins} min ago`;
+  const h = Math.round(mins / 60);
+  if (h < 24) return `${h} h ago`;
+  return `${Math.round(h / 24)} d ago`;
+}
+
+/** Time until the next run: "in 40 min", "in 4 h". */
+export function formatIn(ms) {
+  const mins = Math.max(1, Math.round(ms / 60_000));
+  if (mins < 60) return `in ${mins} min`;
+  return `in ${Math.round(mins / 60)} h`;
+}
