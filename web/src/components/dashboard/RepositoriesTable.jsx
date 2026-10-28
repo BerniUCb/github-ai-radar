@@ -1,12 +1,17 @@
 import { useMemo, useState } from "react";
-import { Search, ArrowUpDown, ArrowDown, ArrowUp, ChevronLeft, ChevronRight, ExternalLink, BookMarked } from "lucide-react";
+import { BookMarked, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import DataTable from "./ui/DataTable.jsx";
+import FilterChips from "./ui/FilterChips.jsx";
+import SearchInput from "./ui/SearchInput.jsx";
 import { human, langColor } from "../../lib/data.js";
 
-const COLUMNS = [
-  { key: "stars", label: "Stars" },
-  { key: "forks", label: "Forks" },
-  { key: "momentum", label: "★/h" },
-];
+const PAGE_SIZES = [10, 25, 50, 100];
+const MOMENTUM_HINT = "New stars per hour since the previous snapshot";
+
+const selectCls =
+  "appearance-none bg-background-dark border border-border-dark rounded py-1.5 pl-3 pr-8 text-on-surface font-label-caps text-label-caps focus:outline-none focus:border-primary-container hover:border-outline-variant cursor-pointer";
+const pageBtnCls =
+  "w-8 h-8 rounded border border-border-dark bg-background-dark text-text-muted-dark hover:text-on-surface hover:border-outline-variant disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center";
 
 export default function RepositoriesTable({ repos = [] }) {
   const [query, setQuery] = useState("");
@@ -39,111 +44,137 @@ export default function RepositoriesTable({ repos = [] }) {
     setSort((s) => (s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "desc" }));
     setPage(1);
   }
-  const sortIcon = (key) => (sort.key !== key ? <ArrowUpDown size={13} aria-hidden="true" /> : sort.dir === "asc" ? <ArrowUp size={13} aria-hidden="true" /> : <ArrowDown size={13} aria-hidden="true" />);
 
-  const selectCls = "appearance-none bg-background-dark border border-border-dark rounded py-1.5 pl-3 pr-8 text-on-surface font-label-caps text-label-caps focus:outline-none focus:border-primary-container hover:border-outline-variant cursor-pointer";
+  const columns = [
+    {
+      key: "full_name",
+      label: "Repository",
+      cell: (r) => (
+        <div className="flex items-start gap-sm">
+          <BookMarked size={16} className="text-text-muted-dark mt-1 shrink-0" aria-hidden="true" />
+          <div className="min-w-0">
+            <a
+              href={r.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-xs font-semibold text-body-md text-primary hover:underline"
+            >
+              {r.full_name}
+              <ExternalLink size={13} className="opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+            </a>
+            <p className="text-body-sm text-text-muted-dark mt-1 line-clamp-2 max-w-md">{r.description}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "stars",
+      label: "Stars",
+      align: "right",
+      sortable: true,
+      cell: (r) => <span className="font-mono-metrics text-on-surface">{human(r.stars)}</span>,
+    },
+    {
+      key: "forks",
+      label: "Forks",
+      align: "right",
+      sortable: true,
+      cell: (r) => <span className="font-mono-metrics text-text-muted-dark">{human(r.forks)}</span>,
+    },
+    {
+      key: "momentum",
+      label: "★/h",
+      align: "right",
+      sortable: true,
+      hint: MOMENTUM_HINT,
+      cell: (r) => <span className="font-mono-metrics text-secondary">{human(r.momentum)}</span>,
+    },
+    {
+      key: "language",
+      label: "Language",
+      cell: (r) => (
+        <div className="flex items-center gap-xs">
+          <span className="w-2 h-2 rounded-full" style={{ background: langColor(r.language) }} aria-hidden="true" />
+          <span className="font-label-caps text-label-caps">{r.language || "—"}</span>
+        </div>
+      ),
+    },
+    {
+      key: "license",
+      label: "License",
+      cell: (r) => <span className="text-text-muted-dark">{r.license || "—"}</span>,
+    },
+    {
+      key: "action",
+      label: "Action",
+      align: "right",
+      cell: (r) => (
+        <a
+          href={r.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block border border-border-dark hover:border-primary-container text-on-surface hover:text-primary bg-background-dark px-3 py-1 rounded font-label-caps text-label-caps font-semibold transition-all"
+        >
+          View
+        </a>
+      ),
+    },
+  ];
+
+  const hasFilters = lang !== "all" || topic !== "all" || query;
+  const langOptions = [{ value: "all", label: "All" }, ...languages.map((l) => ({ value: l, label: l }))];
+  const topicOptions = [{ value: "all", label: "All" }, ...topics.map((t) => ({ value: t, label: t }))];
 
   return (
-    <div className="space-y-md">
-      <div className="bg-surface-dark border border-border-dark rounded-lg p-md flex flex-col gap-md">
-        <div className="relative w-full">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted-dark" />
-          <input
-            value={query}
-            onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-            placeholder="Search repositories by name, description, or topic…"
-            className="w-full bg-background-dark border border-border-dark rounded py-2 pl-11 pr-4 text-on-surface font-body-md focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container placeholder-text-muted-dark transition-all"
-          />
+    <div className="bg-surface-dark border border-border-dark rounded-xl overflow-hidden">
+      <div className="p-md flex flex-col gap-md border-b border-border-dark">
+        <SearchInput
+          value={query}
+          onChange={(v) => { setQuery(v); setPage(1); }}
+          placeholder="Search repositories by name, description, or topic…"
+          label="Search repositories"
+        />
+        <div className="flex flex-col gap-sm">
+          <FilterChips label="Filter by language" options={langOptions} value={lang} onChange={(v) => { setLang(v); setPage(1); }} />
+          <FilterChips label="Filter by topic" options={topicOptions} value={topic} onChange={(v) => { setTopic(v); setPage(1); }} />
         </div>
-        <div className="flex flex-wrap items-center gap-sm pt-xs border-t border-border-dark">
-          <select className={selectCls} value={lang} onChange={(e) => { setLang(e.target.value); setPage(1); }}>
-            <option value="all">Language: All</option>
-            {languages.map((l) => <option key={l} value={l}>{l}</option>)}
-          </select>
-          <select className={selectCls} value={topic} onChange={(e) => { setTopic(e.target.value); setPage(1); }}>
-            <option value="all">Topic: All</option>
-            {topics.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-          {(lang !== "all" || topic !== "all" || query) && (
-            <button onClick={() => { setLang("all"); setTopic("all"); setQuery(""); setPage(1); }} className="ml-auto text-text-muted-dark hover:text-on-surface font-label-caps text-label-caps transition-colors">
-              Clear filters
-            </button>
-          )}
-        </div>
+        {hasFilters && (
+          <button
+            type="button"
+            onClick={() => { setLang("all"); setTopic("all"); setQuery(""); setPage(1); }}
+            className="self-end font-label-caps text-label-caps text-text-muted-dark hover:text-on-surface transition-colors"
+          >
+            Clear filters
+          </button>
+        )}
       </div>
 
-      <div className="bg-surface-dark border border-border-dark rounded-lg overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[860px]">
-            <thead>
-              <tr className="bg-surface-dim border-b border-border-dark">
-                <th className="py-3 px-md font-label-caps text-label-caps text-text-muted-dark font-medium w-2/5">Repository</th>
-                {COLUMNS.map((c) => (
-                  <th key={c.key} aria-sort={sort.key === c.key ? (sort.dir === "asc" ? "ascending" : "descending") : "none"} className="py-0 px-0 font-label-caps text-label-caps text-text-muted-dark font-medium whitespace-nowrap text-right">
-                    <button type="button" onClick={() => toggleSort(c.key)} title={`Sort by ${c.label}`} className="w-full py-3 px-md inline-flex items-center gap-xs justify-end hover:text-on-surface transition-colors">
-                      {c.label} {sortIcon(c.key)}
-                    </button>
-                  </th>
-                ))}
-                <th className="py-3 px-md font-label-caps text-label-caps text-text-muted-dark font-medium">Language</th>
-                <th className="py-3 px-md font-label-caps text-label-caps text-text-muted-dark font-medium">License</th>
-                <th className="py-3 px-md font-label-caps text-label-caps text-text-muted-dark font-medium text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody className="font-body-sm text-body-sm text-on-surface divide-y divide-border-dark">
-              {slice.map((r) => (
-                <tr key={r.full_name} className="hover:bg-surface-dim transition-colors group">
-                  <td className="py-md px-md">
-                    <div className="flex items-start gap-sm">
-                      <BookMarked size={16} className="text-text-muted-dark mt-1 shrink-0" />
-                      <div>
-                        <a href={r.url} target="_blank" rel="noopener noreferrer" className="font-headline-md text-[15px] font-semibold text-primary hover:underline flex items-center gap-xs">
-                          {r.full_name}
-                          <ExternalLink size={13} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </a>
-                        <p className="text-text-muted-dark text-[13px] mt-1 line-clamp-2 max-w-md">{r.description}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-md px-md font-mono-metrics text-right text-on-surface">{human(r.stars)}</td>
-                  <td className="py-md px-md font-mono-metrics text-right text-text-muted-dark">{human(r.forks)}</td>
-                  <td className="py-md px-md font-mono-metrics text-right text-secondary">{human(r.momentum)}</td>
-                  <td className="py-md px-md">
-                    <div className="flex items-center gap-xs">
-                      <span className="w-2 h-2 rounded-full" style={{ background: langColor(r.language) }} />
-                      <span className="font-label-caps text-label-caps">{r.language || "—"}</span>
-                    </div>
-                  </td>
-                  <td className="py-md px-md text-text-muted-dark">{r.license || "—"}</td>
-                  <td className="py-md px-md text-right">
-                    <a href={r.url} target="_blank" rel="noopener noreferrer" className="inline-block border border-border-dark hover:border-primary-container text-on-surface hover:text-primary bg-background-dark py-1 px-3 rounded font-label-caps text-[11px] font-semibold transition-all">
-                      View
-                    </a>
-                  </td>
-                </tr>
-              ))}
-              {slice.length === 0 && <tr><td colSpan={7} className="py-10 text-center text-text-muted-dark">No repositories match your filters.</td></tr>}
-            </tbody>
-          </table>
-        </div>
+      <DataTable
+        columns={columns}
+        rows={slice}
+        sort={sort}
+        onSort={toggleSort}
+        rowKey={(r) => r.full_name}
+        minWidth={860}
+        empty="No repositories match your filters."
+      />
 
-        <div className="border-t border-border-dark p-sm px-md flex flex-col sm:flex-row items-center justify-between gap-sm">
-          <div className="flex items-center gap-xs text-text-muted-dark font-label-caps text-label-caps">
-            Show
-            <select className={selectCls} value={perPage} onChange={(e) => { setPerPage(Number(e.target.value)); setPage(1); }}>
-              {[10, 25, 50, 100].map((n) => <option key={n} value={n}>{n}</option>)}
-            </select>
-            per page · {filtered.length} repos
-          </div>
-          <div className="flex items-center gap-xs">
-            <button disabled={current <= 1} onClick={() => setPage(current - 1)} className="w-8 h-8 rounded border border-border-dark bg-background-dark text-text-muted-dark hover:text-on-surface hover:border-outline-variant disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center">
-              <ChevronLeft size={18} />
-            </button>
-            <span className="font-mono-metrics text-xs text-on-surface px-2">{current} / {pages}</span>
-            <button disabled={current >= pages} onClick={() => setPage(current + 1)} className="w-8 h-8 rounded border border-border-dark bg-background-dark text-text-muted-dark hover:text-on-surface hover:border-outline-variant disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center">
-              <ChevronRight size={18} />
-            </button>
-          </div>
+      <div className="border-t border-border-dark p-md flex flex-col sm:flex-row items-center justify-between gap-md">
+        <div className="flex items-center gap-xs text-text-muted-dark font-label-caps text-label-caps">
+          Show
+          <select className={selectCls} value={perPage} onChange={(e) => { setPerPage(Number(e.target.value)); setPage(1); }}>
+            {PAGE_SIZES.map((n) => <option key={n} value={n}>{n}</option>)}
+          </select>
+          per page · {filtered.length} repos
+        </div>
+        <div className="flex items-center gap-xs">
+          <button type="button" disabled={current <= 1} onClick={() => setPage(current - 1)} className={pageBtnCls} aria-label="Previous page">
+            <ChevronLeft size={18} />
+          </button>
+          <span className="font-mono-metrics text-body-sm text-on-surface px-2">{current} / {pages}</span>
+          <button type="button" disabled={current >= pages} onClick={() => setPage(current + 1)} className={pageBtnCls} aria-label="Next page">
+            <ChevronRight size={18} />
+          </button>
         </div>
       </div>
     </div>

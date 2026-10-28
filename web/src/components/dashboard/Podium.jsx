@@ -24,7 +24,7 @@ function MiniSpark({ data }) {
 
 export default function Podium({ repos = [] }) {
   const top3 = repos.slice(0, 3);
-  const rankColor = ["text-tertiary", "text-on-surface-variant", "text-[#cd8200]"];
+  const rankColor = ["text-tertiary", "text-on-surface-variant", "text-tertiary-container"];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
@@ -40,7 +40,7 @@ export default function Podium({ repos = [] }) {
             <div className={`w-10 h-10 rounded-lg bg-surface-variant border border-border-dark flex items-center justify-center font-headline-md text-headline-md font-bold ${rankColor[i]}`}>
               {i + 1}
             </div>
-            <span className="font-label-caps text-label-caps text-text-muted-dark uppercase tracking-wider flex items-center gap-1">
+            <span className="font-label-caps text-label-caps text-text-muted-dark flex items-center gap-1">
               <TrendingUp size={14} className="text-secondary" /> Trending
             </span>
           </div>
@@ -48,9 +48,9 @@ export default function Podium({ repos = [] }) {
           <p className="font-body-sm text-body-sm text-text-muted-dark mb-lg truncate">{r.description || "—"}</p>
           <div className="flex items-end justify-between">
             <div className="flex flex-col">
-              <span className="font-label-caps text-label-caps text-text-muted-dark mb-1 uppercase">Velocity</span>
+              <span className="font-label-caps text-label-caps text-text-muted-dark mb-1">Velocity</span>
               <div className="flex items-baseline gap-2">
-                <span className="font-mono-metrics text-display-lg text-primary">{human(r.momentum)}</span>
+                <span className="font-mono-metrics text-headline-lg text-primary">{human(r.momentum)}</span>
                 <span className="font-mono-metrics text-body-sm text-text-muted-dark">★/hr</span>
               </div>
             </div>

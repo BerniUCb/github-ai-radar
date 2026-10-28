@@ -21,13 +21,14 @@ export const CHART_PALETTE = [
   BRAND.errorCoral,
 ];
 
-// Seven-color palette for the topic donut (more segments than the line charts).
+// Seven-color palette for the topic donut. Each hue is distinct, so neighbouring
+// segments never read as the same color.
 export const TOPIC_PALETTE = [
-  "#6e8bff",
-  "#42e1b3",
-  "#b7c4ff",
-  "#00c599",
-  "#3edeb1",
-  "#8e909f",
-  "#3554c6",
+  "#6e8bff", // blue
+  "#42e1b3", // mint
+  "#ffb960", // amber
+  "#FF6B7D", // coral
+  "#b7c4ff", // lavender
+  "#a78bfa", // violet
+  "#8e909f", // gray
 ];

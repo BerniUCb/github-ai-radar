@@ -19,10 +19,10 @@ export default function ScatterPlot({ repos = [] }) {
   return (
     <SectionCard title="Velocity vs. total size" subtitle="★/hour against total stars (log scale)" className="h-[500px] flex flex-col">
       <div className="flex-1 border-l border-b border-border-dark relative mt-2 ml-8 mb-8" role="img" aria-label={scatterLabel}>
-        <div className="absolute -left-8 top-0 h-full flex flex-col justify-between text-right font-mono-metrics text-[10px] text-text-muted-dark pb-2 pr-2">
+        <div className="absolute -left-8 top-0 h-full flex flex-col justify-between text-right font-label-caps text-label-caps text-text-muted-dark pb-2 pr-2">
           <span>{human(maxMo)}</span><span>{human(maxMo / 2)}</span><span>0</span>
         </div>
-        <div className="absolute -bottom-6 left-0 w-full h-4 font-mono-metrics text-[10px] text-text-muted-dark" aria-hidden="true">
+        <div className="absolute -bottom-6 left-0 w-full h-4 font-label-caps text-label-caps text-text-muted-dark" aria-hidden="true">
           {ticks.map((v) => (
             <span
               key={v}
@@ -32,9 +32,6 @@ export default function ScatterPlot({ repos = [] }) {
               {human(v)}
             </span>
           ))}
-        </div>
-        <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
-          {[0, 1, 2, 3].map((i) => <div key={i} className="w-full border-t border-border-dark opacity-30" />)}
         </div>
         <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
           {[0, 1, 2, 3].map((i) => <div key={i} className="w-full border-t border-border-dark opacity-30" />)}
@@ -57,7 +54,7 @@ export default function ScatterPlot({ repos = [] }) {
                 boxShadow: r.emerging ? "0 0 12px rgba(110,139,255,0.7)" : "none",
               }}
             >
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-surface-container-high border border-border-dark px-3 py-2 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity z-20 pointer-events-none">
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-surface-container-high border border-border-dark px-3 py-2 rounded text-body-xs whitespace-nowrap opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity z-20 pointer-events-none">
                 <p className="font-bold text-on-surface">{r.full_name}</p>
                 <p className="text-text-muted-dark font-mono-metrics">{human(r.momentum)} ★/hr · {human(r.stars)} stars</p>
               </div>

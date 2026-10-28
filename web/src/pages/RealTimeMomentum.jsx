@@ -12,7 +12,7 @@ export default function RealTimeMomentum() {
         <h1 className="font-headline-lg text-headline-lg text-text-primary-dark">Real-Time Momentum</h1>
         <div className="bg-surface-dark border border-border-dark rounded-full px-3 py-1 flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-secondary live-dot" />
-          <span className="font-label-caps text-label-caps text-secondary uppercase tracking-wider">Live</span>
+          <span className="font-label-caps text-label-caps text-secondary">Live</span>
         </div>
       </div>
 

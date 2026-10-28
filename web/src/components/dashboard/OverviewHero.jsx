@@ -10,7 +10,7 @@ function LedgerStat({ label, value, sub, spark, accent = false }) {
   return (
     <div className="py-md first:pt-0 flex items-center justify-between gap-md">
       <div className="min-w-0">
-        <div className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">{label}</div>
+        <div className="font-label-caps text-label-caps text-on-surface-variant">{label}</div>
         {sub && <div className="font-body-sm text-body-sm text-text-muted-dark mt-0.5 truncate">{sub}</div>}
       </div>
       <div className="flex items-center gap-md shrink-0">
@@ -34,9 +34,9 @@ export default function OverviewHero({ kpis: k, feature, topicCount }) {
         {feature && (
           <a href={feature.url} target="_blank" rel="noopener noreferrer" className="lg:col-span-3 group flex flex-col">
             <div className="flex items-baseline gap-sm">
-              <span className="font-mono-metrics text-[68px] leading-none tabular-nums text-secondary">{human(feature.momentum)}</span>
+              <span className="font-mono-metrics text-display-xl tabular-nums text-secondary">{human(feature.momentum)}</span>
               <span title="New stars per hour since the last snapshot" className="cursor-help font-mono-metrics text-body-lg text-secondary-container">★/h</span>
-              <span className="font-label-caps text-label-caps text-text-muted-dark uppercase tracking-wider ml-1">fastest riser</span>
+              <span className="font-label-caps text-label-caps text-text-muted-dark ml-1">fastest riser</span>
             </div>
             <h2 className="mt-md font-headline-lg text-headline-lg text-on-surface group-hover:text-primary transition-colors flex items-center gap-2">
               {feature.full_name}
