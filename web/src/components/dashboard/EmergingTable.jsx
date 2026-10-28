@@ -14,6 +14,9 @@ const STATUS_HINT = "Emerging = 5+ ★/h with 50+ total stars; otherwise Steady"
 export default function EmergingTable({ repos = [], topics = [] }) {
   const [query, setQuery] = useState("");
   const [topic, setTopic] = useState("all");
+  // Opens on emerging repos only, so the table matches its title. "All" shows
+  // the steady ones too.
+  const [status, setStatus] = useState("emerging");
   // Default order matches the incoming ranking (momentum desc); null = unsorted.
   const [sort, setSort] = useState({ key: null, dir: "desc" });
 
@@ -23,6 +26,7 @@ export default function EmergingTable({ repos = [], topics = [] }) {
     const q = query.trim().toLowerCase();
     const filtered = repos.filter(
       (r) =>
+        (status === "all" || r.emerging) &&
         (topic === "all" || r.topic === topic) &&
         (q === "" || `${r.full_name} ${r.description || ""}`.toLowerCase().includes(q))
     );
@@ -39,7 +43,7 @@ export default function EmergingTable({ repos = [], topics = [] }) {
       return sort.dir === "asc" ? av - bv : bv - av;
     });
     return arr;
-  }, [repos, query, topic, sort]);
+  }, [repos, query, status, topic, sort]);
 
   // First click on a column: text sorts A→Z, numbers high→low. Re-click flips.
   function toggleSort(key) {
@@ -144,6 +148,10 @@ export default function EmergingTable({ repos = [], topics = [] }) {
     },
   ];
 
+  const statusOptions = [
+    { value: "emerging", label: "Emerging only" },
+    { value: "all", label: "All repos" },
+  ];
   const topicOptions = [{ value: "all", label: "All" }, ...topics.map((t) => ({ value: t.name, label: t.name }))];
 
   return (
@@ -161,6 +169,7 @@ export default function EmergingTable({ repos = [], topics = [] }) {
             label="Search emerging repositories"
             className="md:w-72"
           />
+          <FilterChips label="Show" options={statusOptions} value={status} onChange={setStatus} />
           <FilterChips label="Filter by topic" options={topicOptions} value={topic} onChange={setTopic} />
         </div>
       </div>
