@@ -59,7 +59,7 @@ export default function RepositoriesTable({ repos = [] }) {
             <button
               type="button"
               onClick={() => openRepo(r)}
-              className="font-semibold text-body-md text-primary text-left hover:underline"
+              className="font-semibold text-body-md text-primary text-left hover:underline break-words"
             >
               {r.full_name}
             </button>

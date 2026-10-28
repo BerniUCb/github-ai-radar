@@ -2,6 +2,7 @@ import { useOutletContext } from "react-router-dom";
 import { TrendingUp } from "lucide-react";
 import SectionCard from "../components/dashboard/SectionCard.jsx";
 import MultiLineChart from "../components/dashboard/MultiLineChart.jsx";
+import DataTable from "../components/dashboard/ui/DataTable.jsx";
 import { human } from "../lib/data.js";
 import { CHART_PALETTE as DOT } from "../lib/colors.js";
 
@@ -9,6 +10,42 @@ export default function StarGrowth() {
   const data = useOutletContext();
   const growth = data.growth || { series: [] };
   const cards = growth.series.slice(0, 3);
+
+  const maxVel = Math.max(...growth.series.map((x) => x.velocity || 0), 1);
+  const colorOf = (s) => DOT[growth.series.indexOf(s) % DOT.length];
+
+  const velocityColumns = [
+    {
+      key: "name",
+      label: "Repository",
+      primary: true,
+      cell: (s) => (
+        <span className="flex items-center gap-3 min-w-0">
+          <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: colorOf(s) }} aria-hidden="true" />
+          <span className="font-body-md text-body-md break-words min-w-0">{s.full_name}</span>
+        </span>
+      ),
+    },
+    {
+      key: "total",
+      label: "Total stars",
+      align: "right",
+      cell: (s) => <span className="font-mono-metrics text-text-muted-dark">{human(s.last)}</span>,
+    },
+    {
+      key: "velocity",
+      label: "Velocity (stars/day)",
+      align: "right",
+      cell: (s) => (
+        <span className="flex items-center justify-end gap-2 font-mono-metrics text-mono-metrics">
+          <span>{human(s.velocity)}</span>
+          <span className="w-16 h-1 bg-surface-variant rounded-full overflow-hidden" aria-hidden="true">
+            <span className="block h-full" style={{ width: `${((s.velocity || 0) / maxVel) * 100}%`, background: colorOf(s) }} />
+          </span>
+        </span>
+      ),
+    },
+  ];
 
   return (
     <div className="space-y-gutter">
@@ -24,8 +61,9 @@ export default function StarGrowth() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
         {cards.map((s, i) => (
           <div key={s.full_name} className="bg-surface-container-low border border-border-dark rounded-xl p-lg relative overflow-hidden group hover:border-outline-variant transition-colors">
-            <div className="font-label-caps text-label-caps text-text-muted-dark mb-1 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full" style={{ background: DOT[i % DOT.length] }} />{s.full_name}
+            <div className="font-label-caps text-label-caps text-text-muted-dark mb-1 flex items-center gap-2 min-w-0">
+              <span className="w-2 h-2 rounded-full shrink-0" style={{ background: DOT[i % DOT.length] }} />
+              <span className="break-words min-w-0">{s.full_name}</span>
             </div>
             <div className="font-mono-metrics text-headline-lg text-on-surface my-2">{human(s.last)}</div>
             <div className="flex items-center gap-2 font-mono-metrics text-sm">
@@ -39,39 +77,13 @@ export default function StarGrowth() {
       </div>
 
       <SectionCard title="Velocity ranking" subtitle="Recent stars per day" className="p-0 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[560px]">
-            <thead>
-              <tr className="border-b border-border-dark bg-surface-container-highest font-label-caps text-label-caps text-text-muted-dark">
-                <th className="py-3 px-6 font-medium">Repository</th>
-                <th className="py-3 px-6 font-medium text-right">Total stars</th>
-                <th className="py-3 px-6 font-medium text-right">Velocity (stars/day)</th>
-              </tr>
-            </thead>
-            <tbody className="font-mono-metrics text-mono-metrics text-on-surface">
-              {growth.series.map((s, i) => {
-                const maxVel = Math.max(...growth.series.map((x) => x.velocity || 0), 1);
-                return (
-                  <tr key={s.full_name} className="border-b border-border-dark hover:bg-surface-variant/30 transition-colors">
-                    <td className="py-4 px-6 flex items-center gap-3">
-                      <span className="w-2.5 h-2.5 rounded-full" style={{ background: DOT[i % DOT.length] }} />
-                      <span className="font-body-md text-body-md">{s.full_name}</span>
-                    </td>
-                    <td className="py-4 px-6 text-right text-text-muted-dark">{human(s.last)}</td>
-                    <td className="py-4 px-6 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <span>{human(s.velocity)}</span>
-                        <div className="w-16 h-1 bg-surface-variant rounded-full overflow-hidden">
-                          <div className="h-full" style={{ width: `${((s.velocity || 0) / maxVel) * 100}%`, background: DOT[i % DOT.length] }} />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          columns={velocityColumns}
+          rows={growth.series}
+          rowKey={(s) => s.full_name}
+          minWidth={560}
+          empty="No velocity data yet."
+        />
       </SectionCard>
     </div>
   );

@@ -34,7 +34,7 @@ export default function LiveMoversFeed({ movers = [], repos = [] }) {
                     <button
                       type="button"
                       onClick={() => openRepo(byName.get(m.full_name) ?? m)}
-                      className="font-bold text-primary hover:underline text-left"
+                      className="font-bold text-primary hover:underline text-left break-words"
                     >
                       {m.full_name}
                     </button>{" "}
