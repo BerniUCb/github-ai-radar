@@ -18,7 +18,7 @@ from .storage import init_db, previous_snapshot, save_snapshot
 from .transform import compute_momentum
 
 # The React app (in web/) reads these from its public/ folder; the Vite build
-# copies them into docs/ for GitHub Pages.
+# copies them into web/dist/, which Vercel serves.
 WEB_CSV = Path("web/public/ai_radar_report.csv")
 
 
