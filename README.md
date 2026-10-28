@@ -10,7 +10,7 @@ This project turns that signal into a clean, actionable CSV **and a live dashboa
 
 [![AI Radar](https://github.com/riverbrdev/github-ai-radar/actions/workflows/radar.yml/badge.svg)](https://github.com/riverbrdev/github-ai-radar/actions/workflows/radar.yml)
 
-**🔗 Live dashboard** hosted on Vercel — data refreshed every 6 hours by GitHub Actions.
+**🔗 Live dashboard: https://github-ai-radar.vercel.app/** — data refreshed every 6 hours by GitHub Actions.
 
 ## Example output
 
