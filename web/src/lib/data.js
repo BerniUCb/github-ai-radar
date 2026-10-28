@@ -26,6 +26,8 @@ export function human(n) {
   n = Number(n);
   if (Math.abs(n) >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`.replace(".0M", "M");
   if (Math.abs(n) >= 1_000) return `${(n / 1_000).toFixed(1)}k`.replace(".0k", "k");
+  // Values under 10 keep one decimal so slow risers don't read as 0.
+  if (Math.abs(n) < 10 && !Number.isInteger(n)) return n.toFixed(1);
   return `${Math.round(n)}`;
 }
 

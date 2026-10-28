@@ -31,11 +31,14 @@ def _human(n) -> str:
         return f"{n / 1_000_000:.1f}M".replace(".0M", "M")
     if abs(n) >= 1_000:
         return f"{n / 1_000:.1f}k".replace(".0k", "k")
+    if abs(n) < 10 and n != int(n):
+        # Momentum below 10 ★/h keeps one decimal so slow risers don't read as 0.
+        return f"{n:.1f}"
     return f"{n:.0f}"
 
 
-def _mo(v) -> int:
-    return round(v) if v is not None else 0
+def _mo(v) -> float:
+    return round(v, 1) if v is not None else 0
 
 
 def _int(v) -> int:

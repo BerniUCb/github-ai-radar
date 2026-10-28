@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo, useId } from "react";
 import { human } from "../../lib/data.js";
 import { CHART_PALETTE as PALETTE } from "../../lib/colors.js";
 const PAD = 6; // vertical padding, in percent of the plot height
@@ -15,6 +15,7 @@ function fmtLabel(iso) {
 export default function InteractiveChart({ series = [], labels = [], area = false, mode = "absolute", height = 320, unit = "" }) {
   const ref = useRef(null);
   const [hover, setHover] = useState(null);
+  const areaId = `area${useId().replace(/:/g, "")}`;
 
   const model = useMemo(() => {
     const clean = series.filter((s) => s.values && s.values.length >= 2);
@@ -67,7 +68,15 @@ export default function InteractiveChart({ series = [], labels = [], area = fals
   const tipSide = hx > 82 ? "-100%" : hx < 18 ? "0%" : "-50%";
 
   return (
-    <div className="relative w-full" style={{ height }} ref={ref} onMouseMove={onMove} onMouseLeave={() => setHover(null)}>
+    // Pointer events cover touch as well as mouse. pan-y keeps vertical page
+    // scrolling working while a horizontal drag scrubs the chart.
+    <div
+      className="relative w-full"
+      style={{ height, touchAction: "pan-y" }}
+      ref={ref}
+      onPointerMove={onMove}
+      onPointerLeave={() => setHover(null)}
+    >
       {/* y-axis labels */}
       <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-[10px] font-mono-metrics text-text-muted-dark pointer-events-none z-10">
         <span>{fmt(max)}</span><span>{fmt((max + min) / 2)}</span><span>{fmt(min)}</span>
@@ -78,12 +87,12 @@ export default function InteractiveChart({ series = [], labels = [], area = fals
         {area && prepared.length === 1 && (
           <>
             <defs>
-              <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id={areaId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={prepared[0].color} stopOpacity="0.32" />
                 <stop offset="100%" stopColor={prepared[0].color} stopOpacity="0" />
               </linearGradient>
             </defs>
-            <path d={`${line(prepared[0].pts)} L100 100 L0 100 Z`} fill="url(#areaFill)" />
+            <path d={`${line(prepared[0].pts)} L100 100 L0 100 Z`} fill={`url(#${areaId})`} />
           </>
         )}
         {prepared.map((s) => (

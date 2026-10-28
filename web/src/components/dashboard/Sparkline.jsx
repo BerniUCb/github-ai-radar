@@ -1,13 +1,13 @@
+import { useId } from "react";
 import { scale, linePath, areaPath } from "../../lib/chart.js";
 import { BRAND } from "../../lib/colors.js";
 
-let uid = 0;
-
 export default function Sparkline({ data = [], color = BRAND.primaryContainer, height = 32 }) {
+  // useId keeps the gradient id stable across renders and unique per instance.
+  const id = `sg${useId().replace(/:/g, "")}`;
   if (!data.length) return null;
   const W = 200, H = height;
   const pts = scale(data, W, H, { padTop: 3, padBottom: 3 });
-  const id = `sg${uid++}`;
   return (
     <svg className="w-full" style={{ height }} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
       <defs>
