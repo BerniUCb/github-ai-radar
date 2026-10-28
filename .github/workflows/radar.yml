@@ -1,13 +1,13 @@
 name: AI Radar
 
-# Runs the radar on a schedule, then:
-#   1. commits the updated radar.db back (git-scraping — persists the snapshot
-#      history so momentum can accumulate across runs), and
-#   2. builds the React dashboard and deploys it to GitHub Pages as a CI
-#      artifact — docs/ is NOT committed, which is what stops local builds from
-#      colliding with the bot's commits.
+# Runs the radar on a schedule and commits the refreshed data back to main
+# (git-scraping):
+#   - radar.db persists the snapshot history so momentum accumulates across runs;
+#   - web/public/data.json and the CSV are what the dashboard serves.
 #
-# One-time setup: Settings → Pages → Source → "GitHub Actions".
+# Hosting is Vercel's Git integration (Root Directory: web): every push to main,
+# including this bot's data commits, triggers a production deploy, and every PR
+# gets a preview deploy. This workflow never builds or deploys the web app.
 
 on:
   schedule:
@@ -17,7 +17,7 @@ on:
     branches: [main]
     paths:
       - "ai_radar/**"
-      - "web/**"
+      - "requirements.txt"
       - ".github/workflows/radar.yml"
 
 concurrency:
@@ -25,16 +25,11 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write     # commit radar.db
-  pages: write        # deploy to Pages
-  id-token: write     # required by deploy-pages
+  contents: write     # commit the refreshed data
 
 jobs:
   radar:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -52,36 +47,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # 5000 req/h for the API
         run: python -m ai_radar --days 45
 
-      - name: Commit refreshed snapshot history
+      # No [skip ci] marker: pushes made with GITHUB_TOKEN never re-trigger
+      # workflows anyway, and Vercel must deploy this commit.
+      - name: Commit refreshed data
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add radar.db
+          git add radar.db web/public/data.json web/public/ai_radar_report.csv
           if git diff --cached --quiet; then
-            echo "No snapshot changes to commit."
+            echo "No data changes to commit."
           else
-            git commit -m "chore(data): refresh radar snapshot [skip ci]"
+            git commit -m "chore(data): refresh radar snapshot"
             git push
           fi
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: npm
-          cache-dependency-path: web/package-lock.json
-
-      - name: Build dashboard
-        working-directory: web
-        run: |
-          npm ci
-          npm run build   # emits ../docs
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs
-
-      - name: Deploy to GitHub Pages
-        id: deploy
-        uses: actions/deploy-pages@v4

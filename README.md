@@ -8,9 +8,9 @@ In an ecosystem where hundreds of AI tools ship every week, knowing which ones
 are growing fast — not which are already famous — is information that has value.
 This project turns that signal into a clean, actionable CSV **and a live dashboard**.
 
-[![AI Radar](https://github.com/BerniUCb/github-ai-radar/actions/workflows/radar.yml/badge.svg)](https://github.com/BerniUCb/github-ai-radar/actions/workflows/radar.yml)
+[![AI Radar](https://github.com/riverbrdev/github-ai-radar/actions/workflows/radar.yml/badge.svg)](https://github.com/riverbrdev/github-ai-radar/actions/workflows/radar.yml)
 
-**🔗 Live dashboard: https://berniucb.github.io/github-ai-radar/** — refreshed every 6 hours by GitHub Actions.
+**🔗 Live dashboard** hosted on Vercel — data refreshed every 6 hours by GitHub Actions.
 
 ## Example output
 
@@ -43,11 +43,10 @@ GitHub Search API  ──►  Extract  ──►  SQLite (historical snapshots)
                           ▼                               ▼
                   ai_radar_report.csv              data.json (Export)
                                                         │
-                                                        ▼
-                                        React dashboard (Vite build) ──► docs/
+                                          committed to main (git-scraping)
                                                         │
                                                         ▼
-                                                 GitHub Pages
+                                       Vercel: Vite build of web/ ──► CDN
 ```
 
 It's a classic mini **ETL** pipeline: the value isn't in a one-off scrape, but in
@@ -73,9 +72,10 @@ web/                      # React dashboard (Vite + Tailwind)
     pages/                # Overview · RealTimeMomentum · StarGrowth · Repositories
     components/dashboard/ # StatCard, MomentumBars, TopicDonut, ScatterPlot, …
     lib/                  # data fetch + chart helpers
-docs/                     # Vite build output, served by GitHub Pages
+  public/data.json        # dashboard feed, refreshed by the bot (committed)
+  vercel.json             # SPA rewrite so deep links survive a reload
 tests/                    # pytest (transform + cli)
-.github/workflows/radar.yml   # scheduled scrape + build + git-scraping deploy
+.github/workflows/radar.yml   # scheduled scrape + git-scraping data commit
 ```
 
 Run the tests:
@@ -107,7 +107,7 @@ The Python run writes `web/public/data.json`; the React app reads it.
 python -m ai_radar          # 1. generate data.json (run at least twice)
 cd web && npm install
 npm run dev                 # 2. dev server with hot reload
-npm run build               # or: production build into ../docs
+npm run build               # or: production build into web/dist
 ```
 
 ### GitHub token (optional but recommended)
@@ -124,18 +124,22 @@ export GITHUB_TOKEN=<PAT>
 python -m ai_radar            # picks up $GITHUB_TOKEN automatically
 ```
 
-## Deploy (GitHub Actions + Pages)
+## Deploy (GitHub Actions + Vercel)
 
 The dashboard updates itself. [`.github/workflows/radar.yml`](.github/workflows/radar.yml)
-runs the radar every 6 hours, **rebuilds the React app**, and uses
-**git-scraping**: it commits the updated `radar.db` and built `docs/` back to the
-repo. Persisting the snapshot DB between runs is what lets momentum accumulate
-over time; GitHub Pages then serves `docs/`.
+runs the radar every 6 hours and uses **git-scraping**: it commits the updated
+`radar.db`, `web/public/data.json` and the CSV back to `main`. Persisting the
+snapshot DB between runs is what lets momentum accumulate over time.
+
+Vercel's Git integration does the rest: each push to `main` (including the
+bot's data commits) is a production deploy, and each pull request gets its own
+preview URL with real data.
 
 The workflow authenticates with the built-in `GITHUB_TOKEN` (5000 req/h) — no
-secret to configure. One-time setup after the first push:
+secret to configure. One-time setup:
 
-1. **Settings → Pages → Source:** *Deploy from a branch* → branch `main`, folder `/docs`.
+1. **Vercel:** import the repo, set **Root Directory** to `web` (framework: Vite,
+   output `dist` — both detected automatically).
 2. **Settings → Actions → General → Workflow permissions:** *Read and write* (so the
    job can commit the refreshed data).
 
@@ -156,7 +160,7 @@ To run it locally on a schedule instead:
 
 **Engine:** Python · Polars · SQLite · GitHub REST API
 **Dashboard:** React · Vite · Tailwind CSS · lucide-react
-**Ops:** GitHub Actions · GitHub Pages (git-scraping)
+**Ops:** GitHub Actions (git-scraping) · Vercel
 
 ## Ideas for v2
 

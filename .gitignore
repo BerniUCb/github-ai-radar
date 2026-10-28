@@ -2,15 +2,16 @@
 venv/
 .venv/
 
-# Working copy of the report at the repo root (the committed copy lives in docs/).
+# Working copy of the report at the repo root (the committed copy lives in
+# web/public/).
 /ai_radar_report.csv
 
-# radar.db is committed on purpose (git-scraping): the snapshot history must
-# persist between scheduled runs so momentum can be computed.
-#
-# docs/ is NOT tracked: it's the Vite build output. GitHub Pages is deployed
-# from a CI artifact (see .github/workflows/radar.yml), so nobody commits it —
-# this is what stops local builds from colliding with the bot's commits.
+# radar.db, web/public/data.json and web/public/ai_radar_report.csv are
+# committed on purpose (git-scraping): the bot refreshes them every 6 hours and
+# each push triggers a Vercel deploy that serves the new data. The snapshot
+# history must also persist between runs so momentum can be computed.
+
+# Old GitHub Pages build output, no longer produced.
 docs/
 
 # Python
@@ -22,11 +23,6 @@ __pycache__/
 web/node_modules/
 web/dist/
 npm-debug.log*
-
-# Generated data feeds (produced by `python -m ai_radar`; the committed copies
-# live in docs/ after the Vite build).
-web/public/data.json
-web/public/ai_radar_report.csv
 
 # VS Code
 .vscode/
