@@ -2,6 +2,7 @@ import { ArrowUpRight, Star } from "lucide-react";
 import Sparkline from "./Sparkline.jsx";
 import { human, langColor } from "../../lib/data.js";
 import { BRAND } from "../../lib/colors.js";
+import { useRepoDetail } from "../../lib/repoDetail.js";
 
 // Editorial lead for the Overview: instead of four equal KPI cards, the page
 // opens on its actual story — the repo climbing fastest right now — with its
@@ -22,6 +23,7 @@ function LedgerStat({ label, value, sub, spark, accent = false }) {
 }
 
 export default function OverviewHero({ kpis: k, feature, topicCount }) {
+  const openRepo = useRepoDetail();
   return (
     <section className="border-b border-border-dark pb-xl">
       <h1 className="font-display-lg text-display-lg text-text-primary-dark tracking-tight leading-none">On the radar</h1>
@@ -32,7 +34,7 @@ export default function OverviewHero({ kpis: k, feature, topicCount }) {
       <div className="mt-xl grid grid-cols-1 lg:grid-cols-5 gap-x-xl gap-y-lg">
         {/* Feature: the fastest riser, with its live star signal */}
         {feature && (
-          <a href={feature.url} target="_blank" rel="noopener noreferrer" className="lg:col-span-3 group flex flex-col">
+          <button type="button" onClick={() => openRepo(feature)} className="lg:col-span-3 group flex flex-col text-left">
             <div className="flex items-baseline gap-sm">
               <span className="font-mono-metrics text-display-xl tabular-nums text-secondary">{human(feature.momentum)}</span>
               <span title="New stars per hour since the last snapshot" className="cursor-help font-mono-metrics text-body-lg text-secondary-container">★/h</span>
@@ -62,7 +64,7 @@ export default function OverviewHero({ kpis: k, feature, topicCount }) {
               <span className="flex items-center gap-1 tabular-nums"><Star size={12} aria-hidden="true" /> {human(feature.stars)}</span>
               <span className="tabular-nums text-secondary">+{human(feature.gained)} this run</span>
             </div>
-          </a>
+          </button>
         )}
 
         {/* Ledger: supporting signals, hairline-separated, each with its trend */}

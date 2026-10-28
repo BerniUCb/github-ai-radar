@@ -109,14 +109,13 @@ export default function RepositoriesTable({ repos = [] }) {
       label: "Action",
       align: "right",
       cell: (r) => (
-        <a
-          href={r.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block border border-border-dark hover:border-primary-container text-on-surface hover:text-primary bg-background-dark px-3 py-1 rounded font-label-caps text-label-caps font-semibold transition-all"
+        <button
+          type="button"
+          onClick={() => openRepo(r)}
+          className="border border-border-dark hover:border-primary-container text-on-surface hover:text-primary bg-background-dark px-3 py-1 rounded font-label-caps text-label-caps font-semibold transition-all"
         >
-          View
-        </a>
+          Details
+        </button>
       ),
     },
   ];
