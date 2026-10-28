@@ -188,6 +188,9 @@ def build_payload(report: pl.DataFrame, con: sqlite3.Connection, repo_slug: str)
     return {
         "generated_at": now.strftime("%Y-%m-%d %H:%M UTC"),
         "last_updated": now.strftime("%Y-%m-%d %H:%M UTC"),
+        # Snapshot runs behind this payload. Momentum needs two, so the
+        # dashboard explains an empty first run instead of showing zeros.
+        "history_runs": len(hist["times"]),
         "repo_slug": repo_slug,
         "topic_count": len(topics),
         "kpis": kpis,
