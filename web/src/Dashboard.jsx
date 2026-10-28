@@ -2,11 +2,15 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./components/dashboard/Sidebar.jsx";
 import TopNav from "./components/dashboard/TopNav.jsx";
+import RadarSkeleton from "./components/dashboard/RadarSkeleton.jsx";
 import { RepoDetailProvider } from "./components/dashboard/RepoDetail.jsx";
 import { useRadarData } from "./lib/data.js";
 
+// Momentum needs two snapshots; until there are two, the numbers are zeros.
+const RUNS_NEEDED = 2;
+
 export default function Dashboard() {
-  const { data, error } = useRadarData();
+  const { data, error, reload } = useRadarData();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -22,16 +26,24 @@ export default function Dashboard() {
           />
           <main className="flex-1 overflow-y-auto p-md md:p-gutter">
             {error ? (
-              <div className="max-w-2xl mx-auto mt-16 text-center text-text-muted-dark">
-                <p className="font-headline-md text-headline-md text-on-surface mb-2">Couldn’t load data</p>
-                <p className="font-body-sm text-body-sm">{String(error.message || error)}</p>
+              <div role="alert" className="max-w-xl mx-auto mt-16 text-center">
+                <p className="font-headline-md text-headline-md text-on-surface mb-2">Couldn’t load the radar data</p>
+                <p className="font-body-sm text-body-sm text-text-muted-dark">
+                  The dashboard reads <code className="font-mono-metrics">data.json</code>, which didn’t load ({String(error.message || error)}).
+                </p>
+                <button
+                  type="button"
+                  onClick={reload}
+                  className="mt-lg px-md py-2 rounded-lg bg-primary-container text-on-primary-container font-label-caps text-label-caps hover:brightness-110 transition-all"
+                >
+                  Try again
+                </button>
               </div>
             ) : !data ? (
-              <div className="flex items-center justify-center h-64 text-text-muted-dark font-label-caps text-label-caps">
-                Loading radar…
-              </div>
+              <RadarSkeleton />
             ) : (
-              <div className="max-w-7xl mx-auto">
+              <div className="max-w-7xl mx-auto space-y-gutter">
+                {data.history_runs < RUNS_NEEDED && <FirstRunNotice runs={data.history_runs} />}
                 <Outlet context={data} />
               </div>
             )}
@@ -39,5 +51,17 @@ export default function Dashboard() {
         </div>
       </div>
     </RepoDetailProvider>
+  );
+}
+
+function FirstRunNotice({ runs }) {
+  return (
+    <div role="status" className="bg-surface-dark border border-border-dark rounded-xl p-lg">
+      <p className="font-headline-md text-headline-md text-on-surface">Collecting history</p>
+      <p className="mt-1 font-body-sm text-body-sm text-text-muted-dark">
+        {runs} of {RUNS_NEEDED} snapshots saved. Growth, momentum and emerging repos appear after the next update,
+        about 6 hours from now.
+      </p>
+    </div>
   );
 }

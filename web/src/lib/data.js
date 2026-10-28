@@ -1,23 +1,32 @@
 // Loads the dataset the Python pipeline writes to `data.json` and exposes a few
 // formatting helpers shared across the dashboard.
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export function useRadarData() {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    let cancelled = false;
     fetch(`${import.meta.env.BASE_URL}data.json`)
       .then((r) => {
         if (!r.ok) throw new Error(`data.json ${r.status}`);
         return r.json();
       })
-      .then(setData)
-      .catch(setError);
+      .then((d) => { if (!cancelled) setData(d); })
+      .catch((e) => { if (!cancelled) setError(e); });
+    return () => { cancelled = true; };
+  }, [attempt]);
+
+  // Lets the error screen retry without reloading the whole page.
+  const reload = useCallback(() => {
+    setError(null);
+    setAttempt((n) => n + 1);
   }, []);
 
-  return { data, error };
+  return { data, error, reload };
 }
 
 /** 45230 -> "45.2k", 1_200_000 -> "1.2M". */
