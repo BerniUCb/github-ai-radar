@@ -1,5 +1,6 @@
 import { Rocket, Flame, Sparkles, Activity } from "lucide-react";
 import { human } from "../../lib/data.js";
+import { useRepoDetail } from "../../lib/repoDetail.js";
 
 const ICONS = {
   surge: { Icon: Rocket, wrap: "bg-primary-container/20 border-primary-container/50", color: "text-accent-light" },
@@ -8,7 +9,11 @@ const ICONS = {
   default: { Icon: Activity, wrap: "bg-surface-variant border-border-dark", color: "text-text-muted-dark" },
 };
 
-export default function LiveMoversFeed({ movers = [] }) {
+export default function LiveMoversFeed({ movers = [], repos = [] }) {
+  const openRepo = useRepoDetail();
+  // Movers only carry a few fields; the panel needs the full record.
+  const byName = new Map(repos.map((r) => [r.full_name, r]));
+
   return (
     <div className="bg-surface-dark border border-border-dark rounded-xl flex flex-col h-[500px]">
       <div className="p-lg border-b border-border-dark">
@@ -26,7 +31,13 @@ export default function LiveMoversFeed({ movers = [] }) {
                 </div>
                 <div className="flex-1">
                   <p className="font-body-sm text-body-sm text-on-surface mb-1">
-                    <a href={m.url} target="_blank" rel="noopener noreferrer" className="font-bold text-primary hover:underline">{m.full_name}</a>{" "}
+                    <button
+                      type="button"
+                      onClick={() => openRepo(byName.get(m.full_name) ?? m)}
+                      className="font-bold text-primary hover:underline text-left"
+                    >
+                      {m.full_name}
+                    </button>{" "}
                     {m.kind === "milestone" ? (
                       <>crossed <span className="font-mono-metrics text-tertiary">{human(m.threshold)}</span> stars</>
                     ) : (

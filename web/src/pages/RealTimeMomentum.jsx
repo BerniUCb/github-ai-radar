@@ -23,7 +23,7 @@ export default function RealTimeMomentum() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
         <div className="lg:col-span-8"><ScatterPlot repos={data.repos} /></div>
-        <div className="lg:col-span-4"><LiveMoversFeed movers={data.movers} /></div>
+        <div className="lg:col-span-4"><LiveMoversFeed movers={data.movers} repos={data.all_repos} /></div>
       </div>
     </div>
   );

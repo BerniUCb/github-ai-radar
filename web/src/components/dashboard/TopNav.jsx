@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState, useEffect } from "react";
-import { Search, Radar, Download, Star, ExternalLink, Menu } from "lucide-react";
+import { Search, Radar, Download, Star, Menu } from "lucide-react";
 import { human, langColor } from "../../lib/data.js";
+import { useRepoDetail } from "../../lib/repoDetail.js";
 import Freshness from "./Freshness.jsx";
 
 export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = () => {} }) {
@@ -8,6 +9,15 @@ export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = 
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   const boxRef = useRef(null);
+  const openRepo = useRepoDetail();
+
+  // Opens the detail panel for a result and clears the search.
+  function pick(r) {
+    setOpen(false);
+    setQuery("");
+    setActive(-1);
+    openRepo(r);
+  }
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -60,8 +70,7 @@ export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = 
       case "Enter":
         if (open && active >= 0) {
           e.preventDefault();
-          window.open(results[active].url, "_blank", "noopener,noreferrer");
-          setOpen(false);
+          pick(results[active]);
         }
         break;
       default:
@@ -109,13 +118,11 @@ export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = 
                 <ul id="search-listbox" role="listbox" className="max-h-80 overflow-y-auto py-1">
                   {results.map((r, i) => (
                     <li key={r.full_name} role="option" id={`search-opt-${i}`} aria-selected={active === i}>
-                      <a
-                        href={r.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => setOpen(false)}
+                      <button
+                        type="button"
+                        onClick={() => pick(r)}
                         onMouseEnter={() => setActive(i)}
-                        className={`flex items-center gap-3 px-4 py-2 transition-colors group ${active === i ? "bg-surface-variant" : "hover:bg-surface-variant"}`}
+                        className={`w-full text-left flex items-center gap-3 px-4 py-2 transition-colors group ${active === i ? "bg-surface-variant" : "hover:bg-surface-variant"}`}
                       >
                         <span className="w-2 h-2 rounded-full shrink-0" style={{ background: langColor(r.language) }} />
                         <span className="flex-1 min-w-0">
@@ -125,8 +132,7 @@ export default function TopNav({ lastUpdated, csvHref, repos = [], onMenuOpen = 
                         <span className="flex items-center gap-1 text-xs font-mono-metrics text-text-muted-dark shrink-0">
                           <Star size={12} /> {human(r.stars)}
                         </span>
-                        <ExternalLink size={13} className="text-text-muted-dark opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                      </a>
+                      </button>
                     </li>
                   ))}
                 </ul>
